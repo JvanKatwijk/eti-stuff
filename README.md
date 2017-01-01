@@ -9,11 +9,10 @@ by piping the output from the one into the other one has a
 more or less complete dab receiver.
 
 Copyright
-Copyright Jan van Katwijk (J.vanKatwijk@gmail.com) except for those parts copied from dabtools
-his software is part of the  SDR-J (JSDR).
-SDR-J is free software; you can redistribute it and/or modify it under the terms of the
-GNU General Public License as published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version, taking into account the licensing conditions of the parts of the
+
+Copyright Jan van Katwijk (J.vanKatwijk@gmail.com) 
+This software is part of the  SDR-J (JSDR), SDR-J is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version, taking into account the licensing conditions of the parts of the
 software that are derived from wotk of others.
 
 This software uses parts of dabtools.
@@ -25,9 +24,6 @@ copyright."
 
 Obviously, the copyrights for the parts copied (or directly derived)
 from the dabtools remain with Dave Chapman.
-
-The copyrights for the parts extracted from the DAB-rpi software remain
-with their owner.
 
 The set consists (currently) of two programs (both under continuous development)
 
