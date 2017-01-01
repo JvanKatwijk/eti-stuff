@@ -55,7 +55,7 @@ Since the software is derived from the DAB-rpi software, it supports
 
 Disclaimer
 
-The software is under development, and
+The software is under development and most likely contains errors.
 SDR-J is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
