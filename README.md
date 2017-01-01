@@ -54,8 +54,10 @@ Since the software is derived from the DAB-rpi software, it supports
 (and prerecorded files of course).
 
 Disclaimer
+
+The software is under development, and
 SDR-J is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.</i>
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 
 
