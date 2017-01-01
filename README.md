@@ -16,11 +16,10 @@ it under the terms of the GNU General Public License as published by the Free So
 software that are derived from wotk of others.
 
 This software uses parts of dabtools.
+Excerpt from the README of dabtools  reads
 "dabtools is written by Dave Chapman <dave@dchapman.com>
-
-Large parts of the code are copied verbatim (or with trivial
-modifications) from David Crawley's OpenDAB and hence retain his
-copyright."
+Large Parts of the code in both eti-frontend and eti-backend are copied verbatim (or with trivial
+modifications) from David Crawley's OpenDAB and hence retain his copyright."
 
 Obviously, the copyrights for the parts copied (or directly derived)
 from the dabtools remain with Dave Chapman.
