@@ -1,0 +1,50 @@
+"Eti-stuff" consists of two programs and is an attempt to
+understand the eti structure as defined in ETS 300 799.
+It is based on the DAB-rpi software, with code included
+from dabtools to actually generate the eti frames.
+
+It consists of two programs, one generating a stream of ETI frames,
+the other one reading and interpreting the ETI frames, such that
+by piping the output from the one into the other one has a
+more or less complete dab receiver.
+
+Copyright
+
+dabtools is written by Dave Chapman <dave@dchapman.com>
+
+Large parts of the code are copied verbatim (or with trivial
+modifications) from David Crawley's OpenDAB and hence retain his
+copyright.
+
+Obviously, the copyrights for the parts copied (or directly derived)
+from the dabtools remain with Dave Chapman.
+
+The copyrights for the parts extracted from the DAB-rpi software remain
+with their owner.
+
+a. eti-frontend, which is a stripped dab-rpi version which
+   generates eti-frames as output.
+   GUI is - obviously - based on dab-rpi. There is an additional
+   command line option "-O -", that will cause the ETI files to be
+   send to stdout.
+   The "normal" way of working is to have an input device selected, select
+   a channel, press the start button, and as soon as an ensemble is
+   identified, and the GUI shows the names of the programs, to press
+   the button "eti is waiting", after which it will send the eti frames
+   to the selected output device.
+b. eti-backend, which is a stripped dab-rpi version which takes
+   eti-frames as input. A command line option is to specify an input file,
+   if none is specified, the program will take its input from stdin.
+   The GUI is simple, it will show the name of the ensemble and the names
+   of programs. Selecting a program is as in the DAB-rpi software.
+
+So, if you want to emulate a full dab-receiver, then just do
+    eti-frontend -O - |eti-backend
+
+
+
+Since the software is derived from the DAB-rpi software, it supports
+- if so configured - the same devices, i.e. dabsticks, airspy and sdrplay
+(and prerecorded files of course).
+
+
