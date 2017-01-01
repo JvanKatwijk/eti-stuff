@@ -9,18 +9,27 @@ by piping the output from the one into the other one has a
 more or less complete dab receiver.
 
 Copyright
+Copyright Jan van Katwijk (J.vanKatwijk@gmail.com) except for those parts copied from dabtools
+his software is part of the  SDR-J (JSDR).
+SDR-J is free software; you can redistribute it and/or modify it under the terms of the
+GNU General Public License as published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version, taking into account the licensing conditions of the parts of the
+software that are derived from wotk of others.
 
-dabtools is written by Dave Chapman <dave@dchapman.com>
+This software uses parts of dabtools.
+"dabtools is written by Dave Chapman <dave@dchapman.com>
 
 Large parts of the code are copied verbatim (or with trivial
 modifications) from David Crawley's OpenDAB and hence retain his
-copyright.
+copyright."
 
 Obviously, the copyrights for the parts copied (or directly derived)
 from the dabtools remain with Dave Chapman.
 
 The copyrights for the parts extracted from the DAB-rpi software remain
 with their owner.
+
+The set consists (currently) of two programs (both under continuous development)
 
 a. eti-frontend, which is a stripped dab-rpi version which
    generates eti-frames as output.
@@ -46,5 +55,10 @@ So, if you want to emulate a full dab-receiver, then just do
 Since the software is derived from the DAB-rpi software, it supports
 - if so configured - the same devices, i.e. dabsticks, airspy and sdrplay
 (and prerecorded files of course).
+
+Disclaimer
+SDR-J is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.</i>
+
 
 
