@@ -40,10 +40,12 @@ b. eti-backend, which is a stripped dab-rpi version which takes
    eti-frames as input. A command line option is to specify an input file,
    if none is specified, the program will take its input from stdin.
    The GUI is simple, it will show the name of the ensemble and the names
-   of programs. Selecting a program is as in the DAB-rpi software.
+   of programs. Selecting a program is as in the DAB-rpi software. It will start reading
+   after pressing the start button.
 
 So, if you want to emulate a full dab-receiver, then just do
-    eti-frontend -O - |eti-backend
+
+    eti-frontend -O - | eti-backend
 
 
 
