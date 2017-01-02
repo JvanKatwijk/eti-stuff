@@ -95,24 +95,26 @@ int16_t	i, j;
   *	
   *	The function is called with a blkno. This should be 1, 2 or 3
   *	for each time 2304 bits are in, we call process_ficInput
+  *
+  *	The result of the crc check on the N fib blocks are passed
+  *	as bits (0 = false, 1 = true), packed in a bool array
+  *	that is initialized by the caller
   */
-void	ficHandler::process_ficBlock (int16_t *data, 
-	                              uint8_t *out,
+void	ficHandler::process_ficBlock (int16_t	*data, 
+	                              uint8_t	*out,
 	                              bool	*valid) {
+
 int32_t	i, j;
 int16_t	index	= 0;
 int16_t	ficno	= 0;
-bool	lvalid;
 
-	*valid	= true;
 	for (i = 0; i < 3; i ++) {
 	   for (j = 0; j < BitsperBlock; j ++) {
 	      ofdm_input [index ++] = data [i * BitsperBlock + j];
 	      if (index >= 2304) {
-	         process_ficInput (ofdm_input, ficno ++, out, &lvalid);
-	         if (!lvalid)
-	            *valid	= false;
+	         process_ficInput (ofdm_input, ficno, out, &valid [ficno]);
 	         index = 0;
+	         ficno ++;
 	      }
 	   }
 	}
@@ -197,7 +199,7 @@ int16_t	viterbiBlock [3072 + 24];
   *	we keep track of the successrate
   *	and show that per 100 fic blocks
   */
-	*valid	= true;
+	
 	for (i = ficno * 3; i < ficno * 3 + 3; i ++) {
 	   uint8_t *p = &bitBuffer_out [(i % 3) * 256];
 	   if (!check_CRC_bits (p, 256)) {

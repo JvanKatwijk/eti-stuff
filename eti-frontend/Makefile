@@ -15,7 +15,7 @@ CXX           = g++
 DEFINES       = -DSSE_AVAILABLE -DHAVE_DABSTICK -DHAVE_SDRPLAY -DHAVE_AIRSPY -DHAVE_RTL_TCP -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -flto -ffast-math -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -flto -ffast-math -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I. -I. -Isrc -Iincludes -Iincludes/ofdm -Iincludes/backend -Iincludes/output -Iincludes/various -Isrc/input -Isrc/input/rawfiles -Isrc/input/wavfiles -I../../../../local/include -I/home/jan/rtl-sdr/include -Isrc/input/dabstick-osmo -Isrc/input/sdrplay-exp -Isrc/input/airspy -I../../../../local/include/libairspy -Isrc/input/rtl_tcp -I../../../../include/qt5 -I../../../../include/qt5/QtWidgets -I../../../../include/qt5/QtGui -I../../../../include/qt5/QtNetwork -I../../../../include/qt5/QtCore -I. -I. -I../../../../lib64/qt5/mkspecs/linux-g++
+INCPATH       = -I. -I. -I. -Isrc -Iincludes -Iincludes/ofdm -Iincludes/backend -Iincludes/output -Iincludes/various -Isrc/input -Isrc/input/rawfiles -Isrc/input/wavfiles -isystem /usr/local/include -I/home/jan/rtl-sdr/include -Isrc/input/dabstick-osmo -Isrc/input/sdrplay-exp -Isrc/input/airspy -isystem /usr/local/include/libairspy -Isrc/input/rtl_tcp -isystem /usr/include/qt5 -isystem /usr/include/qt5/QtWidgets -isystem /usr/include/qt5/QtGui -isystem /usr/include/qt5/QtNetwork -isystem /usr/include/qt5/QtCore -I. -I. -I/usr/lib64/qt5/mkspecs/linux-g++
 QMAKE         = /usr/bin/qmake-qt5
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -33,7 +33,7 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = eti-frontend1.0.0
-DISTDIR = /usr/shared/sdr-j-development/systems/eti-frontend/.tmp/eti-frontend1.0.0
+DISTDIR = /usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/.tmp/eti-frontend1.0.0
 LINK          = g++
 LFLAGS        = -flto -Wl,-O1
 LIBS          = $(SUBLIBS) -lfftw3f -lusb-1.0 -ldl -lsndfile -lz -lQt5Widgets -lQt5Gui -lQt5Network -lQt5Core -lGL -lpthread 
@@ -113,156 +113,156 @@ OBJECTS       = main.o \
 		moc_sdrplay.o \
 		moc_airspy-handler.o \
 		moc_rtl_tcp_client.o
-DIST          = ../../../../lib64/qt5/mkspecs/features/spec_pre.prf \
-		../../../../lib64/qt5/mkspecs/common/unix.conf \
-		../../../../lib64/qt5/mkspecs/common/linux.conf \
-		../../../../lib64/qt5/mkspecs/common/sanitize.conf \
-		../../../../lib64/qt5/mkspecs/common/gcc-base.conf \
-		../../../../lib64/qt5/mkspecs/common/gcc-base-unix.conf \
-		../../../../lib64/qt5/mkspecs/common/g++-base.conf \
-		../../../../lib64/qt5/mkspecs/common/g++-unix.conf \
-		../../../../lib64/qt5/mkspecs/qconfig.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dcore.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dcore_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dextras.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dextras_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dinput.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dinput_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dlogic.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dlogic_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquick.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquick_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickextras.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickextras_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickinput.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickinput_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickrender.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickrender_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3drender.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3drender_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_bluetooth.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_bluetooth_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_charts.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_charts_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_clucene_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_concurrent.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_concurrent_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_core.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_core_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_dbus.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_dbus_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_declarative.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_declarative_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_designer.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_designer_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_designercomponents_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_eglfs_kms_support_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_gui.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_gui_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_help.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_help_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_location.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_location_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_multimedia.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_multimedia_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_multimediawidgets.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_multimediawidgets_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_network.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_network_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_nfc.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_nfc_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_opengl.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_opengl_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_openglextensions.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_openglextensions_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_packetprotocol_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_platformsupport_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_positioning.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_positioning_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_printsupport.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_printsupport_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_qml.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_qml_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_qmldebug_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_qmldevtools_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_qmltest.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_qmltest_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_qtmultimediaquicktools_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quick.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quick_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quickparticles_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quicktemplates2_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quickwidgets.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quickwidgets_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_script.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_script_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_scripttools.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_scripttools_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_sensors.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_sensors_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_sql.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_sql_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_svg.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_svg_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_testlib.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_testlib_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_uiplugin.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_uitools.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_uitools_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_waylandclient.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_waylandclient_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_waylandcompositor.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_waylandcompositor_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webchannel.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webchannel_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webengine.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webengine_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webenginecore.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webenginecore_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webenginecoreheaders_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webenginewidgets.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webenginewidgets_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webkit.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webkit_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webkitwidgets.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webkitwidgets_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_websockets.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_websockets_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_widgets.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_widgets_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_x11extras.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_x11extras_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_xcb_qpa_lib_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_xml.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_xml_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_xmlpatterns.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_xmlpatterns_private.pri \
-		../../../../lib64/qt5/mkspecs/features/qt_functions.prf \
-		../../../../lib64/qt5/mkspecs/features/qt_config.prf \
-		../../../../lib64/qt5/mkspecs/linux-g++/qmake.conf \
-		../../../../lib64/qt5/mkspecs/features/spec_post.prf \
+DIST          = /usr/lib64/qt5/mkspecs/features/spec_pre.prf \
+		/usr/lib64/qt5/mkspecs/common/unix.conf \
+		/usr/lib64/qt5/mkspecs/common/linux.conf \
+		/usr/lib64/qt5/mkspecs/common/sanitize.conf \
+		/usr/lib64/qt5/mkspecs/common/gcc-base.conf \
+		/usr/lib64/qt5/mkspecs/common/gcc-base-unix.conf \
+		/usr/lib64/qt5/mkspecs/common/g++-base.conf \
+		/usr/lib64/qt5/mkspecs/common/g++-unix.conf \
+		/usr/lib64/qt5/mkspecs/qconfig.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dcore.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dcore_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dextras.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dextras_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dinput.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dinput_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dlogic.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dlogic_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquick.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquick_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickextras.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickextras_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickinput.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickinput_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickrender.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickrender_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3drender.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3drender_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_bluetooth.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_bluetooth_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_charts.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_charts_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_clucene_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_concurrent.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_concurrent_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_core.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_core_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_dbus.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_dbus_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_declarative.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_declarative_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_designer.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_designer_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_designercomponents_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_eglfs_kms_support_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_gui.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_gui_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_help.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_help_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_location.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_location_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_multimedia.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_multimedia_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_multimediawidgets.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_multimediawidgets_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_network.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_network_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_nfc.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_nfc_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_opengl.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_opengl_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_openglextensions.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_openglextensions_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_packetprotocol_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_platformsupport_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_positioning.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_positioning_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_printsupport.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_printsupport_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qml.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qml_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmldebug_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmldevtools_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmltest.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmltest_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qtmultimediaquicktools_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quick.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quick_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickparticles_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quicktemplates2_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickwidgets.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickwidgets_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_script.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_script_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_scripttools.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_scripttools_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_sensors.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_sensors_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_sql.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_sql_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_svg.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_svg_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_testlib.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_testlib_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_uiplugin.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_uitools.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_uitools_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_waylandclient.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_waylandclient_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_waylandcompositor.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_waylandcompositor_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webchannel.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webchannel_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webengine.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webengine_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webenginecore.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webenginecore_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webenginecoreheaders_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webenginewidgets.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webenginewidgets_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webkit.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webkit_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webkitwidgets.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webkitwidgets_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_websockets.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_websockets_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_widgets.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_widgets_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_x11extras.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_x11extras_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_xcb_qpa_lib_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_xml.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_xml_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_xmlpatterns.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_xmlpatterns_private.pri \
+		/usr/lib64/qt5/mkspecs/features/qt_functions.prf \
+		/usr/lib64/qt5/mkspecs/features/qt_config.prf \
+		/usr/lib64/qt5/mkspecs/linux-g++/qmake.conf \
+		/usr/lib64/qt5/mkspecs/features/spec_post.prf \
 		.qmake.stash \
-		../../../../lib64/qt5/mkspecs/features/exclusive_builds.prf \
-		../../../../lib64/qt5/mkspecs/features/toolchain.prf \
-		../../../../lib64/qt5/mkspecs/features/default_pre.prf \
-		../../../../lib64/qt5/mkspecs/features/resolve_config.prf \
-		../../../../lib64/qt5/mkspecs/features/default_post.prf \
-		../../../../lib64/qt5/mkspecs/features/warn_on.prf \
-		../../../../lib64/qt5/mkspecs/features/qt.prf \
-		../../../../lib64/qt5/mkspecs/features/resources.prf \
-		../../../../lib64/qt5/mkspecs/features/moc.prf \
-		../../../../lib64/qt5/mkspecs/features/unix/opengl.prf \
-		../../../../lib64/qt5/mkspecs/features/uic.prf \
-		../../../../lib64/qt5/mkspecs/features/unix/thread.prf \
-		../../../../lib64/qt5/mkspecs/features/file_copies.prf \
-		../../../../lib64/qt5/mkspecs/features/testcase_targets.prf \
-		../../../../lib64/qt5/mkspecs/features/exceptions.prf \
-		../../../../lib64/qt5/mkspecs/features/yacc.prf \
-		../../../../lib64/qt5/mkspecs/features/lex.prf \
+		/usr/lib64/qt5/mkspecs/features/exclusive_builds.prf \
+		/usr/lib64/qt5/mkspecs/features/toolchain.prf \
+		/usr/lib64/qt5/mkspecs/features/default_pre.prf \
+		/usr/lib64/qt5/mkspecs/features/resolve_config.prf \
+		/usr/lib64/qt5/mkspecs/features/default_post.prf \
+		/usr/lib64/qt5/mkspecs/features/warn_on.prf \
+		/usr/lib64/qt5/mkspecs/features/qt.prf \
+		/usr/lib64/qt5/mkspecs/features/resources.prf \
+		/usr/lib64/qt5/mkspecs/features/moc.prf \
+		/usr/lib64/qt5/mkspecs/features/unix/opengl.prf \
+		/usr/lib64/qt5/mkspecs/features/uic.prf \
+		/usr/lib64/qt5/mkspecs/features/unix/thread.prf \
+		/usr/lib64/qt5/mkspecs/features/file_copies.prf \
+		/usr/lib64/qt5/mkspecs/features/testcase_targets.prf \
+		/usr/lib64/qt5/mkspecs/features/exceptions.prf \
+		/usr/lib64/qt5/mkspecs/features/yacc.prf \
+		/usr/lib64/qt5/mkspecs/features/lex.prf \
 		eti-frontend.pro gui.h \
 		includes/dab-constants.h \
 		includes/ofdm/ofdm-processor.h \
@@ -285,7 +285,7 @@ DIST          = ../../../../lib64/qt5/mkspecs/features/spec_pre.prf \
 		src/input/dabstick-osmo/dongleselect.h \
 		src/input/sdrplay-exp/sdrplay.h \
 		src/input/airspy/airspy-handler.h \
-		../../../../local/include/libairspy/airspy.h \
+		/usr/local/include/libairspy/airspy.h \
 		src/input/rtl_tcp/rtl_tcp_client.h main.cpp \
 		gui.cpp \
 		src/ofdm/ofdm-processor.cpp \
@@ -322,317 +322,317 @@ $(TARGET): ui_filereader-widget.h ui_gui.h ui_dabstick-widget-osmo.h ui_sdrplay-
 	@test -d linux-bin/ || mkdir -p linux-bin/
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
-Makefile: eti-frontend.pro ../../../../lib64/qt5/mkspecs/linux-g++/qmake.conf ../../../../lib64/qt5/mkspecs/features/spec_pre.prf \
-		../../../../lib64/qt5/mkspecs/common/unix.conf \
-		../../../../lib64/qt5/mkspecs/common/linux.conf \
-		../../../../lib64/qt5/mkspecs/common/sanitize.conf \
-		../../../../lib64/qt5/mkspecs/common/gcc-base.conf \
-		../../../../lib64/qt5/mkspecs/common/gcc-base-unix.conf \
-		../../../../lib64/qt5/mkspecs/common/g++-base.conf \
-		../../../../lib64/qt5/mkspecs/common/g++-unix.conf \
-		../../../../lib64/qt5/mkspecs/qconfig.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dcore.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dcore_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dextras.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dextras_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dinput.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dinput_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dlogic.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dlogic_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquick.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquick_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickextras.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickextras_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickinput.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickinput_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickrender.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickrender_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3drender.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_3drender_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_bluetooth.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_bluetooth_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_charts.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_charts_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_clucene_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_concurrent.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_concurrent_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_core.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_core_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_dbus.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_dbus_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_declarative.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_declarative_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_designer.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_designer_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_designercomponents_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_eglfs_kms_support_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_gui.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_gui_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_help.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_help_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_location.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_location_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_multimedia.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_multimedia_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_multimediawidgets.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_multimediawidgets_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_network.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_network_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_nfc.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_nfc_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_opengl.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_opengl_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_openglextensions.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_openglextensions_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_packetprotocol_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_platformsupport_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_positioning.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_positioning_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_printsupport.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_printsupport_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_qml.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_qml_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_qmldebug_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_qmldevtools_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_qmltest.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_qmltest_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_qtmultimediaquicktools_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quick.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quick_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quickparticles_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quicktemplates2_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quickwidgets.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_quickwidgets_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_script.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_script_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_scripttools.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_scripttools_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_sensors.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_sensors_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_sql.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_sql_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_svg.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_svg_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_testlib.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_testlib_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_uiplugin.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_uitools.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_uitools_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_waylandclient.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_waylandclient_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_waylandcompositor.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_waylandcompositor_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webchannel.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webchannel_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webengine.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webengine_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webenginecore.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webenginecore_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webenginecoreheaders_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webenginewidgets.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webenginewidgets_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webkit.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webkit_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webkitwidgets.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_webkitwidgets_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_websockets.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_websockets_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_widgets.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_widgets_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_x11extras.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_x11extras_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_xcb_qpa_lib_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_xml.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_xml_private.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_xmlpatterns.pri \
-		../../../../lib64/qt5/mkspecs/modules/qt_lib_xmlpatterns_private.pri \
-		../../../../lib64/qt5/mkspecs/features/qt_functions.prf \
-		../../../../lib64/qt5/mkspecs/features/qt_config.prf \
-		../../../../lib64/qt5/mkspecs/linux-g++/qmake.conf \
-		../../../../lib64/qt5/mkspecs/features/spec_post.prf \
+Makefile: eti-frontend.pro /usr/lib64/qt5/mkspecs/linux-g++/qmake.conf /usr/lib64/qt5/mkspecs/features/spec_pre.prf \
+		/usr/lib64/qt5/mkspecs/common/unix.conf \
+		/usr/lib64/qt5/mkspecs/common/linux.conf \
+		/usr/lib64/qt5/mkspecs/common/sanitize.conf \
+		/usr/lib64/qt5/mkspecs/common/gcc-base.conf \
+		/usr/lib64/qt5/mkspecs/common/gcc-base-unix.conf \
+		/usr/lib64/qt5/mkspecs/common/g++-base.conf \
+		/usr/lib64/qt5/mkspecs/common/g++-unix.conf \
+		/usr/lib64/qt5/mkspecs/qconfig.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dcore.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dcore_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dextras.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dextras_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dinput.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dinput_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dlogic.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dlogic_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquick.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquick_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickextras.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickextras_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickinput.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickinput_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickrender.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickrender_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3drender.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_3drender_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_bluetooth.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_bluetooth_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_charts.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_charts_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_clucene_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_concurrent.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_concurrent_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_core.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_core_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_dbus.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_dbus_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_declarative.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_declarative_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_designer.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_designer_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_designercomponents_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_eglfs_kms_support_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_gui.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_gui_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_help.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_help_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_location.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_location_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_multimedia.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_multimedia_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_multimediawidgets.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_multimediawidgets_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_network.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_network_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_nfc.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_nfc_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_opengl.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_opengl_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_openglextensions.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_openglextensions_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_packetprotocol_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_platformsupport_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_positioning.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_positioning_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_printsupport.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_printsupport_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qml.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qml_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmldebug_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmldevtools_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmltest.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmltest_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qtmultimediaquicktools_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quick.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quick_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickparticles_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quicktemplates2_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickwidgets.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickwidgets_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_script.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_script_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_scripttools.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_scripttools_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_sensors.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_sensors_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_sql.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_sql_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_svg.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_svg_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_testlib.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_testlib_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_uiplugin.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_uitools.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_uitools_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_waylandclient.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_waylandclient_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_waylandcompositor.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_waylandcompositor_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webchannel.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webchannel_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webengine.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webengine_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webenginecore.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webenginecore_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webenginecoreheaders_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webenginewidgets.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webenginewidgets_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webkit.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webkit_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webkitwidgets.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_webkitwidgets_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_websockets.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_websockets_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_widgets.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_widgets_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_x11extras.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_x11extras_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_xcb_qpa_lib_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_xml.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_xml_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_xmlpatterns.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_xmlpatterns_private.pri \
+		/usr/lib64/qt5/mkspecs/features/qt_functions.prf \
+		/usr/lib64/qt5/mkspecs/features/qt_config.prf \
+		/usr/lib64/qt5/mkspecs/linux-g++/qmake.conf \
+		/usr/lib64/qt5/mkspecs/features/spec_post.prf \
 		.qmake.stash \
-		../../../../lib64/qt5/mkspecs/features/exclusive_builds.prf \
-		../../../../lib64/qt5/mkspecs/features/toolchain.prf \
-		../../../../lib64/qt5/mkspecs/features/default_pre.prf \
-		../../../../lib64/qt5/mkspecs/features/resolve_config.prf \
-		../../../../lib64/qt5/mkspecs/features/default_post.prf \
-		../../../../lib64/qt5/mkspecs/features/warn_on.prf \
-		../../../../lib64/qt5/mkspecs/features/qt.prf \
-		../../../../lib64/qt5/mkspecs/features/resources.prf \
-		../../../../lib64/qt5/mkspecs/features/moc.prf \
-		../../../../lib64/qt5/mkspecs/features/unix/opengl.prf \
-		../../../../lib64/qt5/mkspecs/features/uic.prf \
-		../../../../lib64/qt5/mkspecs/features/unix/thread.prf \
-		../../../../lib64/qt5/mkspecs/features/file_copies.prf \
-		../../../../lib64/qt5/mkspecs/features/testcase_targets.prf \
-		../../../../lib64/qt5/mkspecs/features/exceptions.prf \
-		../../../../lib64/qt5/mkspecs/features/yacc.prf \
-		../../../../lib64/qt5/mkspecs/features/lex.prf \
+		/usr/lib64/qt5/mkspecs/features/exclusive_builds.prf \
+		/usr/lib64/qt5/mkspecs/features/toolchain.prf \
+		/usr/lib64/qt5/mkspecs/features/default_pre.prf \
+		/usr/lib64/qt5/mkspecs/features/resolve_config.prf \
+		/usr/lib64/qt5/mkspecs/features/default_post.prf \
+		/usr/lib64/qt5/mkspecs/features/warn_on.prf \
+		/usr/lib64/qt5/mkspecs/features/qt.prf \
+		/usr/lib64/qt5/mkspecs/features/resources.prf \
+		/usr/lib64/qt5/mkspecs/features/moc.prf \
+		/usr/lib64/qt5/mkspecs/features/unix/opengl.prf \
+		/usr/lib64/qt5/mkspecs/features/uic.prf \
+		/usr/lib64/qt5/mkspecs/features/unix/thread.prf \
+		/usr/lib64/qt5/mkspecs/features/file_copies.prf \
+		/usr/lib64/qt5/mkspecs/features/testcase_targets.prf \
+		/usr/lib64/qt5/mkspecs/features/exceptions.prf \
+		/usr/lib64/qt5/mkspecs/features/yacc.prf \
+		/usr/lib64/qt5/mkspecs/features/lex.prf \
 		eti-frontend.pro \
-		../../../../lib64/libQt5Widgets.prl \
-		../../../../lib64/libQt5Gui.prl \
-		../../../../lib64/libQt5Network.prl \
-		../../../../lib64/libQt5Core.prl
+		/usr/lib64/libQt5Widgets.prl \
+		/usr/lib64/libQt5Gui.prl \
+		/usr/lib64/libQt5Network.prl \
+		/usr/lib64/libQt5Core.prl
 	$(QMAKE) -o Makefile eti-frontend.pro
-../../../../lib64/qt5/mkspecs/features/spec_pre.prf:
-../../../../lib64/qt5/mkspecs/common/unix.conf:
-../../../../lib64/qt5/mkspecs/common/linux.conf:
-../../../../lib64/qt5/mkspecs/common/sanitize.conf:
-../../../../lib64/qt5/mkspecs/common/gcc-base.conf:
-../../../../lib64/qt5/mkspecs/common/gcc-base-unix.conf:
-../../../../lib64/qt5/mkspecs/common/g++-base.conf:
-../../../../lib64/qt5/mkspecs/common/g++-unix.conf:
-../../../../lib64/qt5/mkspecs/qconfig.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dcore.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dcore_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dextras.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dextras_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dinput.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dinput_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dlogic.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dlogic_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquick.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquick_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickextras.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickextras_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickinput.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickinput_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickrender.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3dquickrender_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3drender.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_3drender_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_bluetooth.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_bluetooth_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_charts.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_charts_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_clucene_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_concurrent.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_concurrent_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_core.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_core_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_dbus.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_dbus_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_declarative.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_declarative_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_designer.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_designer_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_designercomponents_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_eglfs_kms_support_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_gui.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_gui_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_help.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_help_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_location.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_location_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_multimedia.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_multimedia_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_multimediawidgets.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_multimediawidgets_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_network.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_network_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_nfc.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_nfc_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_opengl.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_opengl_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_openglextensions.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_openglextensions_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_packetprotocol_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_platformsupport_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_positioning.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_positioning_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_printsupport.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_printsupport_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_qml.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_qml_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_qmldebug_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_qmldevtools_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_qmltest.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_qmltest_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_qtmultimediaquicktools_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_quick.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_quick_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_quickparticles_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_quicktemplates2_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_quickwidgets.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_quickwidgets_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_script.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_script_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_scripttools.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_scripttools_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_sensors.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_sensors_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_sql.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_sql_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_svg.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_svg_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_testlib.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_testlib_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_uiplugin.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_uitools.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_uitools_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_waylandclient.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_waylandclient_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_waylandcompositor.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_waylandcompositor_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_webchannel.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_webchannel_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_webengine.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_webengine_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_webenginecore.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_webenginecore_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_webenginecoreheaders_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_webenginewidgets.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_webenginewidgets_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_webkit.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_webkit_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_webkitwidgets.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_webkitwidgets_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_websockets.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_websockets_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_widgets.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_widgets_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_x11extras.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_x11extras_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_xcb_qpa_lib_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_xml.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_xml_private.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_xmlpatterns.pri:
-../../../../lib64/qt5/mkspecs/modules/qt_lib_xmlpatterns_private.pri:
-../../../../lib64/qt5/mkspecs/features/qt_functions.prf:
-../../../../lib64/qt5/mkspecs/features/qt_config.prf:
-../../../../lib64/qt5/mkspecs/linux-g++/qmake.conf:
-../../../../lib64/qt5/mkspecs/features/spec_post.prf:
+/usr/lib64/qt5/mkspecs/features/spec_pre.prf:
+/usr/lib64/qt5/mkspecs/common/unix.conf:
+/usr/lib64/qt5/mkspecs/common/linux.conf:
+/usr/lib64/qt5/mkspecs/common/sanitize.conf:
+/usr/lib64/qt5/mkspecs/common/gcc-base.conf:
+/usr/lib64/qt5/mkspecs/common/gcc-base-unix.conf:
+/usr/lib64/qt5/mkspecs/common/g++-base.conf:
+/usr/lib64/qt5/mkspecs/common/g++-unix.conf:
+/usr/lib64/qt5/mkspecs/qconfig.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dcore.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dcore_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dextras.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dextras_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dinput.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dinput_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dlogic.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dlogic_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquick.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquick_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickextras.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickextras_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickinput.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickinput_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickrender.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3dquickrender_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3drender.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_3drender_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_bluetooth.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_bluetooth_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_charts.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_charts_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_clucene_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_concurrent.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_concurrent_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_core.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_core_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_dbus.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_dbus_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_declarative.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_declarative_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_designer.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_designer_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_designercomponents_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_eglfs_kms_support_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_gui.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_gui_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_help.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_help_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_location.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_location_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_multimedia.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_multimedia_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_multimediawidgets.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_multimediawidgets_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_network.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_network_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_nfc.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_nfc_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_opengl.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_opengl_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_openglextensions.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_openglextensions_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_packetprotocol_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_platformsupport_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_positioning.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_positioning_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_printsupport.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_printsupport_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_qml.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_qml_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_qmldebug_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_qmldevtools_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_qmltest.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_qmltest_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_qtmultimediaquicktools_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quick.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quick_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quickparticles_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quicktemplates2_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quickwidgets.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quickwidgets_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_script.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_script_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_scripttools.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_scripttools_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_sensors.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_sensors_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_sql.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_sql_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_svg.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_svg_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_testlib.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_testlib_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_uiplugin.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_uitools.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_uitools_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_waylandclient.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_waylandclient_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_waylandcompositor.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_waylandcompositor_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_webchannel.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_webchannel_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_webengine.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_webengine_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_webenginecore.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_webenginecore_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_webenginecoreheaders_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_webenginewidgets.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_webenginewidgets_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_webkit.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_webkit_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_webkitwidgets.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_webkitwidgets_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_websockets.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_websockets_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_widgets.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_widgets_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_x11extras.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_x11extras_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_xcb_qpa_lib_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_xml.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_xml_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_xmlpatterns.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_xmlpatterns_private.pri:
+/usr/lib64/qt5/mkspecs/features/qt_functions.prf:
+/usr/lib64/qt5/mkspecs/features/qt_config.prf:
+/usr/lib64/qt5/mkspecs/linux-g++/qmake.conf:
+/usr/lib64/qt5/mkspecs/features/spec_post.prf:
 .qmake.stash:
-../../../../lib64/qt5/mkspecs/features/exclusive_builds.prf:
-../../../../lib64/qt5/mkspecs/features/toolchain.prf:
-../../../../lib64/qt5/mkspecs/features/default_pre.prf:
-../../../../lib64/qt5/mkspecs/features/resolve_config.prf:
-../../../../lib64/qt5/mkspecs/features/default_post.prf:
-../../../../lib64/qt5/mkspecs/features/warn_on.prf:
-../../../../lib64/qt5/mkspecs/features/qt.prf:
-../../../../lib64/qt5/mkspecs/features/resources.prf:
-../../../../lib64/qt5/mkspecs/features/moc.prf:
-../../../../lib64/qt5/mkspecs/features/unix/opengl.prf:
-../../../../lib64/qt5/mkspecs/features/uic.prf:
-../../../../lib64/qt5/mkspecs/features/unix/thread.prf:
-../../../../lib64/qt5/mkspecs/features/file_copies.prf:
-../../../../lib64/qt5/mkspecs/features/testcase_targets.prf:
-../../../../lib64/qt5/mkspecs/features/exceptions.prf:
-../../../../lib64/qt5/mkspecs/features/yacc.prf:
-../../../../lib64/qt5/mkspecs/features/lex.prf:
+/usr/lib64/qt5/mkspecs/features/exclusive_builds.prf:
+/usr/lib64/qt5/mkspecs/features/toolchain.prf:
+/usr/lib64/qt5/mkspecs/features/default_pre.prf:
+/usr/lib64/qt5/mkspecs/features/resolve_config.prf:
+/usr/lib64/qt5/mkspecs/features/default_post.prf:
+/usr/lib64/qt5/mkspecs/features/warn_on.prf:
+/usr/lib64/qt5/mkspecs/features/qt.prf:
+/usr/lib64/qt5/mkspecs/features/resources.prf:
+/usr/lib64/qt5/mkspecs/features/moc.prf:
+/usr/lib64/qt5/mkspecs/features/unix/opengl.prf:
+/usr/lib64/qt5/mkspecs/features/uic.prf:
+/usr/lib64/qt5/mkspecs/features/unix/thread.prf:
+/usr/lib64/qt5/mkspecs/features/file_copies.prf:
+/usr/lib64/qt5/mkspecs/features/testcase_targets.prf:
+/usr/lib64/qt5/mkspecs/features/exceptions.prf:
+/usr/lib64/qt5/mkspecs/features/yacc.prf:
+/usr/lib64/qt5/mkspecs/features/lex.prf:
 eti-frontend.pro:
-../../../../lib64/libQt5Widgets.prl:
-../../../../lib64/libQt5Gui.prl:
-../../../../lib64/libQt5Network.prl:
-../../../../lib64/libQt5Core.prl:
+/usr/lib64/libQt5Widgets.prl:
+/usr/lib64/libQt5Gui.prl:
+/usr/lib64/libQt5Network.prl:
+/usr/lib64/libQt5Core.prl:
 qmake: FORCE
 	@$(QMAKE) -o Makefile eti-frontend.pro
 
@@ -647,8 +647,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../../../../lib64/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents gui.h includes/dab-constants.h includes/ofdm/ofdm-processor.h includes/ofdm/phasereference.h includes/ofdm/phasetable.h includes/ofdm/freq-interleaver.h includes/backend/charsets.h includes/backend/viterbi.h includes/backend/fic-handler.h includes/backend/fib-processor.h includes/backend/eti-generator.h includes/backend/deconvolve.h includes/various/fft.h includes/various/ringbuffer.h includes/various/Xtan2.h src/input/virtual-input.h src/input/rawfiles/rawfiles.h src/input/wavfiles/wavfiles.h src/input/dabstick-osmo/dabstick.h src/input/dabstick-osmo/dongleselect.h src/input/sdrplay-exp/sdrplay.h src/input/airspy/airspy-handler.h ../../../../local/include/libairspy/airspy.h src/input/rtl_tcp/rtl_tcp_client.h $(DISTDIR)/
+	$(COPY_FILE) --parents /usr/lib64/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents gui.h includes/dab-constants.h includes/ofdm/ofdm-processor.h includes/ofdm/phasereference.h includes/ofdm/phasetable.h includes/ofdm/freq-interleaver.h includes/backend/charsets.h includes/backend/viterbi.h includes/backend/fic-handler.h includes/backend/fib-processor.h includes/backend/eti-generator.h includes/backend/deconvolve.h includes/various/fft.h includes/various/ringbuffer.h includes/various/Xtan2.h src/input/virtual-input.h src/input/rawfiles/rawfiles.h src/input/wavfiles/wavfiles.h src/input/dabstick-osmo/dabstick.h src/input/dabstick-osmo/dongleselect.h src/input/sdrplay-exp/sdrplay.h src/input/airspy/airspy-handler.h /usr/local/include/libairspy/airspy.h src/input/rtl_tcp/rtl_tcp_client.h $(DISTDIR)/
 	$(COPY_FILE) --parents main.cpp gui.cpp src/ofdm/ofdm-processor.cpp src/ofdm/phasereference.cpp src/ofdm/phasetable.cpp src/ofdm/freq-interleaver.cpp src/backend/charsets.cpp src/backend/viterbi.cpp src/backend/fic-handler.cpp src/backend/eti-generator.cpp src/backend/deconvolve.cpp src/backend/fib-processor.cpp src/backend/protTables.cpp src/various/fft.cpp src/various/Xtan2.cpp src/input/virtual-input.cpp src/input/rawfiles/rawfiles.cpp src/input/wavfiles/wavfiles.cpp src/backend/spiral-code/spiral-sse.c src/input/dabstick-osmo/dabstick.cpp src/input/dabstick-osmo/dongleselect.cpp src/input/sdrplay-exp/sdrplay.cpp src/input/airspy/airspy-handler.cpp src/input/rtl_tcp/rtl_tcp_client.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents src/input/filereader-widget.ui gui.ui src/input/dabstick-osmo/dabstick-widget-osmo.ui src/input/sdrplay-exp/sdrplay-widget.ui src/input/airspy/airspy-widget.ui src/input/rtl_tcp/rtl_tcp-widget.ui $(DISTDIR)/
 
@@ -679,1173 +679,97 @@ compiler_rcc_clean:
 compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
-moc_predefs.h: ../../../../lib64/qt5/mkspecs/features/data/dummy.cpp
-	g++ -pipe -flto -ffast-math -O2 -Wall -W -dM -E -o moc_predefs.h ../../../../lib64/qt5/mkspecs/features/data/dummy.cpp
+moc_predefs.h: /usr/lib64/qt5/mkspecs/features/data/dummy.cpp
+	g++ -pipe -flto -ffast-math -O2 -Wall -W -dM -E -o moc_predefs.h /usr/lib64/qt5/mkspecs/features/data/dummy.cpp
 
 compiler_moc_header_make_all: moc_gui.cpp moc_ofdm-processor.cpp moc_fic-handler.cpp moc_fib-processor.cpp moc_dabstick.cpp moc_dongleselect.cpp moc_sdrplay.cpp moc_airspy-handler.cpp moc_rtl_tcp_client.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_gui.cpp moc_ofdm-processor.cpp moc_fic-handler.cpp moc_fib-processor.cpp moc_dabstick.cpp moc_dongleselect.cpp moc_sdrplay.cpp moc_airspy-handler.cpp moc_rtl_tcp_client.cpp
 moc_gui.cpp: includes/dab-constants.h \
-		../../../../include/qt5/QtWidgets/QMainWindow \
-		../../../../include/qt5/QtWidgets/qmainwindow.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
-		../../../../include/qt5/QtWidgets/qtabwidget.h \
-		../../../../include/qt5/QtGui/qicon.h \
-		../../../../include/qt5/QtCore/QStringList \
-		../../../../include/qt5/QtCore/QStringListModel \
-		../../../../include/qt5/QtCore/qstringlistmodel.h \
-		../../../../include/qt5/QtCore/qabstractitemmodel.h \
-		../../../../include/qt5/QtWidgets/QComboBox \
-		../../../../include/qt5/QtWidgets/qcombobox.h \
-		../../../../include/qt5/QtWidgets/qabstractitemdelegate.h \
-		../../../../include/qt5/QtWidgets/qstyleoption.h \
-		../../../../include/qt5/QtWidgets/qabstractspinbox.h \
-		../../../../include/qt5/QtGui/qvalidator.h \
-		../../../../include/qt5/QtCore/qregularexpression.h \
-		../../../../include/qt5/QtWidgets/qslider.h \
-		../../../../include/qt5/QtWidgets/qabstractslider.h \
-		../../../../include/qt5/QtWidgets/qstyle.h \
-		../../../../include/qt5/QtWidgets/qtabbar.h \
-		../../../../include/qt5/QtWidgets/qrubberband.h \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/QLabel \
-		../../../../include/qt5/QtWidgets/qlabel.h \
 		ui_gui.h \
-		../../../../include/qt5/QtCore/QTimer \
-		../../../../include/qt5/QtCore/qtimer.h \
-		../../../../include/qt5/QtCore/qbasictimer.h \
 		includes/ofdm/ofdm-processor.h \
-		../../../../include/qt5/QtCore/QThread \
-		../../../../include/qt5/QtCore/qthread.h \
-		../../../../include/qt5/QtCore/QObject \
 		includes/ofdm/freq-interleaver.h \
 		includes/ofdm/phasetable.h \
 		includes/ofdm/phasereference.h \
 		includes/various/fft.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
 		includes/various/ringbuffer.h \
 		gui.h \
 		moc_predefs.h \
-		../../../../lib64/qt5/bin/moc
-	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include gui.h -o moc_gui.cpp
+		/usr/lib64/qt5/bin/moc
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include gui.h -o moc_gui.cpp
 
 moc_ofdm-processor.cpp: includes/dab-constants.h \
-		../../../../include/qt5/QtCore/QThread \
-		../../../../include/qt5/QtCore/qthread.h \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtCore/QObject \
 		includes/ofdm/freq-interleaver.h \
 		includes/ofdm/phasetable.h \
 		includes/ofdm/phasereference.h \
 		includes/various/fft.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
 		includes/various/ringbuffer.h \
 		includes/ofdm/ofdm-processor.h \
 		moc_predefs.h \
-		../../../../lib64/qt5/bin/moc
-	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include includes/ofdm/ofdm-processor.h -o moc_ofdm-processor.cpp
+		/usr/lib64/qt5/bin/moc
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include includes/ofdm/ofdm-processor.h -o moc_ofdm-processor.cpp
 
 moc_fic-handler.cpp: includes/backend/viterbi.h \
 		includes/dab-constants.h \
 		includes/backend/viterbi-2.h \
-		../../../../include/qt5/QtCore/QObject \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
 		includes/backend/fib-processor.h \
 		includes/backend/dab_tables.h \
 		includes/backend/fic-handler.h \
 		moc_predefs.h \
-		../../../../lib64/qt5/bin/moc
-	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include includes/backend/fic-handler.h -o moc_fic-handler.cpp
+		/usr/lib64/qt5/bin/moc
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include includes/backend/fic-handler.h -o moc_fic-handler.cpp
 
-moc_fib-processor.cpp: ../../../../include/qt5/QtCore/QObject \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		includes/dab-constants.h \
+moc_fib-processor.cpp: includes/dab-constants.h \
 		includes/backend/dab_tables.h \
 		includes/backend/fib-processor.h \
 		moc_predefs.h \
-		../../../../lib64/qt5/bin/moc
-	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include includes/backend/fib-processor.h -o moc_fib-processor.cpp
+		/usr/lib64/qt5/bin/moc
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include includes/backend/fib-processor.h -o moc_fib-processor.cpp
 
-moc_dabstick.cpp: ../../../../include/qt5/QtCore/QObject \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtCore/QSettings \
-		../../../../include/qt5/QtCore/qsettings.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		includes/dab-constants.h \
+moc_dabstick.cpp: includes/dab-constants.h \
 		includes/various/ringbuffer.h \
 		includes/output/fir-filters.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
 		src/input/dabstick-osmo/dongleselect.h \
-		../../../../include/qt5/QtWidgets/QLabel \
-		../../../../include/qt5/QtWidgets/qlabel.h \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/QListView \
-		../../../../include/qt5/QtWidgets/qlistview.h \
-		../../../../include/qt5/QtWidgets/qabstractitemview.h \
-		../../../../include/qt5/QtWidgets/qabstractscrollarea.h \
-		../../../../include/qt5/QtCore/qabstractitemmodel.h \
-		../../../../include/qt5/QtCore/qitemselectionmodel.h \
-		../../../../include/qt5/QtWidgets/qabstractitemdelegate.h \
-		../../../../include/qt5/QtWidgets/qstyleoption.h \
-		../../../../include/qt5/QtWidgets/qabstractspinbox.h \
-		../../../../include/qt5/QtGui/qvalidator.h \
-		../../../../include/qt5/QtCore/qregularexpression.h \
-		../../../../include/qt5/QtGui/qicon.h \
-		../../../../include/qt5/QtWidgets/qslider.h \
-		../../../../include/qt5/QtWidgets/qabstractslider.h \
-		../../../../include/qt5/QtWidgets/qstyle.h \
-		../../../../include/qt5/QtWidgets/qtabbar.h \
-		../../../../include/qt5/QtWidgets/qtabwidget.h \
-		../../../../include/qt5/QtWidgets/qrubberband.h \
-		../../../../include/qt5/QtCore/QStringListModel \
-		../../../../include/qt5/QtCore/qstringlistmodel.h \
-		../../../../include/qt5/QtCore/QStringList \
 		ui_dabstick-widget-osmo.h \
 		src/input/dabstick-osmo/dabstick.h \
 		moc_predefs.h \
-		../../../../lib64/qt5/bin/moc
-	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include src/input/dabstick-osmo/dabstick.h -o moc_dabstick.cpp
+		/usr/lib64/qt5/bin/moc
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include src/input/dabstick-osmo/dabstick.h -o moc_dabstick.cpp
 
-moc_dongleselect.cpp: ../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
-		../../../../include/qt5/QtWidgets/QLabel \
-		../../../../include/qt5/QtWidgets/qlabel.h \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/QListView \
-		../../../../include/qt5/QtWidgets/qlistview.h \
-		../../../../include/qt5/QtWidgets/qabstractitemview.h \
-		../../../../include/qt5/QtWidgets/qabstractscrollarea.h \
-		../../../../include/qt5/QtCore/qabstractitemmodel.h \
-		../../../../include/qt5/QtCore/qitemselectionmodel.h \
-		../../../../include/qt5/QtWidgets/qabstractitemdelegate.h \
-		../../../../include/qt5/QtWidgets/qstyleoption.h \
-		../../../../include/qt5/QtWidgets/qabstractspinbox.h \
-		../../../../include/qt5/QtGui/qvalidator.h \
-		../../../../include/qt5/QtCore/qregularexpression.h \
-		../../../../include/qt5/QtGui/qicon.h \
-		../../../../include/qt5/QtWidgets/qslider.h \
-		../../../../include/qt5/QtWidgets/qabstractslider.h \
-		../../../../include/qt5/QtWidgets/qstyle.h \
-		../../../../include/qt5/QtWidgets/qtabbar.h \
-		../../../../include/qt5/QtWidgets/qtabwidget.h \
-		../../../../include/qt5/QtWidgets/qrubberband.h \
-		../../../../include/qt5/QtCore/QStringListModel \
-		../../../../include/qt5/QtCore/qstringlistmodel.h \
-		../../../../include/qt5/QtCore/QStringList \
-		src/input/dabstick-osmo/dongleselect.h \
+moc_dongleselect.cpp: src/input/dabstick-osmo/dongleselect.h \
 		moc_predefs.h \
-		../../../../lib64/qt5/bin/moc
-	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include src/input/dabstick-osmo/dongleselect.h -o moc_dongleselect.cpp
+		/usr/lib64/qt5/bin/moc
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include src/input/dabstick-osmo/dongleselect.h -o moc_dongleselect.cpp
 
-moc_sdrplay.cpp: ../../../../include/qt5/QtCore/QObject \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtWidgets/QFrame \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
-		../../../../include/qt5/QtCore/QSettings \
-		../../../../include/qt5/QtCore/qsettings.h \
-		includes/dab-constants.h \
+moc_sdrplay.cpp: includes/dab-constants.h \
 		includes/various/ringbuffer.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
 		ui_sdrplay-widget.h \
-		../../../../local/include/mirsdrapi-rsp.h \
 		src/input/sdrplay-exp/sdrplay.h \
 		moc_predefs.h \
-		../../../../lib64/qt5/bin/moc
-	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include src/input/sdrplay-exp/sdrplay.h -o moc_sdrplay.cpp
+		/usr/lib64/qt5/bin/moc
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include src/input/sdrplay-exp/sdrplay.h -o moc_sdrplay.cpp
 
-moc_airspy-handler.cpp: ../../../../include/qt5/QtCore/QObject \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtCore/QSettings \
-		../../../../include/qt5/QtCore/qsettings.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtWidgets/QFrame \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
-		includes/dab-constants.h \
+moc_airspy-handler.cpp: includes/dab-constants.h \
 		includes/various/ringbuffer.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
 		ui_airspy-widget.h \
-		../../../../local/include/libairspy/airspy.h \
-		../../../../local/include/libairspy/airspy_commands.h \
 		src/input/airspy/airspy-handler.h \
 		moc_predefs.h \
-		../../../../lib64/qt5/bin/moc
-	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include src/input/airspy/airspy-handler.h -o moc_airspy-handler.cpp
+		/usr/lib64/qt5/bin/moc
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include src/input/airspy/airspy-handler.h -o moc_airspy-handler.cpp
 
-moc_rtl_tcp_client.cpp: ../../../../include/qt5/QtNetwork/QtNetwork \
-		../../../../include/qt5/QtNetwork/QtNetworkDepends \
-		../../../../include/qt5/QtCore/QtCore \
-		../../../../include/qt5/QtCore/QtCoreDepends \
-		../../../../include/qt5/QtCore/qabstractanimation.h \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtCore/qanimationgroup.h \
-		../../../../include/qt5/QtCore/qparallelanimationgroup.h \
-		../../../../include/qt5/QtCore/qpauseanimation.h \
-		../../../../include/qt5/QtCore/qpropertyanimation.h \
-		../../../../include/qt5/QtCore/qvariantanimation.h \
-		../../../../include/qt5/QtCore/qeasingcurve.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtCore/qsequentialanimationgroup.h \
-		../../../../include/qt5/QtCore/qtextcodec.h \
-		../../../../include/qt5/QtCore/qendian.h \
-		../../../../include/qt5/QtCore/qlibraryinfo.h \
-		../../../../include/qt5/QtCore/qdatetime.h \
-		../../../../include/qt5/QtCore/qbuffer.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qdir.h \
-		../../../../include/qt5/QtCore/qfileinfo.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtCore/qdiriterator.h \
-		../../../../include/qt5/QtCore/qfileselector.h \
-		../../../../include/qt5/QtCore/QObject \
-		../../../../include/qt5/QtCore/QStringList \
-		../../../../include/qt5/QtCore/qfilesystemwatcher.h \
-		../../../../include/qt5/QtCore/qlockfile.h \
-		../../../../include/qt5/QtCore/qloggingcategory.h \
-		../../../../include/qt5/QtCore/qprocess.h \
-		../../../../include/qt5/QtCore/qresource.h \
-		../../../../include/qt5/QtCore/qsavefile.h \
-		../../../../include/qt5/QtCore/qsettings.h \
-		../../../../include/qt5/QtCore/qstandardpaths.h \
-		../../../../include/qt5/QtCore/qstorageinfo.h \
-		../../../../include/qt5/QtCore/qtemporarydir.h \
-		../../../../include/qt5/QtCore/QScopedPointer \
-		../../../../include/qt5/QtCore/qtemporaryfile.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qabstractitemmodel.h \
-		../../../../include/qt5/QtCore/qabstractproxymodel.h \
-		../../../../include/qt5/QtCore/qidentityproxymodel.h \
-		../../../../include/qt5/QtCore/qitemselectionmodel.h \
-		../../../../include/qt5/QtCore/qsortfilterproxymodel.h \
-		../../../../include/qt5/QtCore/qstringlistmodel.h \
-		../../../../include/qt5/QtCore/qjsonarray.h \
-		../../../../include/qt5/QtCore/qjsonvalue.h \
-		../../../../include/qt5/QtCore/qjsondocument.h \
-		../../../../include/qt5/QtCore/qjsonobject.h \
-		../../../../include/qt5/QtCore/qabstracteventdispatcher.h \
-		../../../../include/qt5/QtCore/qeventloop.h \
-		../../../../include/qt5/QtCore/qabstractnativeeventfilter.h \
-		../../../../include/qt5/QtCore/qbasictimer.h \
-		../../../../include/qt5/QtCore/qcoreapplication.h \
-		../../../../include/qt5/QtCore/qmath.h \
-		../../../../include/qt5/QtCore/qmetaobject.h \
-		../../../../include/qt5/QtCore/qmimedata.h \
-		../../../../include/qt5/QtCore/qobjectcleanuphandler.h \
-		../../../../include/qt5/QtCore/qpointer.h \
-		../../../../include/qt5/QtCore/qsharedmemory.h \
-		../../../../include/qt5/QtCore/qsignalmapper.h \
-		../../../../include/qt5/QtCore/qsocketnotifier.h \
-		../../../../include/qt5/QtCore/qsystemsemaphore.h \
-		../../../../include/qt5/QtCore/qtimer.h \
-		../../../../include/qt5/QtCore/qtranslator.h \
-		../../../../include/qt5/QtCore/qwineventnotifier.h \
-		../../../../include/qt5/QtCore/qmimedatabase.h \
-		../../../../include/qt5/QtCore/qmimetype.h \
-		../../../../include/qt5/QtCore/qfactoryinterface.h \
-		../../../../include/qt5/QtCore/qlibrary.h \
-		../../../../include/qt5/QtCore/qplugin.h \
-		../../../../include/qt5/QtCore/qpluginloader.h \
-		../../../../include/qt5/QtCore/quuid.h \
-		../../../../include/qt5/QtCore/qabstractstate.h \
-		../../../../include/qt5/QtCore/qabstracttransition.h \
-		../../../../include/qt5/QtCore/qeventtransition.h \
-		../../../../include/qt5/QtCore/qfinalstate.h \
-		../../../../include/qt5/QtCore/qhistorystate.h \
-		../../../../include/qt5/QtCore/qsignaltransition.h \
-		../../../../include/qt5/QtCore/qstate.h \
-		../../../../include/qt5/QtCore/qstatemachine.h \
-		../../../../include/qt5/QtCore/qexception.h \
-		../../../../include/qt5/QtCore/qfuture.h \
-		../../../../include/qt5/QtCore/qfutureinterface.h \
-		../../../../include/qt5/QtCore/qrunnable.h \
-		../../../../include/qt5/QtCore/qresultstore.h \
-		../../../../include/qt5/QtCore/qfuturesynchronizer.h \
-		../../../../include/qt5/QtCore/qfuturewatcher.h \
-		../../../../include/qt5/QtCore/qreadwritelock.h \
-		../../../../include/qt5/QtCore/qsemaphore.h \
-		../../../../include/qt5/QtCore/qthread.h \
-		../../../../include/qt5/QtCore/qthreadpool.h \
-		../../../../include/qt5/QtCore/qthreadstorage.h \
-		../../../../include/qt5/QtCore/qwaitcondition.h \
-		../../../../include/qt5/QtCore/qarraydataops.h \
-		../../../../include/qt5/QtCore/qarraydatapointer.h \
-		../../../../include/qt5/QtCore/qbitarray.h \
-		../../../../include/qt5/QtCore/qbytearraymatcher.h \
-		../../../../include/qt5/QtCore/qcache.h \
-		../../../../include/qt5/QtCore/qcollator.h \
-		../../../../include/qt5/QtCore/qcommandlineoption.h \
-		../../../../include/qt5/QtCore/qcommandlineparser.h \
-		../../../../include/qt5/QtCore/qcryptographichash.h \
-		../../../../include/qt5/QtCore/qelapsedtimer.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtCore/qlinkedlist.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtCore/qmessageauthenticationcode.h \
-		../../../../include/qt5/QtCore/qqueue.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtCore/qregularexpression.h \
-		../../../../include/qt5/QtCore/qscopedvaluerollback.h \
-		../../../../include/qt5/QtCore/qstack.h \
-		../../../../include/qt5/QtCore/qtextboundaryfinder.h \
-		../../../../include/qt5/QtCore/qtimeline.h \
-		../../../../include/qt5/QtCore/qtimezone.h \
-		../../../../include/qt5/QtCore/qversionnumber.h \
-		../../../../include/qt5/QtCore/qxmlstream.h \
-		../../../../include/qt5/QtCore/qtcoreversion.h \
-		../../../../include/qt5/QtNetwork/qabstractnetworkcache.h \
-		../../../../include/qt5/QtNetwork/qnetworkrequest.h \
-		../../../../include/qt5/QtCore/QSharedDataPointer \
-		../../../../include/qt5/QtCore/QString \
-		../../../../include/qt5/QtCore/QUrl \
-		../../../../include/qt5/QtCore/QVariant \
-		../../../../include/qt5/QtNetwork/qhttpmultipart.h \
-		../../../../include/qt5/QtCore/QByteArray \
-		../../../../include/qt5/QtCore/QIODevice \
-		../../../../include/qt5/QtNetwork/QNetworkRequest \
-		../../../../include/qt5/QtNetwork/qnetworkaccessmanager.h \
-		../../../../include/qt5/QtNetwork/QSslConfiguration \
-		../../../../include/qt5/QtNetwork/qsslconfiguration.h \
-		../../../../include/qt5/QtNetwork/qsslsocket.h \
-		../../../../include/qt5/QtNetwork/qtcpsocket.h \
-		../../../../include/qt5/QtNetwork/qabstractsocket.h \
-		../../../../include/qt5/QtNetwork/qsslerror.h \
-		../../../../include/qt5/QtNetwork/qsslcertificate.h \
-		../../../../include/qt5/QtNetwork/qssl.h \
-		../../../../include/qt5/QtCore/QFlags \
-		../../../../include/qt5/QtNetwork/QSslPreSharedKeyAuthenticator \
-		../../../../include/qt5/QtNetwork/qsslpresharedkeyauthenticator.h \
-		../../../../include/qt5/QtCore/QtGlobal \
-		../../../../include/qt5/QtCore/QMetaType \
-		../../../../include/qt5/QtNetwork/qnetworkcookie.h \
-		../../../../include/qt5/QtCore/QList \
-		../../../../include/qt5/QtNetwork/qnetworkcookiejar.h \
-		../../../../include/qt5/QtNetwork/qnetworkdiskcache.h \
-		../../../../include/qt5/QtNetwork/qnetworkreply.h \
-		../../../../include/qt5/QtNetwork/QNetworkAccessManager \
-		../../../../include/qt5/QtNetwork/qnetworkconfigmanager.h \
-		../../../../include/qt5/QtNetwork/qnetworkconfiguration.h \
-		../../../../include/qt5/QtNetwork/qnetworksession.h \
-		../../../../include/qt5/QtNetwork/qnetworkinterface.h \
-		../../../../include/qt5/QtNetwork/qhostaddress.h \
-		../../../../include/qt5/QtNetwork/qauthenticator.h \
-		../../../../include/qt5/QtNetwork/qdnslookup.h \
-		../../../../include/qt5/QtNetwork/qhostinfo.h \
-		../../../../include/qt5/QtNetwork/qnetworkproxy.h \
-		../../../../include/qt5/QtNetwork/qlocalserver.h \
-		../../../../include/qt5/QtNetwork/qlocalsocket.h \
-		../../../../include/qt5/QtNetwork/qtcpserver.h \
-		../../../../include/qt5/QtNetwork/qudpsocket.h \
-		../../../../include/qt5/QtNetwork/qsslcertificateextension.h \
-		../../../../include/qt5/QtNetwork/qsslcipher.h \
-		../../../../include/qt5/QtNetwork/qsslellipticcurve.h \
-		../../../../include/qt5/QtCore/QHash \
-		../../../../include/qt5/QtNetwork/qsslkey.h \
-		../../../../include/qt5/QtNetwork/qtnetworkversion.h \
-		../../../../include/qt5/QtCore/QSettings \
-		../../../../include/qt5/QtWidgets/QLabel \
-		../../../../include/qt5/QtWidgets/qlabel.h \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
-		../../../../include/qt5/QtWidgets/QMessageBox \
-		../../../../include/qt5/QtWidgets/qmessagebox.h \
-		../../../../include/qt5/QtWidgets/qdialog.h \
-		../../../../include/qt5/QtWidgets/QLineEdit \
-		../../../../include/qt5/QtWidgets/qlineedit.h \
-		../../../../include/qt5/QtGui/qtextcursor.h \
-		../../../../include/qt5/QtGui/qtextformat.h \
-		../../../../include/qt5/QtGui/qpen.h \
-		../../../../include/qt5/QtGui/qtextoption.h \
-		../../../../include/qt5/QtNetwork/QHostAddress \
-		../../../../include/qt5/QtNetwork/QTcpSocket \
-		../../../../include/qt5/QtCore/QTimer \
-		../../../../include/qt5/QtWidgets/QComboBox \
-		../../../../include/qt5/QtWidgets/qcombobox.h \
-		../../../../include/qt5/QtWidgets/qabstractitemdelegate.h \
-		../../../../include/qt5/QtWidgets/qstyleoption.h \
-		../../../../include/qt5/QtWidgets/qabstractspinbox.h \
-		../../../../include/qt5/QtGui/qvalidator.h \
-		../../../../include/qt5/QtGui/qicon.h \
-		../../../../include/qt5/QtWidgets/qslider.h \
-		../../../../include/qt5/QtWidgets/qabstractslider.h \
-		../../../../include/qt5/QtWidgets/qstyle.h \
-		../../../../include/qt5/QtWidgets/qtabbar.h \
-		../../../../include/qt5/QtWidgets/qtabwidget.h \
-		../../../../include/qt5/QtWidgets/qrubberband.h \
-		includes/dab-constants.h \
+moc_rtl_tcp_client.cpp: includes/dab-constants.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
 		includes/various/ringbuffer.h \
 		ui_rtl_tcp-widget.h \
 		src/input/rtl_tcp/rtl_tcp_client.h \
 		moc_predefs.h \
-		../../../../lib64/qt5/bin/moc
-	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include src/input/rtl_tcp/rtl_tcp_client.h -o moc_rtl_tcp_client.cpp
+		/usr/lib64/qt5/bin/moc
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/ofdm -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/output -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/includes/various -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rawfiles -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/wavfiles -I/usr/local/include -I/home/jan/rtl-sdr/include -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/dabstick-osmo -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/sdrplay-exp -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/airspy -I/usr/local/include/libairspy -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-frontend/src/input/rtl_tcp -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtNetwork -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include src/input/rtl_tcp/rtl_tcp_client.h -o moc_rtl_tcp_client.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -1853,27 +777,27 @@ compiler_uic_make_all: ui_filereader-widget.h ui_gui.h ui_dabstick-widget-osmo.h
 compiler_uic_clean:
 	-$(DEL_FILE) ui_filereader-widget.h ui_gui.h ui_dabstick-widget-osmo.h ui_sdrplay-widget.h ui_airspy-widget.h ui_rtl_tcp-widget.h
 ui_filereader-widget.h: src/input/filereader-widget.ui \
-		../../../../lib64/qt5/bin/uic
+		/usr/lib64/qt5/bin/uic
 	/usr/lib64/qt5/bin/uic src/input/filereader-widget.ui -o ui_filereader-widget.h
 
 ui_gui.h: gui.ui \
-		../../../../lib64/qt5/bin/uic
+		/usr/lib64/qt5/bin/uic
 	/usr/lib64/qt5/bin/uic gui.ui -o ui_gui.h
 
 ui_dabstick-widget-osmo.h: src/input/dabstick-osmo/dabstick-widget-osmo.ui \
-		../../../../lib64/qt5/bin/uic
+		/usr/lib64/qt5/bin/uic
 	/usr/lib64/qt5/bin/uic src/input/dabstick-osmo/dabstick-widget-osmo.ui -o ui_dabstick-widget-osmo.h
 
 ui_sdrplay-widget.h: src/input/sdrplay-exp/sdrplay-widget.ui \
-		../../../../lib64/qt5/bin/uic
+		/usr/lib64/qt5/bin/uic
 	/usr/lib64/qt5/bin/uic src/input/sdrplay-exp/sdrplay-widget.ui -o ui_sdrplay-widget.h
 
 ui_airspy-widget.h: src/input/airspy/airspy-widget.ui \
-		../../../../lib64/qt5/bin/uic
+		/usr/lib64/qt5/bin/uic
 	/usr/lib64/qt5/bin/uic src/input/airspy/airspy-widget.ui -o ui_airspy-widget.h
 
 ui_rtl_tcp-widget.h: src/input/rtl_tcp/rtl_tcp-widget.ui \
-		../../../../lib64/qt5/bin/uic
+		/usr/lib64/qt5/bin/uic
 	/usr/lib64/qt5/bin/uic src/input/rtl_tcp/rtl_tcp-widget.ui -o ui_rtl_tcp-widget.h
 
 compiler_yacc_decl_make_all:
@@ -1886,307 +810,27 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 
 ####### Compile
 
-main.o: main.cpp ../../../../include/qt5/QtWidgets/QApplication \
-		../../../../include/qt5/QtWidgets/qapplication.h \
-		../../../../include/qt5/QtCore/qcoreapplication.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtCore/qeventloop.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtWidgets/qdesktopwidget.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
-		../../../../include/qt5/QtGui/qguiapplication.h \
-		../../../../include/qt5/QtGui/qinputmethod.h \
-		../../../../include/qt5/QtCore/QSettings \
-		../../../../include/qt5/QtCore/qsettings.h \
-		../../../../include/qt5/QtCore/QDir \
-		../../../../include/qt5/QtCore/qdir.h \
-		../../../../include/qt5/QtCore/qfileinfo.h \
-		includes/dab-constants.h \
+main.o: main.cpp includes/dab-constants.h \
 		gui.h \
-		../../../../include/qt5/QtWidgets/QMainWindow \
-		../../../../include/qt5/QtWidgets/qmainwindow.h \
-		../../../../include/qt5/QtWidgets/qtabwidget.h \
-		../../../../include/qt5/QtGui/qicon.h \
-		../../../../include/qt5/QtCore/QStringList \
-		../../../../include/qt5/QtCore/QStringListModel \
-		../../../../include/qt5/QtCore/qstringlistmodel.h \
-		../../../../include/qt5/QtCore/qabstractitemmodel.h \
-		../../../../include/qt5/QtWidgets/QComboBox \
-		../../../../include/qt5/QtWidgets/qcombobox.h \
-		../../../../include/qt5/QtWidgets/qabstractitemdelegate.h \
-		../../../../include/qt5/QtWidgets/qstyleoption.h \
-		../../../../include/qt5/QtWidgets/qabstractspinbox.h \
-		../../../../include/qt5/QtGui/qvalidator.h \
-		../../../../include/qt5/QtCore/qregularexpression.h \
-		../../../../include/qt5/QtWidgets/qslider.h \
-		../../../../include/qt5/QtWidgets/qabstractslider.h \
-		../../../../include/qt5/QtWidgets/qstyle.h \
-		../../../../include/qt5/QtWidgets/qtabbar.h \
-		../../../../include/qt5/QtWidgets/qrubberband.h \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/QLabel \
-		../../../../include/qt5/QtWidgets/qlabel.h \
 		ui_gui.h \
-		../../../../include/qt5/QtCore/QTimer \
-		../../../../include/qt5/QtCore/qtimer.h \
-		../../../../include/qt5/QtCore/qbasictimer.h \
 		includes/ofdm/ofdm-processor.h \
-		../../../../include/qt5/QtCore/QThread \
-		../../../../include/qt5/QtCore/qthread.h \
-		../../../../include/qt5/QtCore/QObject \
 		includes/ofdm/freq-interleaver.h \
 		includes/ofdm/phasetable.h \
 		includes/ofdm/phasereference.h \
 		includes/various/fft.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
 		includes/various/ringbuffer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
-gui.o: gui.cpp ../../../../include/qt5/QtCore/QSettings \
-		../../../../include/qt5/QtCore/qsettings.h \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtWidgets/QMessageBox \
-		../../../../include/qt5/QtWidgets/qmessagebox.h \
-		../../../../include/qt5/QtWidgets/qdialog.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
-		../../../../include/qt5/QtWidgets/QFileDialog \
-		../../../../include/qt5/QtWidgets/qfiledialog.h \
-		../../../../include/qt5/QtCore/qdir.h \
-		../../../../include/qt5/QtCore/qfileinfo.h \
-		../../../../include/qt5/QtCore/QDebug \
-		../../../../include/qt5/QtCore/QDateTime \
-		../../../../include/qt5/QtCore/qdatetime.h \
-		../../../../include/qt5/QtCore/QFile \
-		../../../../include/qt5/QtCore/QStringList \
-		../../../../include/qt5/QtCore/QStringListModel \
-		../../../../include/qt5/QtCore/qstringlistmodel.h \
-		../../../../include/qt5/QtCore/qabstractitemmodel.h \
-		includes/dab-constants.h \
+gui.o: gui.cpp includes/dab-constants.h \
 		gui.h \
-		../../../../include/qt5/QtWidgets/QMainWindow \
-		../../../../include/qt5/QtWidgets/qmainwindow.h \
-		../../../../include/qt5/QtWidgets/qtabwidget.h \
-		../../../../include/qt5/QtGui/qicon.h \
-		../../../../include/qt5/QtWidgets/QComboBox \
-		../../../../include/qt5/QtWidgets/qcombobox.h \
-		../../../../include/qt5/QtWidgets/qabstractitemdelegate.h \
-		../../../../include/qt5/QtWidgets/qstyleoption.h \
-		../../../../include/qt5/QtWidgets/qabstractspinbox.h \
-		../../../../include/qt5/QtGui/qvalidator.h \
-		../../../../include/qt5/QtCore/qregularexpression.h \
-		../../../../include/qt5/QtWidgets/qslider.h \
-		../../../../include/qt5/QtWidgets/qabstractslider.h \
-		../../../../include/qt5/QtWidgets/qstyle.h \
-		../../../../include/qt5/QtWidgets/qtabbar.h \
-		../../../../include/qt5/QtWidgets/qrubberband.h \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/QLabel \
-		../../../../include/qt5/QtWidgets/qlabel.h \
 		ui_gui.h \
-		../../../../include/qt5/QtCore/QTimer \
-		../../../../include/qt5/QtCore/qtimer.h \
-		../../../../include/qt5/QtCore/qbasictimer.h \
 		includes/ofdm/ofdm-processor.h \
-		../../../../include/qt5/QtCore/QThread \
-		../../../../include/qt5/QtCore/qthread.h \
-		../../../../include/qt5/QtCore/QObject \
 		includes/ofdm/freq-interleaver.h \
 		includes/ofdm/phasetable.h \
 		includes/ofdm/phasereference.h \
 		includes/various/fft.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
 		includes/various/ringbuffer.h \
 		includes/backend/eti-generator.h \
 		includes/backend/deconvolve.h \
@@ -2196,323 +840,30 @@ gui.o: gui.cpp ../../../../include/qt5/QtCore/QSettings \
 		includes/backend/fib-processor.h \
 		includes/backend/dab_tables.h \
 		src/input/rawfiles/rawfiles.h \
-		../../../../include/qt5/QtCore/QString \
-		../../../../include/qt5/QtWidgets/QFrame \
 		ui_filereader-widget.h \
 		src/input/wavfiles/wavfiles.h \
 		src/input/dabstick-osmo/dabstick.h \
 		includes/output/fir-filters.h \
 		src/input/dabstick-osmo/dongleselect.h \
-		../../../../include/qt5/QtWidgets/QListView \
-		../../../../include/qt5/QtWidgets/qlistview.h \
-		../../../../include/qt5/QtWidgets/qabstractitemview.h \
-		../../../../include/qt5/QtWidgets/qabstractscrollarea.h \
-		../../../../include/qt5/QtCore/qitemselectionmodel.h \
 		ui_dabstick-widget-osmo.h \
 		src/input/sdrplay-exp/sdrplay.h \
 		ui_sdrplay-widget.h \
-		../../../../local/include/mirsdrapi-rsp.h \
 		src/input/rtl_tcp/rtl_tcp_client.h \
-		../../../../include/qt5/QtNetwork/QtNetwork \
-		../../../../include/qt5/QtNetwork/QtNetworkDepends \
-		../../../../include/qt5/QtCore/QtCore \
-		../../../../include/qt5/QtCore/QtCoreDepends \
-		../../../../include/qt5/QtCore/qabstractanimation.h \
-		../../../../include/qt5/QtCore/qanimationgroup.h \
-		../../../../include/qt5/QtCore/qparallelanimationgroup.h \
-		../../../../include/qt5/QtCore/qpauseanimation.h \
-		../../../../include/qt5/QtCore/qpropertyanimation.h \
-		../../../../include/qt5/QtCore/qvariantanimation.h \
-		../../../../include/qt5/QtCore/qeasingcurve.h \
-		../../../../include/qt5/QtCore/qsequentialanimationgroup.h \
-		../../../../include/qt5/QtCore/qtextcodec.h \
-		../../../../include/qt5/QtCore/qendian.h \
-		../../../../include/qt5/QtCore/qlibraryinfo.h \
-		../../../../include/qt5/QtCore/qbuffer.h \
-		../../../../include/qt5/QtCore/qdiriterator.h \
-		../../../../include/qt5/QtCore/qfileselector.h \
-		../../../../include/qt5/QtCore/qfilesystemwatcher.h \
-		../../../../include/qt5/QtCore/qlockfile.h \
-		../../../../include/qt5/QtCore/qloggingcategory.h \
-		../../../../include/qt5/QtCore/qprocess.h \
-		../../../../include/qt5/QtCore/qresource.h \
-		../../../../include/qt5/QtCore/qsavefile.h \
-		../../../../include/qt5/QtCore/qstandardpaths.h \
-		../../../../include/qt5/QtCore/qstorageinfo.h \
-		../../../../include/qt5/QtCore/qtemporarydir.h \
-		../../../../include/qt5/QtCore/QScopedPointer \
-		../../../../include/qt5/QtCore/qtemporaryfile.h \
-		../../../../include/qt5/QtCore/qabstractproxymodel.h \
-		../../../../include/qt5/QtCore/qidentityproxymodel.h \
-		../../../../include/qt5/QtCore/qsortfilterproxymodel.h \
-		../../../../include/qt5/QtCore/qjsonarray.h \
-		../../../../include/qt5/QtCore/qjsonvalue.h \
-		../../../../include/qt5/QtCore/qjsondocument.h \
-		../../../../include/qt5/QtCore/qjsonobject.h \
-		../../../../include/qt5/QtCore/qabstracteventdispatcher.h \
-		../../../../include/qt5/QtCore/qeventloop.h \
-		../../../../include/qt5/QtCore/qabstractnativeeventfilter.h \
-		../../../../include/qt5/QtCore/qcoreapplication.h \
-		../../../../include/qt5/QtCore/qmath.h \
-		../../../../include/qt5/QtCore/qmetaobject.h \
-		../../../../include/qt5/QtCore/qmimedata.h \
-		../../../../include/qt5/QtCore/qobjectcleanuphandler.h \
-		../../../../include/qt5/QtCore/qpointer.h \
-		../../../../include/qt5/QtCore/qsharedmemory.h \
-		../../../../include/qt5/QtCore/qsignalmapper.h \
-		../../../../include/qt5/QtCore/qsocketnotifier.h \
-		../../../../include/qt5/QtCore/qsystemsemaphore.h \
-		../../../../include/qt5/QtCore/qtranslator.h \
-		../../../../include/qt5/QtCore/qwineventnotifier.h \
-		../../../../include/qt5/QtCore/qmimedatabase.h \
-		../../../../include/qt5/QtCore/qmimetype.h \
-		../../../../include/qt5/QtCore/qfactoryinterface.h \
-		../../../../include/qt5/QtCore/qlibrary.h \
-		../../../../include/qt5/QtCore/qplugin.h \
-		../../../../include/qt5/QtCore/qpluginloader.h \
-		../../../../include/qt5/QtCore/quuid.h \
-		../../../../include/qt5/QtCore/qabstractstate.h \
-		../../../../include/qt5/QtCore/qabstracttransition.h \
-		../../../../include/qt5/QtCore/qeventtransition.h \
-		../../../../include/qt5/QtCore/qfinalstate.h \
-		../../../../include/qt5/QtCore/qhistorystate.h \
-		../../../../include/qt5/QtCore/qsignaltransition.h \
-		../../../../include/qt5/QtCore/qstate.h \
-		../../../../include/qt5/QtCore/qstatemachine.h \
-		../../../../include/qt5/QtCore/qexception.h \
-		../../../../include/qt5/QtCore/qfuture.h \
-		../../../../include/qt5/QtCore/qfutureinterface.h \
-		../../../../include/qt5/QtCore/qrunnable.h \
-		../../../../include/qt5/QtCore/qresultstore.h \
-		../../../../include/qt5/QtCore/qfuturesynchronizer.h \
-		../../../../include/qt5/QtCore/qfuturewatcher.h \
-		../../../../include/qt5/QtCore/qreadwritelock.h \
-		../../../../include/qt5/QtCore/qsemaphore.h \
-		../../../../include/qt5/QtCore/qthreadpool.h \
-		../../../../include/qt5/QtCore/qthreadstorage.h \
-		../../../../include/qt5/QtCore/qwaitcondition.h \
-		../../../../include/qt5/QtCore/qarraydataops.h \
-		../../../../include/qt5/QtCore/qarraydatapointer.h \
-		../../../../include/qt5/QtCore/qbitarray.h \
-		../../../../include/qt5/QtCore/qbytearraymatcher.h \
-		../../../../include/qt5/QtCore/qcache.h \
-		../../../../include/qt5/QtCore/qcollator.h \
-		../../../../include/qt5/QtCore/qcommandlineoption.h \
-		../../../../include/qt5/QtCore/qcommandlineparser.h \
-		../../../../include/qt5/QtCore/qcryptographichash.h \
-		../../../../include/qt5/QtCore/qelapsedtimer.h \
-		../../../../include/qt5/QtCore/qlinkedlist.h \
-		../../../../include/qt5/QtCore/qmessageauthenticationcode.h \
-		../../../../include/qt5/QtCore/qqueue.h \
-		../../../../include/qt5/QtCore/qscopedvaluerollback.h \
-		../../../../include/qt5/QtCore/qstack.h \
-		../../../../include/qt5/QtCore/qtextboundaryfinder.h \
-		../../../../include/qt5/QtCore/qtimeline.h \
-		../../../../include/qt5/QtCore/qtimezone.h \
-		../../../../include/qt5/QtCore/qversionnumber.h \
-		../../../../include/qt5/QtCore/qxmlstream.h \
-		../../../../include/qt5/QtCore/qtcoreversion.h \
-		../../../../include/qt5/QtNetwork/qabstractnetworkcache.h \
-		../../../../include/qt5/QtNetwork/qnetworkrequest.h \
-		../../../../include/qt5/QtCore/QSharedDataPointer \
-		../../../../include/qt5/QtCore/QUrl \
-		../../../../include/qt5/QtCore/QVariant \
-		../../../../include/qt5/QtNetwork/qhttpmultipart.h \
-		../../../../include/qt5/QtCore/QByteArray \
-		../../../../include/qt5/QtCore/QIODevice \
-		../../../../include/qt5/QtNetwork/QNetworkRequest \
-		../../../../include/qt5/QtNetwork/qnetworkaccessmanager.h \
-		../../../../include/qt5/QtNetwork/QSslConfiguration \
-		../../../../include/qt5/QtNetwork/qsslconfiguration.h \
-		../../../../include/qt5/QtNetwork/qsslsocket.h \
-		../../../../include/qt5/QtNetwork/qtcpsocket.h \
-		../../../../include/qt5/QtNetwork/qabstractsocket.h \
-		../../../../include/qt5/QtNetwork/qsslerror.h \
-		../../../../include/qt5/QtNetwork/qsslcertificate.h \
-		../../../../include/qt5/QtNetwork/qssl.h \
-		../../../../include/qt5/QtCore/QFlags \
-		../../../../include/qt5/QtNetwork/QSslPreSharedKeyAuthenticator \
-		../../../../include/qt5/QtNetwork/qsslpresharedkeyauthenticator.h \
-		../../../../include/qt5/QtCore/QtGlobal \
-		../../../../include/qt5/QtCore/QMetaType \
-		../../../../include/qt5/QtNetwork/qnetworkcookie.h \
-		../../../../include/qt5/QtCore/QList \
-		../../../../include/qt5/QtNetwork/qnetworkcookiejar.h \
-		../../../../include/qt5/QtNetwork/qnetworkdiskcache.h \
-		../../../../include/qt5/QtNetwork/qnetworkreply.h \
-		../../../../include/qt5/QtNetwork/QNetworkAccessManager \
-		../../../../include/qt5/QtNetwork/qnetworkconfigmanager.h \
-		../../../../include/qt5/QtNetwork/qnetworkconfiguration.h \
-		../../../../include/qt5/QtNetwork/qnetworksession.h \
-		../../../../include/qt5/QtNetwork/qnetworkinterface.h \
-		../../../../include/qt5/QtNetwork/qhostaddress.h \
-		../../../../include/qt5/QtNetwork/qauthenticator.h \
-		../../../../include/qt5/QtNetwork/qdnslookup.h \
-		../../../../include/qt5/QtNetwork/qhostinfo.h \
-		../../../../include/qt5/QtNetwork/qnetworkproxy.h \
-		../../../../include/qt5/QtNetwork/qlocalserver.h \
-		../../../../include/qt5/QtNetwork/qlocalsocket.h \
-		../../../../include/qt5/QtNetwork/qtcpserver.h \
-		../../../../include/qt5/QtNetwork/qudpsocket.h \
-		../../../../include/qt5/QtNetwork/qsslcertificateextension.h \
-		../../../../include/qt5/QtNetwork/qsslcipher.h \
-		../../../../include/qt5/QtNetwork/qsslellipticcurve.h \
-		../../../../include/qt5/QtCore/QHash \
-		../../../../include/qt5/QtNetwork/qsslkey.h \
-		../../../../include/qt5/QtNetwork/qtnetworkversion.h \
-		../../../../include/qt5/QtWidgets/QLineEdit \
-		../../../../include/qt5/QtWidgets/qlineedit.h \
-		../../../../include/qt5/QtGui/qtextcursor.h \
-		../../../../include/qt5/QtGui/qtextformat.h \
-		../../../../include/qt5/QtGui/qpen.h \
-		../../../../include/qt5/QtGui/qtextoption.h \
-		../../../../include/qt5/QtNetwork/QHostAddress \
-		../../../../include/qt5/QtNetwork/QTcpSocket \
 		ui_rtl_tcp-widget.h \
 		src/input/airspy/airspy-handler.h \
-		ui_airspy-widget.h \
-		../../../../local/include/libairspy/airspy.h \
-		../../../../local/include/libairspy/airspy_commands.h
+		ui_airspy-widget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o gui.o gui.cpp
 
 ofdm-processor.o: src/ofdm/ofdm-processor.cpp includes/ofdm/ofdm-processor.h \
 		includes/dab-constants.h \
-		../../../../include/qt5/QtCore/QThread \
-		../../../../include/qt5/QtCore/qthread.h \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtCore/QObject \
 		includes/ofdm/freq-interleaver.h \
 		includes/ofdm/phasetable.h \
 		includes/ofdm/phasereference.h \
 		includes/various/fft.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
 		includes/various/ringbuffer.h \
 		gui.h \
-		../../../../include/qt5/QtWidgets/QMainWindow \
-		../../../../include/qt5/QtWidgets/qmainwindow.h \
-		../../../../include/qt5/QtWidgets/qtabwidget.h \
-		../../../../include/qt5/QtGui/qicon.h \
-		../../../../include/qt5/QtCore/QStringList \
-		../../../../include/qt5/QtCore/QStringListModel \
-		../../../../include/qt5/QtCore/qstringlistmodel.h \
-		../../../../include/qt5/QtCore/qabstractitemmodel.h \
-		../../../../include/qt5/QtWidgets/QComboBox \
-		../../../../include/qt5/QtWidgets/qcombobox.h \
-		../../../../include/qt5/QtWidgets/qabstractitemdelegate.h \
-		../../../../include/qt5/QtWidgets/qstyleoption.h \
-		../../../../include/qt5/QtWidgets/qabstractspinbox.h \
-		../../../../include/qt5/QtGui/qvalidator.h \
-		../../../../include/qt5/QtCore/qregularexpression.h \
-		../../../../include/qt5/QtWidgets/qslider.h \
-		../../../../include/qt5/QtWidgets/qabstractslider.h \
-		../../../../include/qt5/QtWidgets/qstyle.h \
-		../../../../include/qt5/QtWidgets/qtabbar.h \
-		../../../../include/qt5/QtWidgets/qrubberband.h \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/QLabel \
-		../../../../include/qt5/QtWidgets/qlabel.h \
 		ui_gui.h \
-		../../../../include/qt5/QtCore/QTimer \
-		../../../../include/qt5/QtCore/qtimer.h \
-		../../../../include/qt5/QtCore/qbasictimer.h \
 		includes/backend/eti-generator.h \
 		includes/backend/deconvolve.h \
 		includes/backend/viterbi.h \
@@ -2536,38 +887,7 @@ freq-interleaver.o: src/ofdm/freq-interleaver.cpp includes/ofdm/freq-interleaver
 		includes/dab-constants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o freq-interleaver.o src/ofdm/freq-interleaver.cpp
 
-charsets.o: src/backend/charsets.cpp includes/backend/charsets.h \
-		../../../../include/qt5/QtCore/QString \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h
+charsets.o: src/backend/charsets.cpp includes/backend/charsets.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o charsets.o src/backend/charsets.cpp
 
 viterbi.o: src/backend/viterbi.cpp includes/backend/mm_malloc.h \
@@ -2579,293 +899,37 @@ fic-handler.o: src/backend/fic-handler.cpp includes/backend/fic-handler.h \
 		includes/backend/viterbi.h \
 		includes/dab-constants.h \
 		includes/backend/viterbi-2.h \
-		../../../../include/qt5/QtCore/QObject \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
 		includes/backend/fib-processor.h \
 		includes/backend/dab_tables.h \
 		gui.h \
-		../../../../include/qt5/QtWidgets/QMainWindow \
-		../../../../include/qt5/QtWidgets/qmainwindow.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
-		../../../../include/qt5/QtWidgets/qtabwidget.h \
-		../../../../include/qt5/QtGui/qicon.h \
-		../../../../include/qt5/QtCore/QStringList \
-		../../../../include/qt5/QtCore/QStringListModel \
-		../../../../include/qt5/QtCore/qstringlistmodel.h \
-		../../../../include/qt5/QtCore/qabstractitemmodel.h \
-		../../../../include/qt5/QtWidgets/QComboBox \
-		../../../../include/qt5/QtWidgets/qcombobox.h \
-		../../../../include/qt5/QtWidgets/qabstractitemdelegate.h \
-		../../../../include/qt5/QtWidgets/qstyleoption.h \
-		../../../../include/qt5/QtWidgets/qabstractspinbox.h \
-		../../../../include/qt5/QtGui/qvalidator.h \
-		../../../../include/qt5/QtCore/qregularexpression.h \
-		../../../../include/qt5/QtWidgets/qslider.h \
-		../../../../include/qt5/QtWidgets/qabstractslider.h \
-		../../../../include/qt5/QtWidgets/qstyle.h \
-		../../../../include/qt5/QtWidgets/qtabbar.h \
-		../../../../include/qt5/QtWidgets/qrubberband.h \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/QLabel \
-		../../../../include/qt5/QtWidgets/qlabel.h \
 		ui_gui.h \
-		../../../../include/qt5/QtCore/QTimer \
-		../../../../include/qt5/QtCore/qtimer.h \
-		../../../../include/qt5/QtCore/qbasictimer.h \
 		includes/ofdm/ofdm-processor.h \
-		../../../../include/qt5/QtCore/QThread \
-		../../../../include/qt5/QtCore/qthread.h \
 		includes/ofdm/freq-interleaver.h \
 		includes/ofdm/phasetable.h \
 		includes/ofdm/phasereference.h \
 		includes/various/fft.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
 		includes/various/ringbuffer.h \
 		includes/backend/protTables.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o fic-handler.o src/backend/fic-handler.cpp
 
 eti-generator.o: src/backend/eti-generator.cpp includes/dab-constants.h \
 		includes/backend/eti-generator.h \
-		../../../../include/qt5/QtCore/QThread \
-		../../../../include/qt5/QtCore/qthread.h \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
 		includes/backend/deconvolve.h \
 		includes/backend/viterbi.h \
 		includes/various/ringbuffer.h \
 		includes/backend/fic-handler.h \
 		includes/backend/viterbi-2.h \
-		../../../../include/qt5/QtCore/QObject \
 		includes/backend/fib-processor.h \
 		includes/backend/dab_tables.h \
 		gui.h \
-		../../../../include/qt5/QtWidgets/QMainWindow \
-		../../../../include/qt5/QtWidgets/qmainwindow.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
-		../../../../include/qt5/QtWidgets/qtabwidget.h \
-		../../../../include/qt5/QtGui/qicon.h \
-		../../../../include/qt5/QtCore/QStringList \
-		../../../../include/qt5/QtCore/QStringListModel \
-		../../../../include/qt5/QtCore/qstringlistmodel.h \
-		../../../../include/qt5/QtCore/qabstractitemmodel.h \
-		../../../../include/qt5/QtWidgets/QComboBox \
-		../../../../include/qt5/QtWidgets/qcombobox.h \
-		../../../../include/qt5/QtWidgets/qabstractitemdelegate.h \
-		../../../../include/qt5/QtWidgets/qstyleoption.h \
-		../../../../include/qt5/QtWidgets/qabstractspinbox.h \
-		../../../../include/qt5/QtGui/qvalidator.h \
-		../../../../include/qt5/QtCore/qregularexpression.h \
-		../../../../include/qt5/QtWidgets/qslider.h \
-		../../../../include/qt5/QtWidgets/qabstractslider.h \
-		../../../../include/qt5/QtWidgets/qstyle.h \
-		../../../../include/qt5/QtWidgets/qtabbar.h \
-		../../../../include/qt5/QtWidgets/qrubberband.h \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/QLabel \
-		../../../../include/qt5/QtWidgets/qlabel.h \
 		ui_gui.h \
-		../../../../include/qt5/QtCore/QTimer \
-		../../../../include/qt5/QtCore/qtimer.h \
-		../../../../include/qt5/QtCore/qbasictimer.h \
 		includes/ofdm/ofdm-processor.h \
 		includes/ofdm/freq-interleaver.h \
 		includes/ofdm/phasetable.h \
 		includes/ofdm/phasereference.h \
 		includes/various/fft.h \
-		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h
+		src/input/virtual-input.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o eti-generator.o src/backend/eti-generator.cpp
 
 deconvolve.o: src/backend/deconvolve.cpp includes/dab-constants.h \
@@ -2875,147 +939,18 @@ deconvolve.o: src/backend/deconvolve.cpp includes/dab-constants.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o deconvolve.o src/backend/deconvolve.cpp
 
 fib-processor.o: src/backend/fib-processor.cpp includes/backend/fib-processor.h \
-		../../../../include/qt5/QtCore/QObject \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
 		includes/dab-constants.h \
 		includes/backend/dab_tables.h \
 		gui.h \
-		../../../../include/qt5/QtWidgets/QMainWindow \
-		../../../../include/qt5/QtWidgets/qmainwindow.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
-		../../../../include/qt5/QtWidgets/qtabwidget.h \
-		../../../../include/qt5/QtGui/qicon.h \
-		../../../../include/qt5/QtCore/QStringList \
-		../../../../include/qt5/QtCore/QStringListModel \
-		../../../../include/qt5/QtCore/qstringlistmodel.h \
-		../../../../include/qt5/QtCore/qabstractitemmodel.h \
-		../../../../include/qt5/QtWidgets/QComboBox \
-		../../../../include/qt5/QtWidgets/qcombobox.h \
-		../../../../include/qt5/QtWidgets/qabstractitemdelegate.h \
-		../../../../include/qt5/QtWidgets/qstyleoption.h \
-		../../../../include/qt5/QtWidgets/qabstractspinbox.h \
-		../../../../include/qt5/QtGui/qvalidator.h \
-		../../../../include/qt5/QtCore/qregularexpression.h \
-		../../../../include/qt5/QtWidgets/qslider.h \
-		../../../../include/qt5/QtWidgets/qabstractslider.h \
-		../../../../include/qt5/QtWidgets/qstyle.h \
-		../../../../include/qt5/QtWidgets/qtabbar.h \
-		../../../../include/qt5/QtWidgets/qrubberband.h \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/QLabel \
-		../../../../include/qt5/QtWidgets/qlabel.h \
 		ui_gui.h \
-		../../../../include/qt5/QtCore/QTimer \
-		../../../../include/qt5/QtCore/qtimer.h \
-		../../../../include/qt5/QtCore/qbasictimer.h \
 		includes/ofdm/ofdm-processor.h \
-		../../../../include/qt5/QtCore/QThread \
-		../../../../include/qt5/QtCore/qthread.h \
 		includes/ofdm/freq-interleaver.h \
 		includes/ofdm/phasetable.h \
 		includes/ofdm/phasereference.h \
 		includes/various/fft.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
 		includes/various/ringbuffer.h \
-		includes/backend/charsets.h \
-		../../../../include/qt5/QtCore/QString
+		includes/backend/charsets.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o fib-processor.o src/backend/fib-processor.cpp
 
 protTables.o: src/backend/protTables.cpp includes/backend/protTables.h
@@ -3030,329 +965,19 @@ Xtan2.o: src/various/Xtan2.cpp includes/various/Xtan2.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Xtan2.o src/various/Xtan2.cpp
 
 virtual-input.o: src/input/virtual-input.cpp src/input/virtual-input.h \
-		includes/dab-constants.h \
-		../../../../include/qt5/QtCore/QObject \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h
+		includes/dab-constants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o virtual-input.o src/input/virtual-input.cpp
 
 rawfiles.o: src/input/rawfiles/rawfiles.cpp src/input/rawfiles/rawfiles.h \
-		../../../../include/qt5/QtCore/QThread \
-		../../../../include/qt5/QtCore/qthread.h \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtCore/QString \
-		../../../../include/qt5/QtWidgets/QFrame \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
 		includes/dab-constants.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtCore/QObject \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
 		includes/various/ringbuffer.h \
 		ui_filereader-widget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o rawfiles.o src/input/rawfiles/rawfiles.cpp
 
-wavfiles.o: src/input/wavfiles/wavfiles.cpp ../../../../include/qt5/QtCore/QString \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		src/input/wavfiles/wavfiles.h \
-		../../../../include/qt5/QtCore/QThread \
-		../../../../include/qt5/QtCore/qthread.h \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtWidgets/QFrame \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
+wavfiles.o: src/input/wavfiles/wavfiles.cpp src/input/wavfiles/wavfiles.h \
 		includes/dab-constants.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtCore/QObject \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
 		includes/various/ringbuffer.h \
 		ui_filereader-widget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o wavfiles.o src/input/wavfiles/wavfiles.cpp
@@ -3360,801 +985,35 @@ wavfiles.o: src/input/wavfiles/wavfiles.cpp ../../../../include/qt5/QtCore/QStri
 spiral-sse.o: src/backend/spiral-code/spiral-sse.c src/backend/spiral-code/spiral-sse.h
 	$(CC) -c $(CFLAGS) $(INCPATH) -o spiral-sse.o src/backend/spiral-code/spiral-sse.c
 
-dabstick.o: src/input/dabstick-osmo/dabstick.cpp ../../../../include/qt5/QtCore/QThread \
-		../../../../include/qt5/QtCore/qthread.h \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../local/include/rtl-sdr.h \
-		../../../../local/include/rtl-sdr_export.h \
-		src/input/dabstick-osmo/dabstick.h \
-		../../../../include/qt5/QtCore/QObject \
-		../../../../include/qt5/QtCore/QSettings \
-		../../../../include/qt5/QtCore/qsettings.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
+dabstick.o: src/input/dabstick-osmo/dabstick.cpp src/input/dabstick-osmo/dabstick.h \
 		includes/dab-constants.h \
 		includes/various/ringbuffer.h \
 		includes/output/fir-filters.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
 		src/input/dabstick-osmo/dongleselect.h \
-		../../../../include/qt5/QtWidgets/QLabel \
-		../../../../include/qt5/QtWidgets/qlabel.h \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/QListView \
-		../../../../include/qt5/QtWidgets/qlistview.h \
-		../../../../include/qt5/QtWidgets/qabstractitemview.h \
-		../../../../include/qt5/QtWidgets/qabstractscrollarea.h \
-		../../../../include/qt5/QtCore/qabstractitemmodel.h \
-		../../../../include/qt5/QtCore/qitemselectionmodel.h \
-		../../../../include/qt5/QtWidgets/qabstractitemdelegate.h \
-		../../../../include/qt5/QtWidgets/qstyleoption.h \
-		../../../../include/qt5/QtWidgets/qabstractspinbox.h \
-		../../../../include/qt5/QtGui/qvalidator.h \
-		../../../../include/qt5/QtCore/qregularexpression.h \
-		../../../../include/qt5/QtGui/qicon.h \
-		../../../../include/qt5/QtWidgets/qslider.h \
-		../../../../include/qt5/QtWidgets/qabstractslider.h \
-		../../../../include/qt5/QtWidgets/qstyle.h \
-		../../../../include/qt5/QtWidgets/qtabbar.h \
-		../../../../include/qt5/QtWidgets/qtabwidget.h \
-		../../../../include/qt5/QtWidgets/qrubberband.h \
-		../../../../include/qt5/QtCore/QStringListModel \
-		../../../../include/qt5/QtCore/qstringlistmodel.h \
-		../../../../include/qt5/QtCore/QStringList \
 		ui_dabstick-widget-osmo.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o dabstick.o src/input/dabstick-osmo/dabstick.cpp
 
-dongleselect.o: src/input/dabstick-osmo/dongleselect.cpp src/input/dabstick-osmo/dongleselect.h \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
-		../../../../include/qt5/QtWidgets/QLabel \
-		../../../../include/qt5/QtWidgets/qlabel.h \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/QListView \
-		../../../../include/qt5/QtWidgets/qlistview.h \
-		../../../../include/qt5/QtWidgets/qabstractitemview.h \
-		../../../../include/qt5/QtWidgets/qabstractscrollarea.h \
-		../../../../include/qt5/QtCore/qabstractitemmodel.h \
-		../../../../include/qt5/QtCore/qitemselectionmodel.h \
-		../../../../include/qt5/QtWidgets/qabstractitemdelegate.h \
-		../../../../include/qt5/QtWidgets/qstyleoption.h \
-		../../../../include/qt5/QtWidgets/qabstractspinbox.h \
-		../../../../include/qt5/QtGui/qvalidator.h \
-		../../../../include/qt5/QtCore/qregularexpression.h \
-		../../../../include/qt5/QtGui/qicon.h \
-		../../../../include/qt5/QtWidgets/qslider.h \
-		../../../../include/qt5/QtWidgets/qabstractslider.h \
-		../../../../include/qt5/QtWidgets/qstyle.h \
-		../../../../include/qt5/QtWidgets/qtabbar.h \
-		../../../../include/qt5/QtWidgets/qtabwidget.h \
-		../../../../include/qt5/QtWidgets/qrubberband.h \
-		../../../../include/qt5/QtCore/QStringListModel \
-		../../../../include/qt5/QtCore/qstringlistmodel.h \
-		../../../../include/qt5/QtCore/QStringList \
-		../../../../include/qt5/QtWidgets/QVBoxLayout \
-		../../../../include/qt5/QtWidgets/qboxlayout.h \
-		../../../../include/qt5/QtWidgets/qlayout.h \
-		../../../../include/qt5/QtWidgets/qlayoutitem.h \
-		../../../../include/qt5/QtWidgets/qgridlayout.h
+dongleselect.o: src/input/dabstick-osmo/dongleselect.cpp src/input/dabstick-osmo/dongleselect.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o dongleselect.o src/input/dabstick-osmo/dongleselect.cpp
 
-sdrplay.o: src/input/sdrplay-exp/sdrplay.cpp ../../../../include/qt5/QtCore/QThread \
-		../../../../include/qt5/QtCore/qthread.h \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtCore/QSettings \
-		../../../../include/qt5/QtCore/qsettings.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtWidgets/QHBoxLayout \
-		../../../../include/qt5/QtWidgets/qboxlayout.h \
-		../../../../include/qt5/QtWidgets/qlayout.h \
-		../../../../include/qt5/QtWidgets/qlayoutitem.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtWidgets/qgridlayout.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
-		../../../../include/qt5/QtWidgets/QLabel \
-		../../../../include/qt5/QtWidgets/qlabel.h \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		src/input/sdrplay-exp/sdrplay.h \
-		../../../../include/qt5/QtCore/QObject \
-		../../../../include/qt5/QtWidgets/QFrame \
+sdrplay.o: src/input/sdrplay-exp/sdrplay.cpp src/input/sdrplay-exp/sdrplay.h \
 		includes/dab-constants.h \
 		includes/various/ringbuffer.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
-		ui_sdrplay-widget.h \
-		../../../../local/include/mirsdrapi-rsp.h
+		ui_sdrplay-widget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o sdrplay.o src/input/sdrplay-exp/sdrplay.cpp
 
 airspy-handler.o: src/input/airspy/airspy-handler.cpp src/input/airspy/airspy-handler.h \
-		../../../../include/qt5/QtCore/QObject \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtCore/QSettings \
-		../../../../include/qt5/QtCore/qsettings.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtWidgets/QFrame \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
 		includes/dab-constants.h \
 		includes/various/ringbuffer.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
-		../../../../include/qt5/QtWidgets/qdialog.h \
-		ui_airspy-widget.h \
-		../../../../local/include/libairspy/airspy.h \
-		../../../../local/include/libairspy/airspy_commands.h
+		ui_airspy-widget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o airspy-handler.o src/input/airspy/airspy-handler.cpp
 
-rtl_tcp_client.o: src/input/rtl_tcp/rtl_tcp_client.cpp ../../../../include/qt5/QtCore/QSettings \
-		../../../../include/qt5/QtCore/qsettings.h \
-		../../../../include/qt5/QtCore/qobject.h \
-		../../../../include/qt5/QtCore/qobjectdefs.h \
-		../../../../include/qt5/QtCore/qnamespace.h \
-		../../../../include/qt5/QtCore/qglobal.h \
-		../../../../include/qt5/QtCore/qconfig.h \
-		../../../../include/qt5/QtCore/qconfig-64.h \
-		../../../../include/qt5/QtCore/qfeatures.h \
-		../../../../include/qt5/QtCore/qsystemdetection.h \
-		../../../../include/qt5/QtCore/qprocessordetection.h \
-		../../../../include/qt5/QtCore/qcompilerdetection.h \
-		../../../../include/qt5/QtCore/qtypeinfo.h \
-		../../../../include/qt5/QtCore/qtypetraits.h \
-		../../../../include/qt5/QtCore/qisenum.h \
-		../../../../include/qt5/QtCore/qsysinfo.h \
-		../../../../include/qt5/QtCore/qlogging.h \
-		../../../../include/qt5/QtCore/qflags.h \
-		../../../../include/qt5/QtCore/qatomic.h \
-		../../../../include/qt5/QtCore/qbasicatomic.h \
-		../../../../include/qt5/QtCore/qatomic_bootstrap.h \
-		../../../../include/qt5/QtCore/qgenericatomic.h \
-		../../../../include/qt5/QtCore/qatomic_cxx11.h \
-		../../../../include/qt5/QtCore/qatomic_msvc.h \
-		../../../../include/qt5/QtCore/qglobalstatic.h \
-		../../../../include/qt5/QtCore/qmutex.h \
-		../../../../include/qt5/QtCore/qnumeric.h \
-		../../../../include/qt5/QtCore/qversiontagging.h \
-		../../../../include/qt5/QtCore/qobjectdefs_impl.h \
-		../../../../include/qt5/QtCore/qstring.h \
-		../../../../include/qt5/QtCore/qchar.h \
-		../../../../include/qt5/QtCore/qbytearray.h \
-		../../../../include/qt5/QtCore/qrefcount.h \
-		../../../../include/qt5/QtCore/qarraydata.h \
-		../../../../include/qt5/QtCore/qstringbuilder.h \
-		../../../../include/qt5/QtCore/qlist.h \
-		../../../../include/qt5/QtCore/qalgorithms.h \
-		../../../../include/qt5/QtCore/qiterator.h \
-		../../../../include/qt5/QtCore/qhashfunctions.h \
-		../../../../include/qt5/QtCore/qpair.h \
-		../../../../include/qt5/QtCore/qbytearraylist.h \
-		../../../../include/qt5/QtCore/qstringlist.h \
-		../../../../include/qt5/QtCore/qregexp.h \
-		../../../../include/qt5/QtCore/qstringmatcher.h \
-		../../../../include/qt5/QtCore/qcoreevent.h \
-		../../../../include/qt5/QtCore/qscopedpointer.h \
-		../../../../include/qt5/QtCore/qmetatype.h \
-		../../../../include/qt5/QtCore/qvarlengtharray.h \
-		../../../../include/qt5/QtCore/qcontainerfwd.h \
-		../../../../include/qt5/QtCore/qobject_impl.h \
-		../../../../include/qt5/QtCore/qvariant.h \
-		../../../../include/qt5/QtCore/qmap.h \
-		../../../../include/qt5/QtCore/qdebug.h \
-		../../../../include/qt5/QtCore/qhash.h \
-		../../../../include/qt5/QtCore/qtextstream.h \
-		../../../../include/qt5/QtCore/qiodevice.h \
-		../../../../include/qt5/QtCore/qlocale.h \
-		../../../../include/qt5/QtCore/qshareddata.h \
-		../../../../include/qt5/QtCore/qvector.h \
-		../../../../include/qt5/QtCore/qpoint.h \
-		../../../../include/qt5/QtCore/qset.h \
-		../../../../include/qt5/QtCore/qcontiguouscache.h \
-		../../../../include/qt5/QtCore/qsharedpointer.h \
-		../../../../include/qt5/QtCore/qsharedpointer_impl.h \
-		../../../../include/qt5/QtWidgets/QLabel \
-		../../../../include/qt5/QtWidgets/qlabel.h \
-		../../../../include/qt5/QtWidgets/qframe.h \
-		../../../../include/qt5/QtWidgets/qwidget.h \
-		../../../../include/qt5/QtGui/qwindowdefs.h \
-		../../../../include/qt5/QtGui/qwindowdefs_win.h \
-		../../../../include/qt5/QtCore/qmargins.h \
-		../../../../include/qt5/QtGui/qpaintdevice.h \
-		../../../../include/qt5/QtCore/qrect.h \
-		../../../../include/qt5/QtCore/qsize.h \
-		../../../../include/qt5/QtGui/qpalette.h \
-		../../../../include/qt5/QtGui/qcolor.h \
-		../../../../include/qt5/QtGui/qrgb.h \
-		../../../../include/qt5/QtGui/qrgba64.h \
-		../../../../include/qt5/QtGui/qbrush.h \
-		../../../../include/qt5/QtGui/qmatrix.h \
-		../../../../include/qt5/QtGui/qpolygon.h \
-		../../../../include/qt5/QtGui/qregion.h \
-		../../../../include/qt5/QtCore/qdatastream.h \
-		../../../../include/qt5/QtCore/qline.h \
-		../../../../include/qt5/QtGui/qtransform.h \
-		../../../../include/qt5/QtGui/qpainterpath.h \
-		../../../../include/qt5/QtGui/qimage.h \
-		../../../../include/qt5/QtGui/qpixelformat.h \
-		../../../../include/qt5/QtGui/qpixmap.h \
-		../../../../include/qt5/QtGui/qfont.h \
-		../../../../include/qt5/QtGui/qfontmetrics.h \
-		../../../../include/qt5/QtGui/qfontinfo.h \
-		../../../../include/qt5/QtWidgets/qsizepolicy.h \
-		../../../../include/qt5/QtGui/qcursor.h \
-		../../../../include/qt5/QtGui/qkeysequence.h \
-		../../../../include/qt5/QtGui/qevent.h \
-		../../../../include/qt5/QtCore/qurl.h \
-		../../../../include/qt5/QtCore/qurlquery.h \
-		../../../../include/qt5/QtCore/qfile.h \
-		../../../../include/qt5/QtCore/qfiledevice.h \
-		../../../../include/qt5/QtGui/qvector2d.h \
-		../../../../include/qt5/QtGui/qtouchdevice.h \
-		../../../../include/qt5/QtWidgets/QMessageBox \
-		../../../../include/qt5/QtWidgets/qmessagebox.h \
-		../../../../include/qt5/QtWidgets/qdialog.h \
-		../../../../include/qt5/QtNetwork/QHostAddress \
-		../../../../include/qt5/QtNetwork/qhostaddress.h \
-		../../../../include/qt5/QtNetwork/qabstractsocket.h \
-		../../../../include/qt5/QtNetwork/QTcpSocket \
-		../../../../include/qt5/QtNetwork/qtcpsocket.h \
-		src/input/rtl_tcp/rtl_tcp_client.h \
-		../../../../include/qt5/QtNetwork/QtNetwork \
-		../../../../include/qt5/QtNetwork/QtNetworkDepends \
-		../../../../include/qt5/QtCore/QtCore \
-		../../../../include/qt5/QtCore/QtCoreDepends \
-		../../../../include/qt5/QtCore/qabstractanimation.h \
-		../../../../include/qt5/QtCore/qanimationgroup.h \
-		../../../../include/qt5/QtCore/qparallelanimationgroup.h \
-		../../../../include/qt5/QtCore/qpauseanimation.h \
-		../../../../include/qt5/QtCore/qpropertyanimation.h \
-		../../../../include/qt5/QtCore/qvariantanimation.h \
-		../../../../include/qt5/QtCore/qeasingcurve.h \
-		../../../../include/qt5/QtCore/qsequentialanimationgroup.h \
-		../../../../include/qt5/QtCore/qtextcodec.h \
-		../../../../include/qt5/QtCore/qendian.h \
-		../../../../include/qt5/QtCore/qlibraryinfo.h \
-		../../../../include/qt5/QtCore/qdatetime.h \
-		../../../../include/qt5/QtCore/qbuffer.h \
-		../../../../include/qt5/QtCore/qdir.h \
-		../../../../include/qt5/QtCore/qfileinfo.h \
-		../../../../include/qt5/QtCore/qdiriterator.h \
-		../../../../include/qt5/QtCore/qfileselector.h \
-		../../../../include/qt5/QtCore/QObject \
-		../../../../include/qt5/QtCore/QStringList \
-		../../../../include/qt5/QtCore/qfilesystemwatcher.h \
-		../../../../include/qt5/QtCore/qlockfile.h \
-		../../../../include/qt5/QtCore/qloggingcategory.h \
-		../../../../include/qt5/QtCore/qprocess.h \
-		../../../../include/qt5/QtCore/qresource.h \
-		../../../../include/qt5/QtCore/qsavefile.h \
-		../../../../include/qt5/QtCore/qstandardpaths.h \
-		../../../../include/qt5/QtCore/qstorageinfo.h \
-		../../../../include/qt5/QtCore/qtemporarydir.h \
-		../../../../include/qt5/QtCore/QScopedPointer \
-		../../../../include/qt5/QtCore/qtemporaryfile.h \
-		../../../../include/qt5/QtCore/qabstractitemmodel.h \
-		../../../../include/qt5/QtCore/qabstractproxymodel.h \
-		../../../../include/qt5/QtCore/qidentityproxymodel.h \
-		../../../../include/qt5/QtCore/qitemselectionmodel.h \
-		../../../../include/qt5/QtCore/qsortfilterproxymodel.h \
-		../../../../include/qt5/QtCore/qstringlistmodel.h \
-		../../../../include/qt5/QtCore/qjsonarray.h \
-		../../../../include/qt5/QtCore/qjsonvalue.h \
-		../../../../include/qt5/QtCore/qjsondocument.h \
-		../../../../include/qt5/QtCore/qjsonobject.h \
-		../../../../include/qt5/QtCore/qabstracteventdispatcher.h \
-		../../../../include/qt5/QtCore/qeventloop.h \
-		../../../../include/qt5/QtCore/qabstractnativeeventfilter.h \
-		../../../../include/qt5/QtCore/qbasictimer.h \
-		../../../../include/qt5/QtCore/qcoreapplication.h \
-		../../../../include/qt5/QtCore/qmath.h \
-		../../../../include/qt5/QtCore/qmetaobject.h \
-		../../../../include/qt5/QtCore/qmimedata.h \
-		../../../../include/qt5/QtCore/qobjectcleanuphandler.h \
-		../../../../include/qt5/QtCore/qpointer.h \
-		../../../../include/qt5/QtCore/qsharedmemory.h \
-		../../../../include/qt5/QtCore/qsignalmapper.h \
-		../../../../include/qt5/QtCore/qsocketnotifier.h \
-		../../../../include/qt5/QtCore/qsystemsemaphore.h \
-		../../../../include/qt5/QtCore/qtimer.h \
-		../../../../include/qt5/QtCore/qtranslator.h \
-		../../../../include/qt5/QtCore/qwineventnotifier.h \
-		../../../../include/qt5/QtCore/qmimedatabase.h \
-		../../../../include/qt5/QtCore/qmimetype.h \
-		../../../../include/qt5/QtCore/qfactoryinterface.h \
-		../../../../include/qt5/QtCore/qlibrary.h \
-		../../../../include/qt5/QtCore/qplugin.h \
-		../../../../include/qt5/QtCore/qpluginloader.h \
-		../../../../include/qt5/QtCore/quuid.h \
-		../../../../include/qt5/QtCore/qabstractstate.h \
-		../../../../include/qt5/QtCore/qabstracttransition.h \
-		../../../../include/qt5/QtCore/qeventtransition.h \
-		../../../../include/qt5/QtCore/qfinalstate.h \
-		../../../../include/qt5/QtCore/qhistorystate.h \
-		../../../../include/qt5/QtCore/qsignaltransition.h \
-		../../../../include/qt5/QtCore/qstate.h \
-		../../../../include/qt5/QtCore/qstatemachine.h \
-		../../../../include/qt5/QtCore/qexception.h \
-		../../../../include/qt5/QtCore/qfuture.h \
-		../../../../include/qt5/QtCore/qfutureinterface.h \
-		../../../../include/qt5/QtCore/qrunnable.h \
-		../../../../include/qt5/QtCore/qresultstore.h \
-		../../../../include/qt5/QtCore/qfuturesynchronizer.h \
-		../../../../include/qt5/QtCore/qfuturewatcher.h \
-		../../../../include/qt5/QtCore/qreadwritelock.h \
-		../../../../include/qt5/QtCore/qsemaphore.h \
-		../../../../include/qt5/QtCore/qthread.h \
-		../../../../include/qt5/QtCore/qthreadpool.h \
-		../../../../include/qt5/QtCore/qthreadstorage.h \
-		../../../../include/qt5/QtCore/qwaitcondition.h \
-		../../../../include/qt5/QtCore/qarraydataops.h \
-		../../../../include/qt5/QtCore/qarraydatapointer.h \
-		../../../../include/qt5/QtCore/qbitarray.h \
-		../../../../include/qt5/QtCore/qbytearraymatcher.h \
-		../../../../include/qt5/QtCore/qcache.h \
-		../../../../include/qt5/QtCore/qcollator.h \
-		../../../../include/qt5/QtCore/qcommandlineoption.h \
-		../../../../include/qt5/QtCore/qcommandlineparser.h \
-		../../../../include/qt5/QtCore/qcryptographichash.h \
-		../../../../include/qt5/QtCore/qelapsedtimer.h \
-		../../../../include/qt5/QtCore/qlinkedlist.h \
-		../../../../include/qt5/QtCore/qmessageauthenticationcode.h \
-		../../../../include/qt5/QtCore/qqueue.h \
-		../../../../include/qt5/QtCore/qregularexpression.h \
-		../../../../include/qt5/QtCore/qscopedvaluerollback.h \
-		../../../../include/qt5/QtCore/qstack.h \
-		../../../../include/qt5/QtCore/qtextboundaryfinder.h \
-		../../../../include/qt5/QtCore/qtimeline.h \
-		../../../../include/qt5/QtCore/qtimezone.h \
-		../../../../include/qt5/QtCore/qversionnumber.h \
-		../../../../include/qt5/QtCore/qxmlstream.h \
-		../../../../include/qt5/QtCore/qtcoreversion.h \
-		../../../../include/qt5/QtNetwork/qabstractnetworkcache.h \
-		../../../../include/qt5/QtNetwork/qnetworkrequest.h \
-		../../../../include/qt5/QtCore/QSharedDataPointer \
-		../../../../include/qt5/QtCore/QString \
-		../../../../include/qt5/QtCore/QUrl \
-		../../../../include/qt5/QtCore/QVariant \
-		../../../../include/qt5/QtNetwork/qhttpmultipart.h \
-		../../../../include/qt5/QtCore/QByteArray \
-		../../../../include/qt5/QtCore/QIODevice \
-		../../../../include/qt5/QtNetwork/QNetworkRequest \
-		../../../../include/qt5/QtNetwork/qnetworkaccessmanager.h \
-		../../../../include/qt5/QtNetwork/QSslConfiguration \
-		../../../../include/qt5/QtNetwork/qsslconfiguration.h \
-		../../../../include/qt5/QtNetwork/qsslsocket.h \
-		../../../../include/qt5/QtNetwork/qsslerror.h \
-		../../../../include/qt5/QtNetwork/qsslcertificate.h \
-		../../../../include/qt5/QtNetwork/qssl.h \
-		../../../../include/qt5/QtCore/QFlags \
-		../../../../include/qt5/QtNetwork/QSslPreSharedKeyAuthenticator \
-		../../../../include/qt5/QtNetwork/qsslpresharedkeyauthenticator.h \
-		../../../../include/qt5/QtCore/QtGlobal \
-		../../../../include/qt5/QtCore/QMetaType \
-		../../../../include/qt5/QtNetwork/qnetworkcookie.h \
-		../../../../include/qt5/QtCore/QList \
-		../../../../include/qt5/QtNetwork/qnetworkcookiejar.h \
-		../../../../include/qt5/QtNetwork/qnetworkdiskcache.h \
-		../../../../include/qt5/QtNetwork/qnetworkreply.h \
-		../../../../include/qt5/QtNetwork/QNetworkAccessManager \
-		../../../../include/qt5/QtNetwork/qnetworkconfigmanager.h \
-		../../../../include/qt5/QtNetwork/qnetworkconfiguration.h \
-		../../../../include/qt5/QtNetwork/qnetworksession.h \
-		../../../../include/qt5/QtNetwork/qnetworkinterface.h \
-		../../../../include/qt5/QtNetwork/qauthenticator.h \
-		../../../../include/qt5/QtNetwork/qdnslookup.h \
-		../../../../include/qt5/QtNetwork/qhostinfo.h \
-		../../../../include/qt5/QtNetwork/qnetworkproxy.h \
-		../../../../include/qt5/QtNetwork/qlocalserver.h \
-		../../../../include/qt5/QtNetwork/qlocalsocket.h \
-		../../../../include/qt5/QtNetwork/qtcpserver.h \
-		../../../../include/qt5/QtNetwork/qudpsocket.h \
-		../../../../include/qt5/QtNetwork/qsslcertificateextension.h \
-		../../../../include/qt5/QtNetwork/qsslcipher.h \
-		../../../../include/qt5/QtNetwork/qsslellipticcurve.h \
-		../../../../include/qt5/QtCore/QHash \
-		../../../../include/qt5/QtNetwork/qsslkey.h \
-		../../../../include/qt5/QtNetwork/qtnetworkversion.h \
-		../../../../include/qt5/QtWidgets/QLineEdit \
-		../../../../include/qt5/QtWidgets/qlineedit.h \
-		../../../../include/qt5/QtGui/qtextcursor.h \
-		../../../../include/qt5/QtGui/qtextformat.h \
-		../../../../include/qt5/QtGui/qpen.h \
-		../../../../include/qt5/QtGui/qtextoption.h \
-		../../../../include/qt5/QtCore/QTimer \
-		../../../../include/qt5/QtWidgets/QComboBox \
-		../../../../include/qt5/QtWidgets/qcombobox.h \
-		../../../../include/qt5/QtWidgets/qabstractitemdelegate.h \
-		../../../../include/qt5/QtWidgets/qstyleoption.h \
-		../../../../include/qt5/QtWidgets/qabstractspinbox.h \
-		../../../../include/qt5/QtGui/qvalidator.h \
-		../../../../include/qt5/QtGui/qicon.h \
-		../../../../include/qt5/QtWidgets/qslider.h \
-		../../../../include/qt5/QtWidgets/qabstractslider.h \
-		../../../../include/qt5/QtWidgets/qstyle.h \
-		../../../../include/qt5/QtWidgets/qtabbar.h \
-		../../../../include/qt5/QtWidgets/qtabwidget.h \
-		../../../../include/qt5/QtWidgets/qrubberband.h \
+rtl_tcp_client.o: src/input/rtl_tcp/rtl_tcp_client.cpp src/input/rtl_tcp/rtl_tcp_client.h \
 		includes/dab-constants.h \
 		src/input/virtual-input.h \
-		../../../../include/qt5/QtWidgets/QDialog \
 		includes/various/ringbuffer.h \
 		ui_rtl_tcp-widget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o rtl_tcp_client.o src/input/rtl_tcp/rtl_tcp_client.cpp

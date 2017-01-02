@@ -90,6 +90,8 @@ unsigned int temp;
 
 int16_t	cifVector [16][55296];
 uint8_t	fibVector [16][96];
+bool	fibValid  [16];
+
 #define	CUSize	(4 * 16)
 
 //
@@ -185,14 +187,15 @@ int16_t	Minor	= 0;
 //	index_Out is the index in the fib/cif combines where to
 //	put the next fib/cif.
 	   if (2 <= b. blkno && b. blkno <= 4) {
-	      bool valid = true;
 	      memcpy (&(fibInput [(b. blkno - 2) * BitsperBlock]),
 	              b. data, 
 	              BitsperBlock * sizeof (int16_t));
 	      if (b. blkno == 4) {
+	         bool	valid [4];
 	         uint8_t fibs_bytes [4 * 768];
-	         my_ficHandler. process_ficBlock (fibInput, fibs_bytes, &valid);
+	         my_ficHandler. process_ficBlock (fibInput, fibs_bytes, valid);
 	         for (i = 0; i < 4; i ++) {
+	            fibValid [index_Out + i] = valid [i];
 	            for (j = 0; j < 96; j ++) {
 	               fibVector [(index_Out + i) & 017][j] = 0;
 	                  for (k = 0; k < 8; k ++) {
@@ -248,7 +251,7 @@ int16_t	Minor	= 0;
 	                             offset - base,
 	                             crctab_1021, 0xFFFF);
 	         crc = ~crc;
-	         theVector [offset ++] = (crc & 0xFF) >> 8;
+	         theVector [offset ++] = (crc & 0xFF00) >> 8;
 	         theVector [offset ++] = crc & 0xFF;
 //
 //	EOF - RFU
@@ -394,7 +397,10 @@ channel_data data;
 
 //	SYNC()
 //	ERR
-	eti [fillPointer ++] = 0xFF;		// error level 0
+//	if (fibValid [index_Out + minor])
+	   eti [fillPointer ++] = 0xFF;		// error level 0
+//	else
+//	   eti [fillPointer ++] = 0x0F;		// error level 2, fib errors
 //	FSYNC
 	if (CIFCount_lo & 1) {
 	   eti [fillPointer ++] = 0xf8;
