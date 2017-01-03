@@ -80,13 +80,14 @@ const	char		*get_programm_language_string (uint8_t);
 	QTimer		*displayTimer;
 	int32_t		numberofSeconds;
 	void		resetSelector		(void);
-	int16_t		fibBlocks;
-	int16_t		fibSuccess;
+	int16_t		ficBlocks;
+	int16_t		ficSuccess;
 public slots:
 	void		clearEnsemble		(void);
 	void		addtoEnsemble		(const QString &);
 	void		nameofEnsemble		(int, const QString &);
 	void		show_successRate	(int);
+	void		show_ficCRC             (bool);
 	void		show_ipErrors		(int);
 	void		showLabel		(QString);
 	void		showMOT			(QByteArray, int);
@@ -94,8 +95,8 @@ public slots:
 	void		newAudio		(int);
 	void		handle_fibData		(void);
 //
-	void	show_mscErrors		(int);
-	void	setStereo		(bool);
+	void		show_mscErrors		(int);
+	void		setStereo		(bool);
 private slots:
 //
 //	Somehow, these must be connected to the GUI

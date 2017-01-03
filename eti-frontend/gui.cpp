@@ -287,10 +287,10 @@ void	RadioInterface::init_your_gui (void) {
 	deviceSelector	-> addItem ("airspy");
 #endif
 #ifdef HAVE_UHD
-	deviceSelector	-> addItem("UHD");
+	deviceSelector	-> addItem ("UHD");
 #endif
 #ifdef HAVE_EXTIO
-	deviceSelector	-> addItem("extio");
+	deviceSelector	-> addItem ("extio");
 #endif
 #ifdef	HAVE_RTL_TCP
 	deviceSelector	-> addItem ("rtl_tcp");
@@ -358,9 +358,6 @@ void	RadioInterface::init_your_gui (void) {
 	else
 	   autoStart	= false;
 	
-//	display the version
-	QString v = "dab-eti (experimental)  " ;
-	versionName	-> setText (v);
 //	and start the timer
 	displayTimer		-> start (1000);
 }

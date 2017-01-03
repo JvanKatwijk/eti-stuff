@@ -156,7 +156,8 @@ NeAACDecFrameInfo	hInfo;
 	   
 	if (channels == 2) {
 	   audioBuffer	-> putDataIntoBuffer (outBuffer, samples);
-	   newAudio (sample_rate);
+	   if (audioBuffer -> GetRingBufferReadAvailable () > sample_rate / 8)
+	      newAudio (sample_rate);
 	}
 	else
 	if (channels == 1) {
@@ -167,7 +168,8 @@ NeAACDecFrameInfo	hInfo;
 	      buffer [2 * i + 1] = buffer [2 * i];
 	   }
 	   audioBuffer	-> putDataIntoBuffer (buffer, 2 * samples);
-	   newAudio (sample_rate);
+	   if (audioBuffer -> GetRingBufferReadAvailable () > sample_rate / 8)
+	      newAudio (sample_rate);
 	}
 	else
 	   fprintf (stderr, "Cannot handle these channels\n");

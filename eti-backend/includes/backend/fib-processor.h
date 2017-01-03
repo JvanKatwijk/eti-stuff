@@ -1,7 +1,6 @@
 #
 /*
- *
- *    Copyright (C) 2013
+ *    Copyright (C) 2013 - 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
@@ -154,10 +153,7 @@ signals:
 	void		addtoEnsemble	(const QString &);
 	void		nameofEnsemble  (int, const QString &);
 	void		changeinConfiguration (void);
-#ifdef	GUI_3
-	void		newDateTime (int *);
-#endif
-
+	void		show_ficCRC	(bool);
 };
 
 #endif

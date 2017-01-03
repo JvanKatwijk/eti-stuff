@@ -932,7 +932,7 @@ int16_t	i;
 
 	for (i = 0; i < 64; i ++)
 	   if ((listofServices [i]. inUse) &&
-	        ((uint16_t)(listofServices [i]. serviceId) == serviceId))
+	        ((uint32_t)(listofServices [i]. serviceId) == serviceId))
 	      return &listofServices [i];
 
 	for (i = 0; i < 64; i ++)
@@ -961,7 +961,7 @@ int16_t i;
 }
 
 //	bind_audioService is the main processor for - what the name suggests -
-//	connecting the description of audioservices to a SID
+//	connecting the description of an audioservice to the Service Identifier
 void	fib_processor::bind_audioService (int8_t TMid,
 	                                  uint32_t SId,
 	                                  int16_t compnr,
@@ -971,59 +971,45 @@ void	fib_processor::bind_audioService (int8_t TMid,
 serviceId *s	= findServiceId	(SId);
 int16_t	i;
 int16_t	firstFree	= -1;
-
-	for (i = 0; i < 64; i ++) {
-	   if (!components [i]. inUse) {
-	      if (firstFree == -1)
-	         firstFree = i;
-	      continue;
-	   }
-	   if ((components [i]. service == s) &&
-               (components [i]. componentNr == compnr))
-	      return;
-	}
-	components [firstFree]. inUse = true;
-	components [firstFree]. TMid	= TMid;
-	components [firstFree]. componentNr = compnr;
-	components [firstFree]. service = s;
-	components [firstFree]. subchannelId = subChId;
-	components [firstFree]. PS_flag = ps_flag;
-	components [firstFree]. ASCTy = ASCTy;
-//	fprintf (stderr, "service %8x (comp %d) is audio\n", SId, compnr);
+	if (components [subChId]. inUse)
+	   return;
+	components [subChId]. inUse	= true;
+	components [subChId]. TMid	= TMid;
+	components [subChId]. componentNr = compnr;
+	components [subChId]. service	= s;
+	components [subChId]. subchannelId = subChId;
+	components [subChId]. PS_flag	= ps_flag;
+	components [subChId]. ASCTy	= ASCTy;
 }
-//      bind_packetService is the main processor for - what the name suggests -
-//      connecting the service component defining the service to the SId,
-///     Note that the subchannel is assigned through a FIG0/3
-void    fib_processor::bind_packetService (int8_t TMid,
-                                           uint32_t SId,
-                                           int16_t compnr,
-                                           int16_t SCId,
-                                           int16_t ps_flag,
-                                           int16_t CAflag) {
+
+
+//	bind_packetService is the main processor for - what the name suggests -
+//	connecting the service component defining the service to the SId,
+///	Note that the subchannel is assigned through a FIG0/3
+void	fib_processor::bind_packetService (int8_t TMid,
+	                                   uint32_t SId,
+	                                   int16_t compnr,
+	                                   int16_t subChId,
+	                                   int16_t ps_flag,
+	                                   int16_t CAflag) {
 serviceId *s    = findServiceId (SId);
 int16_t i;
 int16_t	firstFree	= -1;
 
-       for (i = 0; i < 64; i ++) {
-	   if (!components [i]. inUse) {
-	      if (firstFree == -1)
-	         firstFree = i;
-	      continue;
-	   }
-	   if ((components [i]. service == s) && 
-	       (components [i]. componentNr == compnr))
-	      return;
-	}
-	components [firstFree]. inUse  = true;
-	components [firstFree]. TMid   = TMid;
-	components [firstFree]. service = s;
-	components [firstFree]. componentNr = compnr;
-	components [firstFree]. SCId   = SCId;
-	components [firstFree]. PS_flag = ps_flag;
-	components [firstFree]. CAflag = CAflag;
-//	fprintf (stderr, "service %8x (comp %d) is packet\n", SId, compnr);
+	if (components [subChId]. inUse)
+	   return;
+	
+	components [subChId]. inUse  = true;
+	components [subChId]. TMid   = TMid;
+	components [subChId]. service = s;
+	components [subChId]. componentNr = compnr;
+	components [subChId]. SCId   = subChId;
+	components [subChId]. PS_flag = ps_flag;
+	components [subChId]. CAflag = CAflag;
 }
 
+
+//	bind_audioService is the main processor for - what the name suggests -
 void	fib_processor::clearEnsemble (void) {
 int16_t i;
 	memset (components, 0, sizeof (components));

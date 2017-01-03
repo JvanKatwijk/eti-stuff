@@ -1,5 +1,5 @@
 cmake_minimum_required( VERSION 2.8.11 )
-set (objectName rti-backend)
+set (objectName eti-backend)
 add_definitions ( -Wall)
 #	modify if you want
 set (CMAKE_INSTALL_PREFIX ../)
@@ -120,9 +120,9 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	     ./includes/backend/data/journaline/NML.h 
 	     ./includes/backend/data/mot-databuilder.h 
 	     ./includes/backend/data/virtual-datahandler.h 
+	     ./includes/backend/data/data-processor.h 
 	     ./includes/backend/data/pad-handler.h 
 	     ./includes/backend/data/mot-data.h 
-	     ./includes/backend/data/msc-datagroup.h 
 	     ./includes/output/fir-filters.h
 	     ./includes/output/audio-base.h
 	     ./includes/output/audiosink.h
@@ -157,8 +157,8 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	     ./src/backend/data/mot-databuilder.cpp 
 	     ./src/backend/data/virtual-datahandler.cpp 
 	     ./src/backend/data/pad-handler.cpp 
+             ./src/backend/data/data-processor.cpp 
 	     ./src/backend/data/mot-data.cpp 
-	     ./src/backend/data/msc-datagroup.cpp 
 	     ./src/output/audio-base.cpp
 	     ./src/output/audiosink.cpp
 	     ./src/output/fir-filters.cpp

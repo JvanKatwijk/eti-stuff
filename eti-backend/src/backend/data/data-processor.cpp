@@ -20,36 +20,35 @@
  */
 #
 #include	"dab-constants.h"
-#include	<QByteArray>
-#include	"msc-datagroup.h"
+#include	"data-processor.h"
 #include	"virtual-datahandler.h"
 #include	"ip-datahandler.h"
 #include	"mot-databuilder.h"
 #include	"journaline-datahandler.h"
 #include	"gui.h"
 
-//	Interleaving is - for reasons of simplicity - done
-//	inline rather than through a special class-object
-//	We could make a single handler for interleaving
-//	and deconvolution, bt it is a pretty simple operation
-//	so for now keep it in-line
-//
-//	\class mscDatagroup
+//	\class dataProcessor
 //	The main function of this class is to assemble the 
 //	MSCdatagroups and dispatch to the appropriate handler
-	mscDatagroup::mscDatagroup	(RadioInterface *mr,
-	                         	 uint8_t DSCTy,
-	                         	 int16_t packetAddress,
-	                         	 int16_t bitRate,
-	                                 uint8_t DGflag,
-	                         	 int16_t FEC_scheme) {
+//	The input has already been processed by time deinterleeaver
+//	and deconvolution. It is just a row of 24 * bitRate bits
+
+	dataProcessor::dataProcessor	(RadioInterface *mr,
+	                                 int16_t	bitRate,
+	                         	 uint8_t	DSCTy,
+	                                 uint8_t	DGflag,
+	                         	 int16_t	FEC_scheme,
+	                                 bool		show_crcErrors) {
 int32_t i, j;
 	this	-> myRadioInterface	= mr;
-	this	-> DSCTy		= DSCTy;
-	this	-> packetAddress	= packetAddress;
 	this	-> bitRate		= bitRate;
+	this	-> DSCTy		= DSCTy;
 	this	-> DGflag		= DGflag;
 	this	-> FEC_scheme		= FEC_scheme;
+	this	-> show_crcErrors	= show_crcErrors;
+	connect (this, SIGNAL (show_mscErrors (int)),
+	         mr, SLOT (show_mscErrors (int)));
+
 	switch (DSCTy) {
 	   default:
 	   case 5:			// do know yet
@@ -61,52 +60,40 @@ int32_t i, j;
 	      break;
 
 	   case 59:
-	      my_dataHandler	= new ip_dataHandler (mr, false);
+	      my_dataHandler	= new ip_dataHandler (mr, show_crcErrors);
 	      break;
 
 	   case 60:
 	      my_dataHandler	= new mot_databuilder (mr);
 	      break;
 	}
+
+	packetState	= 0;
+	streamAddress	= -1;
+//
+	handledPackets	= 0;
+	crcErrors	= 0;
 }
 
-	mscDatagroup::~mscDatagroup	(void) {
+	dataProcessor::~dataProcessor	(void) {
 int16_t	i;
 	delete		my_dataHandler;
 }
 
-int32_t	mscDatagroup::process	(int16_t *v) {
-uint8_t	outV [24 * bitRate];
-int16_t	i, j;
 
-	
-//	From the eti file, we get packed bytes. The software
-//	- coming from the dab-rpi - assumes one bit per byte,
-//	so, we begin with unpacking
-
-	for (i = 0; i < 24 * bitRate / 8; i ++)
-	   for (j = 0; j < 8; j ++)
-	      outV [8 * i + j] = (v [i] >> (7 - j)) & 01;
-
-//	we hand it over to make an MSC data group
+void	dataProcessor::addtoFrame (uint8_t *outV) {
 //	There is - obviously - some exception, that is
 //	when the DG flag is on and there are no datagroups for DSCTy5
-	if ((this -> DSCTy == 5) &&
-	    (this -> DGflag))	// no datagroups
-	   handleTDCAsyncstream (outV, 24 * bitRate);
-	else
-	   handlePackets (outV, 24 * bitRate);
-
-	return 24 * bitRate;
-}
-//
-//	It might take a msec for the task to stop
-void	mscDatagroup::stopRunning (void) {
+	   if ((this -> DSCTy == 5) &&
+	       (this -> DGflag))	// no datagroups
+	      handleTDCAsyncstream (outV, 24 * bitRate);
+	   else
+	      handlePackets (outV, 24 * bitRate);
 }
 //
 //	While for a full mix data and audio there will be a single packet in a
 //	data compartment, for an empty mix, there may be many more
-void	mscDatagroup::handlePackets (uint8_t *data, int16_t length) {
+void	dataProcessor::handlePackets (uint8_t *data, int16_t length) {
 	while (true) {
 	   int16_t pLength = (getBits_2 (data, 0) + 1) * 24 * 8;
 	   if (length < pLength)	// be on the safe side
@@ -124,7 +111,7 @@ void	mscDatagroup::handlePackets (uint8_t *data, int16_t length) {
 //	there may be multiple streams, to be identified by
 //	the address. For the time being we only handle a single
 //	stream!!!!
-void	mscDatagroup::handlePacket (uint8_t *data) {
+void	dataProcessor::handlePacket (uint8_t *data) {
 int16_t	packetLength	= (getBits_2 (data, 0) + 1) * 24;
 int16_t	continuityIndex	= getBits_2 (data, 2);
 int16_t	firstLast	= getBits_2 (data, 4);
@@ -132,11 +119,12 @@ int16_t	address		= getBits   (data, 6, 10);
 uint16_t command	= getBits_1 (data, 16);
 int16_t	usefulLength	= getBits_7 (data, 17);
 int16_t	i;
-	if (usefulLength > 0)
-	fprintf (stderr, "CI = %d, address = %d, usefulLength = %d\n",
-	                 continuityIndex, address, usefulLength);
-	if (++handledPackets >= 500) {
-	   fprintf (stderr, "data quality %d\n", (100 - crcErrors / 5));
+
+//	if (usefulLength > 0)
+//	fprintf (stderr, "CI = %d, address = %d, usefulLength = %d\n",
+//	                 continuityIndex, address, usefulLength);
+	if (show_crcErrors && (++handledPackets >= 500)) {
+	   show_mscErrors (100 - crcErrors / 5);
 	   crcErrors	= 0;
 	   handledPackets = 0;
 	}
@@ -208,7 +196,7 @@ int16_t	i;
 //
 //
 //	Really no idea what to do here
-void	mscDatagroup::handleTDCAsyncstream (uint8_t *data, int16_t length) {
+void	dataProcessor::handleTDCAsyncstream (uint8_t *data, int16_t length) {
 int16_t	packetLength	= (getBits_2 (data, 0) + 1) * 24;
 int16_t	continuityIndex	= getBits_2 (data, 2);
 int16_t	firstLast	= getBits_2 (data, 4);

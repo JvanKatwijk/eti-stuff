@@ -267,6 +267,9 @@ const char *RadioInterface::get_programm_language_string (uint8_t language) {
 //
 //	Most GUI specific things for the initialization are here
 void	RadioInterface::init_your_gui (void) {
+	ficBlocks               = 0;
+	ficSuccess              = 0;
+
 /**
   *	Devices can be included or excluded, setting is in the configuration
   *	files. Inclusion is reflected in the selector on the GUI.
@@ -374,6 +377,16 @@ QString s;
 
 void	RadioInterface::show_successRate (int s) {
 	errorDisplay	-> display (s);
+}
+
+void    RadioInterface::show_ficCRC (bool b) {
+        if (b)
+           ficSuccess ++;
+        if (++ficBlocks >= 100) {
+           ficRatioDisplay      -> display (ficSuccess);
+           ficSuccess   = 0;
+           ficBlocks    = 0;
+        }
 }
 
 //	showLabel is triggered by the message handler

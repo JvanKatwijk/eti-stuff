@@ -577,15 +577,10 @@ void	mp2Processor::addtoFrame (uint8_t *input) {
 int16_t	i, j;
 int16_t	lf	= baudRate == 48000 ? MP2framesize : 2 * MP2framesize;
 int16_t	amount	= MP2framesize;
-uint8_t	temp [amount];
-
-	for (i = 0; i < amount / 8; i ++)
-	   for (j = 0; j < 8; j ++)
-	      temp [8 * i + j] = (input [i] >> (7 - j)) & 01;
 
 	for (i = 0; i < amount; i ++) {
 	   if (MP2Header_OK == 2) {
-	      addbittoMP2 (MP2frame, temp [i], MP2bitCount ++);
+	      addbittoMP2 (MP2frame, input [i], MP2bitCount ++);
 	      if (MP2bitCount >= lf) {
 	         int16_t sample_buf [KJMP2_SAMPLES_PER_FRAME * 2];
 	         if (mp2decodeFrame (MP2frame, sample_buf)) {
@@ -601,7 +596,7 @@ uint8_t	temp [amount];
 	   } else 
 	   if (MP2Header_OK == 0) {
 //	apparently , we are not in sync yet
-	      if (temp [i] == 01) {
+	      if (input [i] == 01) {
 	         if (++ MP2headerCount == 12) {
 	            MP2bitCount = 0;
 	            for (j = 0; j < 12; j ++)
@@ -614,7 +609,7 @@ uint8_t	temp [amount];
 	   }
 	   else
 	   if (MP2Header_OK == 1) {
-	      addbittoMP2 (MP2frame, temp [i], MP2bitCount ++);
+	      addbittoMP2 (MP2frame, input [i], MP2bitCount ++);
 	      if (MP2bitCount == 24) {
 	         setSamplerate (mp2sampleRate (MP2frame));
 	         MP2Header_OK = 2;

@@ -28,8 +28,7 @@
 #include	"fib-processor.h"
 #include	"mp2processor.h"
 #include	"mp4processor.h"
-#include	"msc-datagroup.h"
-
+#include	"data-processor.h"
 	etiController::etiController (RadioInterface *mr,
 	                              DabParams      *dp,
 	                              FILE           *f,
@@ -71,6 +70,7 @@ bool	processingData	= false;
 	running	= true;
 
 	while (running) {
+	   int16_t	bitRate;
 //	If there is a request for a service, setup
 //	the appropriate handler
 	   if (newAudio) {
@@ -89,20 +89,24 @@ bool	processingData	= false;
 	                                            audioBuffer);
 	   
 	      data_length	= -1;
+	      bitRate		= audioDescription. bitRate;
 	   }	
 	   else
 	   if (newData) {
 	      channelSearch = true;
 	      if (the_Processor != NULL)
 	         delete the_Processor;
+
 	       the_Processor	=
-	                       new mscDatagroup (myRadioInterface,
-	                                         packetDescription. DSCTy,
-	                                         packetDescription. packetAddress,
-	                                         packetDescription. bitRate,
-	                                         packetDescription. DGflag,
-	                                         packetDescription. FEC_scheme);
+	                       new dataProcessor (myRadioInterface,
+	                                          packetDescription. bitRate,
+	                                          packetDescription. DSCTy,
+	                                          packetDescription. DGflag,
+	                                          packetDescription. FEC_scheme,
+	                                          false);
+	      subChannelId		= packetDescription. subchId;
 	      data_length	= -1;
+	      bitRate		= packetDescription. bitRate;
 	   }
 //
 //	OK, ready to read a frame
@@ -163,10 +167,19 @@ bool	processingData	= false;
 	         processingData	= false;
               }
 	   }
-
+//
+//	It is a little silly, but we unpack the packed bits. 
+//	This has to do with the compatibility of the mp2, mp4 and
+//	data handlers as used in the other dab software, we are
+//	now able to share the code of these handlers.
 	   if (processingData) {
+	      uint8_t dataVector [24 * bitRate];
 	      int     index = 12 + 4 * NST + FICF * 96 + data_offset;
-              the_Processor -> addtoFrame (&buffer [index]);
+	      int16_t	i, j;
+	      for (i = 0; i < 24 * bitRate / 8; i ++)
+	         for (j = 0; j < 8; j ++)
+	            dataVector [8 * i + j] = (buffer [index + i] >> (7 - j)) & 01;
+              the_Processor -> addtoFrame (dataVector);
 	   }
 	}
 	msleep (10000);

@@ -112,18 +112,16 @@ int16_t	i;
 	connect (this, SIGNAL (changeinConfiguration (void)),
 	         myRadioInterface,
 	         SLOT (changeinConfiguration (void)));
-#ifdef	GUI_3
-	connect (this, SIGNAL (newDateTime (int *)),
-	         myRadioInterface, SLOT (displayDateTime (int *)));
-#endif
+	connect (this, SIGNAL (show_ficCRC (bool)),
+	         mr, SLOT (show_ficCRC (bool)));
 }
 	
 	fib_processor::~fib_processor (void) {
 	delete[] listofServices;
 }
 //
-//	FIB's are segments of 256 bits. When here, we already
-//	passed the crc and we start unpacking into FIGs
+//	FIB's are segments of 256 bits. When here, got the FIB's
+//	from the eti file, and to be certain, we apply a crc check
 //
 //	Bote that in this context, the incoming buffer is packed,
 //	while the fibprocessor expects "one bit one byte",
@@ -135,9 +133,14 @@ int16_t	i, j;
 	   for (j = 0; j < 8; j ++)
 	      buffer [8 * i + j] = (p [i] >> (7 - j)) & 01;
 
-	for (i = 0; i < 3; i ++)
-	   if (check_CRC_bits (&buffer [i * 256], 256))
+	for (i = 0; i < 3; i ++) {
+	   if (check_CRC_bits (&buffer [i * 256], 256)) {
+	      show_ficCRC (true);
 	      process_FIB (&buffer [i * 256], 3 * fib);
+	   }
+	   else
+	      show_ficCRC (false);
+	}
 }
 
 void	fib_processor::process_FIB (uint8_t *p, uint16_t fib) {
@@ -963,7 +966,7 @@ int16_t	i;
 
 	for (i = 0; i < 64; i ++)
 	   if ((listofServices [i]. inUse) &&
-	        ((uint16_t)(listofServices [i]. serviceId) == serviceId))
+	        ((uint32_t)(listofServices [i]. serviceId) == serviceId))
 	      return &listofServices [i];
 
 	for (i = 0; i < 64; i ++)
@@ -992,7 +995,7 @@ int16_t i;
 }
 
 //	bind_audioService is the main processor for - what the name suggests -
-//	connecting the description of audioservices to a SID
+//	connecting the description of an audioservice to the Service Identifier
 void	fib_processor::bind_audioService (int8_t TMid,
 	                                  uint32_t SId,
 	                                  int16_t compnr,
@@ -1001,58 +1004,41 @@ void	fib_processor::bind_audioService (int8_t TMid,
 	                                  int16_t ASCTy) {
 serviceId *s	= findServiceId	(SId);
 int16_t	i;
-int16_t	firstFree	= -1;
-
-	for (i = 0; i < 64; i ++) {
-	   if (!components [i]. inUse) {
-	      if (firstFree == -1)
-	         firstFree = i;
-	      continue;
-	   }
-	   if ((components [i]. service == s) &&
-               (components [i]. componentNr == compnr))
-	      return;
-	}
-	components [firstFree]. inUse = true;
-	components [firstFree]. TMid	= TMid;
-	components [firstFree]. componentNr = compnr;
-	components [firstFree]. service = s;
-	components [firstFree]. subchannelId = subChId;
-	components [firstFree]. PS_flag = ps_flag;
-	components [firstFree]. ASCTy = ASCTy;
-//	fprintf (stderr, "service %8x (comp %d) is audio\n", SId, compnr);
+	if (components [subChId]. inUse)
+	   return;
+	components [subChId]. inUse	= true;
+	components [subChId]. TMid	= TMid;
+	components [subChId]. componentNr = compnr;
+	components [subChId]. service	= s;
+	components [subChId]. subchannelId = subChId;
+	components [subChId]. PS_flag	= ps_flag;
+	components [subChId]. ASCTy	= ASCTy;
 }
-//      bind_packetService is the main processor for - what the name suggests -
-//      connecting the service component defining the service to the SId,
-///     Note that the subchannel is assigned through a FIG0/3
-void    fib_processor::bind_packetService (int8_t TMid,
-                                           uint32_t SId,
-                                           int16_t compnr,
-                                           int16_t SCId,
-                                           int16_t ps_flag,
-                                           int16_t CAflag) {
-serviceId *s    = findServiceId (SId);
-int16_t i;
-int16_t	firstFree	= -1;
 
-       for (i = 0; i < 64; i ++) {
-	   if (!components [i]. inUse) {
-	      if (firstFree == -1)
-	         firstFree = i;
-	      continue;
-	   }
-	   if ((components [i]. service == s) && 
-	       (components [i]. componentNr == compnr))
-	      return;
-	}
-	components [firstFree]. inUse  = true;
-	components [firstFree]. TMid   = TMid;
-	components [firstFree]. service = s;
-	components [firstFree]. componentNr = compnr;
-	components [firstFree]. SCId   = SCId;
-	components [firstFree]. PS_flag = ps_flag;
-	components [firstFree]. CAflag = CAflag;
-//	fprintf (stderr, "service %8x (comp %d) is packet\n", SId, compnr);
+
+//	bind_packetService is the main processor for - what the name suggests -
+//	connecting the service component defining the service to the SId,
+///	Note that the subchannel is assigned through a FIG0/3
+void	fib_processor::bind_packetService (int8_t TMid,
+	                                   uint32_t SId,
+	                                   int16_t compnr,
+	                                   int16_t subChId,
+	                                   int16_t ps_flag,
+	                                   int16_t CAflag) {
+serviceId *s    = findServiceId (SId);
+
+	if (s == NULL)
+	   return;
+	if (components [subChId]. inUse)
+	   return;
+
+	components [subChId]. inUse	= true;
+	components [subChId]. TMid	= TMid;
+	components [subChId]. service	= s;
+	components [subChId]. componentNr = compnr;
+	components [subChId]. SCId	= subChId;
+	components [subChId]. PS_flag	= ps_flag;
+	components [subChId]. CAflag	= CAflag;
 }
 
 void	fib_processor::setupforNewFrame (void) {
@@ -1129,7 +1115,7 @@ int16_t	i, j;
 	   for (j = 0; j < 64; j ++) {
 	      if (!components [j]. inUse)
 	         continue;
-	      if ((uint16_t)(selectedService) !=
+	      if ((uint32_t)(selectedService) !=
 	                         components [j]. service -> serviceId)
 	         continue;
 

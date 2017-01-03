@@ -60,8 +60,8 @@ SOURCES       = main.cpp \
 		src/backend/dab-processor.cpp \
 		src/backend/audio/mp2processor.cpp \
 		src/backend/audio/mp4processor.cpp \
+		src/backend/data/data-processor.cpp \
 		src/backend/data/pad-handler.cpp \
-		src/backend/data/msc-datagroup.cpp \
 		src/backend/data/virtual-datahandler.cpp \
 		src/backend/data/ip-datahandler.cpp \
 		src/backend/data/mot-databuilder.cpp \
@@ -84,6 +84,7 @@ SOURCES       = main.cpp \
 		moc_mp2processor.cpp \
 		moc_mp4processor.cpp \
 		moc_faad-decoder.cpp \
+		moc_data-processor.cpp \
 		moc_pad-handler.cpp \
 		moc_virtual-datahandler.cpp \
 		moc_ip-datahandler.cpp \
@@ -102,8 +103,8 @@ OBJECTS       = main.o \
 		dab-processor.o \
 		mp2processor.o \
 		mp4processor.o \
+		data-processor.o \
 		pad-handler.o \
-		msc-datagroup.o \
 		virtual-datahandler.o \
 		ip-datahandler.o \
 		mot-databuilder.o \
@@ -127,6 +128,7 @@ OBJECTS       = main.o \
 		moc_mp2processor.o \
 		moc_mp4processor.o \
 		moc_faad-decoder.o \
+		moc_data-processor.o \
 		moc_pad-handler.o \
 		moc_virtual-datahandler.o \
 		moc_ip-datahandler.o \
@@ -296,7 +298,7 @@ DIST          = /usr/lib64/qt5/mkspecs/features/spec_pre.prf \
 		includes/backend/audio/mp2processor.h \
 		includes/backend/audio/mp4processor.h \
 		includes/backend/audio/faad-decoder.h \
-		includes/backend/data/msc-datagroup.h \
+		includes/backend/data/data-processor.h \
 		includes/backend/data/pad-handler.h \
 		includes/backend/data/virtual-datahandler.h \
 		includes/backend/data/ip-datahandler.h \
@@ -328,8 +330,8 @@ DIST          = /usr/lib64/qt5/mkspecs/features/spec_pre.prf \
 		src/backend/dab-processor.cpp \
 		src/backend/audio/mp2processor.cpp \
 		src/backend/audio/mp4processor.cpp \
+		src/backend/data/data-processor.cpp \
 		src/backend/data/pad-handler.cpp \
-		src/backend/data/msc-datagroup.cpp \
 		src/backend/data/virtual-datahandler.cpp \
 		src/backend/data/ip-datahandler.cpp \
 		src/backend/data/mot-databuilder.cpp \
@@ -683,8 +685,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib64/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents includes/dab-constants.h gui.h includes/backend/eti-controller.h includes/backend/fib-processor.h includes/backend/galois.h includes/backend/reed-solomon.h includes/backend/charsets.h includes/backend/firecode-checker.h includes/backend/dab-processor.h includes/backend/dab-virtual.h includes/backend/audio/mp2processor.h includes/backend/audio/mp4processor.h includes/backend/audio/faad-decoder.h includes/backend/data/msc-datagroup.h includes/backend/data/pad-handler.h includes/backend/data/virtual-datahandler.h includes/backend/data/ip-datahandler.h includes/backend/data/mot-databuilder.h includes/backend/data/mot-data.h includes/backend/data/journaline-datahandler.h includes/backend/data/journaline/dabdatagroupdecoder.h includes/backend/data/journaline/crc_8_16.h includes/backend/data/journaline/log.h includes/backend/data/journaline/newssvcdec_impl.h includes/backend/data/journaline/Splitter.h includes/backend/data/journaline/dabdgdec_impl.h includes/backend/data/journaline/newsobject.h includes/backend/data/journaline/NML.h includes/output/audio-base.h includes/output/audiosink.h includes/output/fir-filters.h includes/various/fft.h includes/various/ringbuffer.h includes/various/Xtan2.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp gui.cpp src/backend/eti-controller.cpp src/backend/fib-processor.cpp src/backend/galois.cpp src/backend/reed-solomon.cpp src/backend/charsets.cpp src/backend/firecode-checker.cpp src/backend/dab-virtual.cpp src/backend/dab-processor.cpp src/backend/audio/mp2processor.cpp src/backend/audio/mp4processor.cpp src/backend/data/pad-handler.cpp src/backend/data/msc-datagroup.cpp src/backend/data/virtual-datahandler.cpp src/backend/data/ip-datahandler.cpp src/backend/data/mot-databuilder.cpp src/backend/data/mot-data.cpp src/backend/data/journaline-datahandler.cpp src/backend/data/journaline/crc_8_16.c src/backend/data/journaline/log.c src/backend/data/journaline/newssvcdec_impl.cpp src/backend/data/journaline/Splitter.cpp src/backend/data/journaline/dabdgdec_impl.c src/backend/data/journaline/newsobject.cpp src/backend/data/journaline/NML.cpp src/output/audio-base.cpp src/output/audiosink.cpp src/output/fir-filters.cpp src/various/fft.cpp src/various/Xtan2.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents includes/dab-constants.h gui.h includes/backend/eti-controller.h includes/backend/fib-processor.h includes/backend/galois.h includes/backend/reed-solomon.h includes/backend/charsets.h includes/backend/firecode-checker.h includes/backend/dab-processor.h includes/backend/dab-virtual.h includes/backend/audio/mp2processor.h includes/backend/audio/mp4processor.h includes/backend/audio/faad-decoder.h includes/backend/data/data-processor.h includes/backend/data/pad-handler.h includes/backend/data/virtual-datahandler.h includes/backend/data/ip-datahandler.h includes/backend/data/mot-databuilder.h includes/backend/data/mot-data.h includes/backend/data/journaline-datahandler.h includes/backend/data/journaline/dabdatagroupdecoder.h includes/backend/data/journaline/crc_8_16.h includes/backend/data/journaline/log.h includes/backend/data/journaline/newssvcdec_impl.h includes/backend/data/journaline/Splitter.h includes/backend/data/journaline/dabdgdec_impl.h includes/backend/data/journaline/newsobject.h includes/backend/data/journaline/NML.h includes/output/audio-base.h includes/output/audiosink.h includes/output/fir-filters.h includes/various/fft.h includes/various/ringbuffer.h includes/various/Xtan2.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp gui.cpp src/backend/eti-controller.cpp src/backend/fib-processor.cpp src/backend/galois.cpp src/backend/reed-solomon.cpp src/backend/charsets.cpp src/backend/firecode-checker.cpp src/backend/dab-virtual.cpp src/backend/dab-processor.cpp src/backend/audio/mp2processor.cpp src/backend/audio/mp4processor.cpp src/backend/data/data-processor.cpp src/backend/data/pad-handler.cpp src/backend/data/virtual-datahandler.cpp src/backend/data/ip-datahandler.cpp src/backend/data/mot-databuilder.cpp src/backend/data/mot-data.cpp src/backend/data/journaline-datahandler.cpp src/backend/data/journaline/crc_8_16.c src/backend/data/journaline/log.c src/backend/data/journaline/newssvcdec_impl.cpp src/backend/data/journaline/Splitter.cpp src/backend/data/journaline/dabdgdec_impl.c src/backend/data/journaline/newsobject.cpp src/backend/data/journaline/NML.cpp src/output/audio-base.cpp src/output/audiosink.cpp src/output/fir-filters.cpp src/various/fft.cpp src/various/Xtan2.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents gui.ui $(DISTDIR)/
 
 
@@ -717,9 +719,9 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib64/qt5/mkspecs/features/data/dummy.cpp
 	g++ -pipe -flto -ffast-math -O2 -Wall -W -dM -E -o moc_predefs.h /usr/lib64/qt5/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_gui.cpp moc_eti-controller.cpp moc_fib-processor.cpp moc_mp2processor.cpp moc_mp4processor.cpp moc_faad-decoder.cpp moc_pad-handler.cpp moc_virtual-datahandler.cpp moc_ip-datahandler.cpp moc_mot-data.cpp moc_audio-base.cpp moc_audiosink.cpp
+compiler_moc_header_make_all: moc_gui.cpp moc_eti-controller.cpp moc_fib-processor.cpp moc_mp2processor.cpp moc_mp4processor.cpp moc_faad-decoder.cpp moc_data-processor.cpp moc_pad-handler.cpp moc_virtual-datahandler.cpp moc_ip-datahandler.cpp moc_mot-data.cpp moc_audio-base.cpp moc_audiosink.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_gui.cpp moc_eti-controller.cpp moc_fib-processor.cpp moc_mp2processor.cpp moc_mp4processor.cpp moc_faad-decoder.cpp moc_pad-handler.cpp moc_virtual-datahandler.cpp moc_ip-datahandler.cpp moc_mot-data.cpp moc_audio-base.cpp moc_audiosink.cpp
+	-$(DEL_FILE) moc_gui.cpp moc_eti-controller.cpp moc_fib-processor.cpp moc_mp2processor.cpp moc_mp4processor.cpp moc_faad-decoder.cpp moc_data-processor.cpp moc_pad-handler.cpp moc_virtual-datahandler.cpp moc_ip-datahandler.cpp moc_mot-data.cpp moc_audio-base.cpp moc_audiosink.cpp
 moc_gui.cpp: includes/dab-constants.h \
 		ui_gui.h \
 		includes/various/ringbuffer.h \
@@ -778,6 +780,13 @@ moc_faad-decoder.cpp: includes/backend/audio/neaacdec.h \
 		moc_predefs.h \
 		/usr/lib64/qt5/bin/moc
 	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/src -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/includes -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/includes/backend/audio -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/includes/backend/data -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/includes/backend/data/journaline -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/includes/output -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/includes/various -I/usr/local/include -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include includes/backend/audio/faad-decoder.h -o moc_faad-decoder.cpp
+
+moc_data-processor.cpp: includes/backend/dab-processor.h \
+		includes/backend/dab-virtual.h \
+		includes/backend/data/data-processor.h \
+		moc_predefs.h \
+		/usr/lib64/qt5/bin/moc
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/src -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/includes -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/includes/backend -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/includes/backend/audio -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/includes/backend/data -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/includes/backend/data/journaline -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/includes/output -I/usr/shared/sdr-j-development/systems/eti-stuff/eti-backend/includes/various -I/usr/local/include -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I/usr/include/c++/6.3.1 -I/usr/include/c++/6.3.1/x86_64-redhat-linux -I/usr/include/c++/6.3.1/backward -I/usr/lib/gcc/x86_64-redhat-linux/6.3.1/include -I/usr/local/include -I/usr/include includes/backend/data/data-processor.h -o moc_data-processor.cpp
 
 moc_pad-handler.cpp: gui.h \
 		includes/dab-constants.h \
@@ -879,8 +888,7 @@ eti-controller.o: src/backend/eti-controller.cpp includes/backend/eti-controller
 		includes/backend/firecode-checker.h \
 		includes/backend/reed-solomon.h \
 		includes/backend/galois.h \
-		includes/backend/data/pad-handler.h \
-		includes/backend/data/msc-datagroup.h
+		includes/backend/data/pad-handler.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o eti-controller.o src/backend/eti-controller.cpp
 
 fib-processor.o: src/backend/fib-processor.cpp includes/backend/fib-processor.h \
@@ -946,6 +954,21 @@ mp4processor.o: src/backend/audio/mp4processor.cpp includes/backend/audio/mp4pro
 		includes/backend/rs1.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mp4processor.o src/backend/audio/mp4processor.cpp
 
+data-processor.o: src/backend/data/data-processor.cpp includes/dab-constants.h \
+		includes/backend/data/data-processor.h \
+		includes/backend/dab-processor.h \
+		includes/backend/dab-virtual.h \
+		includes/backend/data/virtual-datahandler.h \
+		includes/backend/data/ip-datahandler.h \
+		includes/backend/data/mot-databuilder.h \
+		includes/backend/data/journaline-datahandler.h \
+		includes/backend/data/journaline/dabdatagroupdecoder.h \
+		gui.h \
+		ui_gui.h \
+		includes/various/ringbuffer.h \
+		includes/backend/fib-processor.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o data-processor.o src/backend/data/data-processor.cpp
+
 pad-handler.o: src/backend/data/pad-handler.cpp includes/backend/data/pad-handler.h \
 		gui.h \
 		includes/dab-constants.h \
@@ -955,20 +978,6 @@ pad-handler.o: src/backend/data/pad-handler.cpp includes/backend/data/pad-handle
 		includes/backend/charsets.h \
 		includes/backend/data/mot-data.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o pad-handler.o src/backend/data/pad-handler.cpp
-
-msc-datagroup.o: src/backend/data/msc-datagroup.cpp includes/dab-constants.h \
-		includes/backend/data/msc-datagroup.h \
-		includes/backend/dab-processor.h \
-		includes/various/ringbuffer.h \
-		includes/backend/data/virtual-datahandler.h \
-		includes/backend/data/ip-datahandler.h \
-		includes/backend/data/mot-databuilder.h \
-		includes/backend/data/journaline-datahandler.h \
-		includes/backend/data/journaline/dabdatagroupdecoder.h \
-		gui.h \
-		ui_gui.h \
-		includes/backend/fib-processor.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o msc-datagroup.o src/backend/data/msc-datagroup.cpp
 
 virtual-datahandler.o: src/backend/data/virtual-datahandler.cpp includes/backend/data/virtual-datahandler.h \
 		includes/dab-constants.h
@@ -1080,6 +1089,9 @@ moc_mp4processor.o: moc_mp4processor.cpp
 
 moc_faad-decoder.o: moc_faad-decoder.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_faad-decoder.o moc_faad-decoder.cpp
+
+moc_data-processor.o: moc_data-processor.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_data-processor.o moc_data-processor.cpp
 
 moc_pad-handler.o: moc_pad-handler.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_pad-handler.o moc_pad-handler.cpp

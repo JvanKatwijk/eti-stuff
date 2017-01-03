@@ -110,8 +110,17 @@ uint16_t	genpoly		= 0x1021;
 void	mp4Processor::addtoFrame (uint8_t *V) {
 int16_t	i, j;
 int16_t	nbytes	= 24 * bitRate / 8;
+uint8_t outV [nbytes];
 
-	memcpy (&frameBytes [blockFillIndex * nbytes], V, nbytes);
+	for (i = 0; i < nbytes; i ++) {
+	   outV [i] = 0;
+	   for (j = 0; j < 8; j ++) {
+	      outV [i] <<= 1;
+	      outV [i] |= V [8 * i + j] == 0 ? 0 : 1;
+	   }
+	}
+
+	memcpy (&frameBytes [blockFillIndex * nbytes], outV, nbytes);
 	blocksInBuffer ++;
 	blockFillIndex = (blockFillIndex + 1) % 5;
 
