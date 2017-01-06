@@ -180,7 +180,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	     ./includes/backend/data/ip-datahandler.h
 	     ./includes/backend/data/journaline-datahandler.h
 	     ./includes/backend/data/mot-databuilder.h
-	     ./includes/backend/data/msc-datagroup.h
+             ./includes/backend/data/data-processor.h
 	)
 
 #
