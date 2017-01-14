@@ -43,8 +43,8 @@ int16_t	i, j;
 	ordernumber	= 1;
 	theDirectory	= NULL;
 	old_slide	= NULL;
-	connect (this, SIGNAL (the_picture (QByteArray, int)),
-	         mr, SLOT (showMOT (QByteArray, int)));
+	connect (this, SIGNAL (the_picture (QByteArray, int, QString)),
+	         mr, SLOT (showMOT (QByteArray, int, QString)));
 }
 
 	 	motHandler::~motHandler (void) {
@@ -312,44 +312,31 @@ int16_t	i;
 //	we have data for all directory entries
 void	motHandler::handleComplete (motElement *p) {
 int16_t i;
-//	if (p -> contentType != 2) {
-//	   fprintf (stderr, "going to write file %s\n", (p ->  name). toLatin1 (). data ());
-//	   checkDir (p -> name);
-//	   FILE *x = fopen (((p -> name). toLatin1 (). data ()), "w");
-//	   if (x == NULL)
-//	      fprintf (stderr, "cannot write file %s\n",
-//	                                     (p -> name). toLatin1 (). data ());
-//	   else {
-//	      (void)fwrite ((p -> body). data (), 1, p -> bodySize, x);
-//	      fclose (x);
-//	   }
-//	   if (p -> contentType != 2)
-//	      return;
-//	}
 
-	if (p -> name != QString ("")) {
-	   fprintf (stderr, "going to write file %s\n",
-	                           (p ->  name). toLatin1 (). data ());
-	   checkDir (p -> name);
-	   FILE *x = fopen (((p -> name). toLatin1 (). data ()), "w");
-	   if (x == NULL)
-	      fprintf (stderr, "cannot write file %s\n",
-	                            (p -> name). toLatin1 (). data ());
-	   else {
-	      (void)fwrite ((p -> body). data (), 1, p -> bodySize, x);
-	      fclose (x);
+	if (p -> contentType != 2) {
+	   if (p -> name != QString ("")) {
+	      fprintf (stderr, "going to write file %s\n",
+	                              (p ->  name). toLatin1 (). data ());
+	      checkDir (p -> name);
+	      FILE *x = fopen (((p -> name). toLatin1 (). data ()), "w+b");
+	      if (x == NULL)
+	         fprintf (stderr, "cannot write file %s\n",
+	                               (p -> name). toLatin1 (). data ());
+	      else {
+	         (void)fwrite ((p -> body). data (), 1, p -> bodySize, x);
+	         fclose (x);
+	      }
 	   }
+	   return;
 	}
-
-	if (p -> contentType != 2)
-	      return;
 
 	if (old_slide != NULL)
 	   for (i = 0; i < p ->  numofSegments; i ++)
 	      p -> marked [i] = false;
 	fprintf (stderr, "going to show picture %s\n",
 	                                   (p -> name). toLatin1 (). data ());
-	the_picture (p -> body, p -> contentsubType);
+	checkDir (p -> name);
+	the_picture (p -> body, p -> contentsubType, p -> name);
 	old_slide	= p;
 }
 

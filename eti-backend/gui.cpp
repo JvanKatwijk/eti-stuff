@@ -307,6 +307,7 @@ void	RadioInterface::init_your_gui (void) {
   *	of the ensemble and selecting an item
   */
 	pictureLabel	= NULL;
+	saveSlide	= dabSettings -> value ("saveSlides", 1). toInt ();
 	ensemble.setStringList (Services);
 	ensembleDisplay	-> setModel (&ensemble);
 	Services << " ";
@@ -399,17 +400,32 @@ void	RadioInterface::showLabel	(QString s) {
 //	showMOT is triggered by the MOT handler,
 //	the GUI may decide to ignore the data sent
 //	since data is only sent whenever a data channel is selected
-void	RadioInterface::showMOT		(QByteArray data, int subtype) {
+void	RadioInterface::showMOT		(QByteArray data,
+	                                 int subtype, QString pictureName) {
 	if (!running)
 	   return;
 	if (pictureLabel != NULL)
 	   delete pictureLabel;
 	pictureLabel	= new QLabel (NULL);
 
+	const char *type =
+	           subtype == 0 ? "GIF" :
+	           subtype == 1 ? "JPG" :
+	           subtype == 2 ? "BMP" : "PNG";
 	QPixmap p;
-	p. loadFromData (data, subtype == 0 ? "GIF" :
-	                       subtype == 1 ? "JPEG" :
-	                       subtype == 2 ? "BMP" : "PNG");
+	p. loadFromData (data, type);
+	
+	if (saveSlide) {
+	   FILE *x = fopen ((pictureName. toLatin1 (). data ()), "w+b");
+	   if (x == NULL)
+	      fprintf (stderr, "cannot write file %s\n",
+	                            pictureName. toLatin1 (). data ());
+	   else {
+	      (void)fwrite (data. data (), 1, data.length (), x);
+	      fclose (x);
+	   }
+	}
+	
 	pictureLabel ->  setPixmap (p);
 	pictureLabel ->  show ();
 }

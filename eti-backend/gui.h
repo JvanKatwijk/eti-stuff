@@ -71,6 +71,7 @@ private:
 const	char		*get_programm_type_string (uint8_t);
 const	char		*get_programm_language_string (uint8_t);
 	QLabel		*pictureLabel;
+	bool		saveSlide;
 	void		init_your_gui		(void);
 	bool		audioDumping;
 	SNDFILE		*audiofilePointer;
@@ -90,7 +91,7 @@ public slots:
 	void		show_ficCRC             (bool);
 	void		show_ipErrors		(int);
 	void		showLabel		(QString);
-	void		showMOT			(QByteArray, int);
+	void		showMOT			(QByteArray, int, QString);
 	void		changeinConfiguration	(void);
 	void		newAudio		(int);
 	void		handle_fibData		(void);
