@@ -28,15 +28,15 @@
  * 	frames into the ffmpeg or faad decoding library
  */
 //
-#include	"dab-constants.h"
+#include	<QObject>
 #include	<stdio.h>
 #include	<stdint.h>
+#include	"dab-constants.h"
 #include	"audio-base.h"
 #include	"dab-processor.h"
 #include	"faad-decoder.h"
 #include	"firecode-checker.h"
 #include	"reed-solomon.h"
-#include	<QObject>
 #include	"pad-handler.h"
 
 class	RadioInterface;
@@ -53,13 +53,6 @@ private:
 	RadioInterface	*myRadioInterface;
 	padHandler	my_padhandler;
 	bool		processSuperframe (uint8_t [], int16_t);
-	void		handle_aacFrame (uint8_t *,
-	                                 int16_t,
-	                                 uint8_t,
-	                                 uint8_t,
-	                                 uint8_t,
-	                                 uint8_t,
-	                                 bool*);
 	int16_t		superFramesize;
 	int16_t		blockFillIndex;
 	int16_t		blocksInBuffer;
@@ -75,21 +68,16 @@ private:
 	int16_t		au_errors;
 	int16_t		errorRate;
 	firecode_checker	fc;
-	reedSolomon	my_rsDecoder;
+	reedSolomon	the_rsDecoder;
 	uint8_t		*outVector;
 //	and for the aac decoder
 	faadDecoder	aacDecoder;
 	int16_t		frameCount;
-	int16_t		successFrames;
 	int16_t		frameErrors;
-	int16_t		rsErrors;
-	int16_t		aacErrors;
-	int16_t		aacFrames;
 	int16_t		charSet;
 signals:
-	void		show_frameErrors		(int);
-	void		show_rsErrors			(int);
-	void		show_aacErrors			(int);
+	void		show_successRate		(int);
+	void		showLabel			(QString);
 	void		isStereo			(bool);
 };
 

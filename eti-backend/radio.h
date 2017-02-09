@@ -24,8 +24,8 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef _GUI
-#define _GUI
+#ifndef _RADIO_
+#define _RADIO_
 
 #include	"dab-constants.h"
 #include	<QMainWindow>
@@ -33,9 +33,10 @@
 #include	<QStringListModel>
 #include	<QComboBox>
 #include	<QLabel>
-#include	<sndfile.h>
-#include	"ui_gui.h"
 #include	<QTimer>
+#include	<sndfile.h>
+#include	"ui_eti-backend.h"
+#include	"ui_technical_data.h"
 #include	"ringbuffer.h"
 #include	"fib-processor.h"
 
@@ -45,11 +46,11 @@ class	audioBase;
 class	etiController;
 
 /*
- *	GThe main gui object. It inherits from
+ *	The main gui object. It inherits from
  *	QDialog and the generated form
  */
 class RadioInterface: public QMainWindow,
-		      private Ui_dab_rpi {
+		      private Ui_eti_backend {
 Q_OBJECT
 public:
 		RadioInterface		(QSettings	*,
@@ -57,6 +58,12 @@ public:
 	                                 QWidget *parent = NULL);
 		~RadioInterface		();
 
+private:
+	Ui_technical_data	techData;
+	QFrame		dataDisplay;
+	bool		show_data;
+private slots:
+	void		toggle_show_data	(void);
 private:
 	QSettings	*dabSettings;
 	void		setModeParameters	(uint8_t);
@@ -87,8 +94,11 @@ public slots:
 	void		clearEnsemble		(void);
 	void		addtoEnsemble		(const QString &);
 	void		nameofEnsemble		(int, const QString &);
-	void		show_successRate	(int);
-	void		show_ficCRC             (bool);
+	void            show_frameErrors        (int);
+        void            show_rsErrors           (int);
+        void            show_aacErrors          (int);
+        void            show_ficSuccess         (bool);
+
 	void		show_ipErrors		(int);
 	void		showLabel		(QString);
 	void		showMOT			(QByteArray, int, QString);
@@ -98,6 +108,7 @@ public slots:
 //
 	void		show_mscErrors		(int);
 	void		setStereo		(bool);
+	void		set_streamSelector	(int);
 private slots:
 //
 //	Somehow, these must be connected to the GUI

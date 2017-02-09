@@ -8,14 +8,12 @@ TEMPLATE	= app
 TARGET		= eti-frontend
 QT		+= widgets 
 CONFIG		+= console
-QMAKE_CFLAGS	+=  -flto -ffast-math 
-QMAKE_CXXFLAGS	+=  -flto -ffast-math 
-QMAKE_LFLAGS	+=  -flto 
-#QMAKE_CFLAGS	+=  -g
-#QMAKE_CXXFLAGS	+=  -g
-#QMAKE_LFLAGS	+=  -g
-#	Uncomment this when compiling on/for a machine without sse support
-#CONFIG		+= NO_SSE_SUPPORT 
+#QMAKE_CFLAGS	+=  -flto -ffast-math 
+#QMAKE_CXXFLAGS	+=  -flto -ffast-math 
+#QMAKE_LFLAGS	+=  -flto 
+QMAKE_CFLAGS	+=  -g
+QMAKE_CXXFLAGS	+=  -g
+QMAKE_LFLAGS	+=  -g
 DEPENDPATH += . \
 	      ./src \
 	      ./includes \
@@ -55,7 +53,9 @@ HEADERS		+= ./gui.h \
 	   ./includes/backend/fib-processor.h  \
 #	   ./includes/backend/dab_tables.h \
 	   ./includes/backend/eti-generator.h \
-	   ./includes/backend/deconvolve.h \
+	   ./includes/backend/protection.h \
+	   ./includes/backend/eep-protection.h \
+	   ./includes/backend/uep-protection.h \
            ./includes/various/fft.h \
 	   ./includes/various/ringbuffer.h \
 	   ./includes/various/Xtan2.h \
@@ -75,7 +75,9 @@ SOURCES += ./main.cpp \
 	   ./src/backend/viterbi.cpp \
 	   ./src/backend/fic-handler.cpp \
 	   ./src/backend/eti-generator.cpp \
-	   ./src/backend/deconvolve.cpp \
+	   ./src/backend/protection.cpp \
+	   ./src/backend/eep-protection.cpp \
+	   ./src/backend/uep-protection.cpp \
 	   ./src/backend/fib-processor.cpp  \
 	   ./src/backend/protTables.cpp \
            ./src/various/fft.cpp \
@@ -91,9 +93,8 @@ FORMS 		+= ./gui.ui
 #
 #	Note
 unix {
-CONFIG		+= dabstick_osmo
+CONFIG		+= dabstick
 CONFIG		+= sdrplay-exp
-#CONFIG		+= sdrplay
 CONFIG		+= rtl_tcp
 CONFIG		+= airspy
 DESTDIR		= ./linux-bin
@@ -114,29 +115,20 @@ LIBS		+= -lwinpthread
 LIBS		+= -lwinmm
 LIBS 		+= -lstdc++
 LIBS		+= -lws2_32
+LIBS		+= -lsndfile
 LIBS		+= -lfaad
 LIBS		+= -lusb-1.0
 LIBS		+= -lz
-DEFINES		+= MOT_BASICS__		# use at your own risk
 DEFINES		+= MSC_DATA__		# use at your own risk
-CONFIG		+= NO_SSE_SUPPORT 
 CONFIG		+= extio
 CONFIG		+= airspy
 CONFIG		+= rtl_tcp
-CONFIG		+= dabstick_osmo
+CONFIG		+= dabstick
 CONFIG		+= sdrplay-exp
 #CONFIG		+= tcp-streamer
-FORMS 		+= ./gui_1.ui 
-HEADERS		+= ./gui.h
-SOURCES		+= ./gui.cpp
+FORMS 		+= ./gui.ui 
 }
 
-NO_SSE_SUPPORT {
-	SOURCES		+= ./src/backend/spiral-code/spiral-no-sse.c 
-} else {
-	DEFINES		+= SSE_AVAILABLE
-	SOURCES		+= ./src/backend/spiral-code/spiral-sse.c 
-}
 
 #######################################
 

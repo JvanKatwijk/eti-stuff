@@ -1,6 +1,5 @@
 #
 /*
- *
  *    Copyright (C) 2010, 2011, 2012
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
@@ -32,40 +31,26 @@
 #include	<stdio.h>
 #include	<unistd.h>
 #include	"dab-constants.h"
-#include	"gui.h"
+#include	"radio.h"
 
-void	fullPathfor (const char *v, char *out) {
-int16_t	i;
-QString	homeDir;
+QString	fullPathfor (QString v) {
+QString	fileName;
 
-	if (v == NULL) {
-	   sprintf (out, "%s", "/tmp/xxx");
-	   return;	// should not happen
-	}
+	if (v == QString ("")) 
+	   return QString ("/tmp/xxx");
 
-	if (v [0] == '/') {		// full path specified
-	   sprintf (out, "%s", v);
-	   return;
-	}
+	if (v. at (0) == QChar ('/')) 		// full path specified
+	   return v;
 
-	homeDir = QDir::homePath ();
-	homeDir. append ("/");
-	homeDir. append (v);
-	homeDir	= QDir::toNativeSeparators (homeDir);
-	sprintf (out, "%s", homeDir. toLatin1 (). data ());
-	fprintf (stderr, "ini file = %s\n", out);
+	fileName = QDir::homePath ();
+	fileName. append ("/");
+	fileName. append (v);
+	fileName = QDir::toNativeSeparators (fileName);
 
-	for (i = 0; out [i] != 0; i ++);
-	if (out [i - 4] != '.' ||
-	    out [i - 3] != 'i' ||
-	    out [i - 2] != 'n' ||
-	    out [i - 1] != 'i') {
-	    out [i] = '.';
-	    out [i + 1] = 'i';
-	    out [i + 2] = 'n';
-	    out [i + 3] = 'i';
-	    out [i + 4] = 0;
-	}
+	if (!fileName. endsWith (".ini"))
+	   fileName. append (".ini");
+
+	return fileName;
 }
 
 bool	fileExists (char *v) {
@@ -85,32 +70,34 @@ int	main (int argc, char **argv) {
  *	The default values
  */
 QSettings	*ISettings;		// ini file
-char		*defaultInit		= (char *)alloca (512 * sizeof (char));
-char		inputName [512];
+QString		initFileName = QString ("");
+QString		inputName;
 RadioInterface	*MyRadioInterface;
 int32_t		opt;
 FILE		*inputFile	= NULL;
 
-	fullPathfor (DEFAULT_INI, defaultInit);
 	while ((opt = getopt (argc, argv, "LABCi:F:f:")) != -1) {
 	   switch (opt) {
 	      case 'i':
-	         fullPathfor (optarg, defaultInit);
+	         initFileName = fullPathfor (optarg);
 	         break;
 	      case 'f':
 	      case 'F':
-	         fullPathfor (optarg, inputName);
-	         inputFile	= fopen (inputName, "r");
+	         inputName	= fullPathfor (optarg);
+	         inputFile	= fopen (inputName. toLatin1 (). data (), "r");
 	         if (inputFile == NULL)
-	            fprintf (stderr, "opening %s failed\n", inputName);
+	            fprintf (stderr, "opening %s failed\n",
+	                                   inputName. toLatin1 (). data ());
 	         break;
 	   }
 	}
 
+	if (initFileName == QString (""))
+	   initFileName = fullPathfor (DEFAULT_INI);
 	if (inputFile == NULL)
 	   inputFile	= stdin;
 
-	ISettings	= new QSettings (defaultInit, QSettings::IniFormat);
+	ISettings	= new QSettings (initFileName, QSettings::IniFormat);
 /*
  *	Before we connect control to the gui, we have to
  *	instantiate

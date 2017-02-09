@@ -157,7 +157,7 @@ typedef	struct P DabParams;
 typedef struct {
 	int16_t subchId;
 	int16_t	startAddr;
-	uint8_t	uepFlag;
+	bool	shortForm;
 	int16_t	protLevel;
 	int16_t DSCTy;
 	int16_t	length;
@@ -170,7 +170,7 @@ typedef struct {
 typedef	struct {
 	int16_t	subchId;
 	int16_t	startAddr;
-	uint8_t	uepFlag;
+	bool	shortForm;
 	int16_t	protLevel;
 	int16_t	length;
 	int16_t	bitRate;
@@ -343,5 +343,28 @@ int16_t	Sum	= 0;
 	return Sum == 0;
 }
 
+static inline
+bool	check_crc_bytes (uint8_t *msg, int16_t len) {
+int i, j;
+uint16_t	accumulator	= 0xFFFF;
+uint16_t	crc;
+uint16_t	genpoly		= 0x1021;
+
+	for (i = 0; i < len; i ++) {
+	   int16_t data = msg [i] << 8;
+	   for (j = 8; j > 0; j--) {
+	      if ((data ^ accumulator) & 0x8000)
+	         accumulator = ((accumulator << 1) ^ genpoly) & 0xFFFF;
+	      else
+	         accumulator = (accumulator << 1) & 0xFFFF;
+	      data = (data << 1) & 0xFFFF;
+	   }
+	}
+//
+//	ok, now check with the crc that is contained
+//	in the au
+	crc	= ~((msg [len] << 8) | msg [len + 1]) & 0xFFFF;
+	return (crc ^ accumulator) == 0;
+}
 #endif
 

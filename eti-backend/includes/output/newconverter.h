@@ -4,7 +4,7 @@
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
- *    This file is part of the SDR-J.
+ *    This file is part of the SDR-J
  *    Many of the ideas as implemented in SDR-J are derived from
  *    other work, made available through the GNU general Public License. 
  *    All copyrights of the original authors are recognized.
@@ -24,45 +24,40 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#ifndef	__RTP_STREAMER
-#define	__RTP_STREAMER
+#ifndef	__NEW_CONVERTER
+#define	__NEW_CONVERTER
 
-#include	<dab-constants.h>
-#include	<QString>
-#include	<ringbuffer.h>
-#include	"rtpsession.h"
-#include	"rtpsessionparams.h"
-#include	"rtpudpv4transmitter.h"
-#include	"rtpipv4address.h"
-#include	"rtptimeutilities.h"
-#include	"rtppacket.h"
-#include	"audio-base.h"
+#include	<math.h>
+#include	<complex>
+#include	<stdint.h>
+#include	<unistd.h>
+#include	<limits>
+#include	<samplerate.h>
+#include	"dab-constants.h"
 
-using namespace jrtplib;
-
-class rtpStreamer : public audioBase {
-Q_OBJECT
-public:
-			rtpStreamer (QString name, int32_t port,
-	                             RingBuffer<int16_t> *);
-			~rtpStreamer (void);
-	void		audioOutput (float *, int);
+class	newConverter {
 private:
-	QString		theName;
-	int32_t		thePort;
-RingBuffer<float>	*theBuffer;
-RingBuffer<float>	*inBuffer;
-	RTPSession	session;
-	RTPSessionParams sessionparams;
-	RTPUDPv4TransmissionParams transparams;
-	void		sendBuffer	(uint8_t *, int16_t);
-	float		left [481];
-	float		right [481];
-	uint8_t		buffer [1024];
-	int16_t		fillP;
-	int16_t		convIndex;
-	int		mapTable_int [481];
-	float		mapTable_float [481];
+	int32_t		inRate;
+	int32_t		outRate;
+	double		ratio;
+	int32_t		outputLimit;
+	int32_t		inputLimit;
+	SRC_STATE	*converter;
+	SRC_DATA	*src_data;
+	float		*inBuffer;
+	float		*outBuffer;
+	int32_t		inp;
+public:
+		newConverter (int32_t inRate, int32_t outRate, 
+	                      int32_t inSize);
+
+		~newConverter (void);
+
+bool	convert (DSPCOMPLEX v,
+	                       DSPCOMPLEX *out, int32_t *amount);
+
+int32_t	getOutputsize (void);
 };
+
 #endif
 

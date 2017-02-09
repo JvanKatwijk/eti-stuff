@@ -204,26 +204,6 @@ uint8_t	mask	= 1 << (7 - o);
 	return  (v & mask) ? 1 : 0;
 }
 	
-// depends: POLYS, RATE, COMPUTETYPE
-// 	encode was only used for testing purposes
-//void encode (/*const*/ unsigned char *bytes, COMPUTETYPE *symbols, int nbits) {
-//int	i, k;
-//int	polys [RATE] = POLYS;
-//int	sr = 0;
-//
-//// FIXME: this is slowish
-//// -- remember about the padding!
-//	for (i = 0; i < nbits + (K - 1); i++) {
-//	   int b = bytes[i/8];
-//	   int j = i % 8;
-//	   int bit = (b >> (7-j)) & 1;
-//
-//	   sr = (sr << 1) | bit;
-//	   for (k = 0; k < RATE; k++)
-//	      *(symbols++) = parity(sr & polys[k]);
-//	}
-//}
-
 //	Note that our DAB environment maps the softbits to -127 .. 127
 //	we have to map that onto 0 .. 255
 
@@ -237,8 +217,7 @@ uint32_t	i;
 	   if (temp > 255) temp = 255;
 	   symbols [i] = temp;
 	}
-//	update_viterbi_blk_GENERIC (&vp, symbols, frameBits + (K - 1));
-	update_viterbi_blk_SPIRAL (&vp, symbols, frameBits + (K - 1));
+	update_viterbi_blk_GENERIC (&vp, symbols, frameBits + (K - 1));
 	chainback_viterbi (&vp, data, frameBits, 0);
 
 	for (i = 0; i < (uint16_t)frameBits; i ++)
@@ -298,44 +277,6 @@ int32_t  s, i;
 	   vp -> new_metrics = (metric_t *)tmp;
 	}
 }
-/**
-  *	The "fast" implementation uses SSE instructions
-  *	The configuration file lets you define (or undefine)
-  *	that
-  */
-extern "C" {
-#ifndef	SSE_AVAILABLE
-void FULL_SPIRAL_no_sse (int, 
-#else
-void	FULL_SPIRAL_sse (int,
-#endif
-	                 COMPUTETYPE *Y,
-	                 COMPUTETYPE *X,
-	                 COMPUTETYPE *syms,
-	                 DECISIONTYPE *dec,
-	                 COMPUTETYPE *Branchtab);
-}
-
-void	viterbi::update_viterbi_blk_SPIRAL (struct v *vp,
-					    COMPUTETYPE *syms,
-					    int16_t nbits){
-decision_t *d = (decision_t *)vp -> decisions;
-int32_t s;
-
-	for (s = 0; s < nbits; s++)
-	   memset (d + s, 0, sizeof(decision_t));
-
-#ifndef	SSE_AVAILABLE
-	FULL_SPIRAL_no_sse (nbits,
-#else
-	FULL_SPIRAL_sse (nbits,
-#endif
-	                 vp -> new_metrics -> t,
-	                 vp -> old_metrics -> t,
-	                 syms,
-	                 d -> t, Branchtab);
-}
-
 //
 /* Viterbi chainback */
 void	viterbi::chainback_viterbi (struct v *vp,

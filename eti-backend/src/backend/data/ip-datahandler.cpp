@@ -21,7 +21,7 @@
  *
  */
 #include	"ip-datahandler.h"
-#include	"gui.h"
+#include	"radio.h"
 
 	ip_dataHandler::ip_dataHandler (RadioInterface *mr,
 	                                bool	show_crcErrors) {

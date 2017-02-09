@@ -44,11 +44,11 @@
 #include	<QThread>
 #include	<stdio.h>
 #include	<stdint.h>
-#include	"deconvolve.h"
 #include	<stdio.h>
 #include	"dab-constants.h"
 #include	"ringbuffer.h"
 #include	"fic-handler.h"
+
 class	RadioInterface;
 
 typedef struct {

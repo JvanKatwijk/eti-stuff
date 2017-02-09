@@ -22,9 +22,9 @@
  *	This file will be included in mp4processor
 */
 #
-#include	<QObject>
 #include	"neaacdec.h"
-#include	"radio.h"
+#include	<QObject>
+#include	"gui.h"
 #include	"ringbuffer.h"
 
 
@@ -137,7 +137,6 @@ NeAACDecFrameInfo	hInfo;
 	sample_rate	= hInfo. samplerate;
 	samples		= hInfo. samples;
 	if ((sample_rate == 24000) ||
-	    (sample_rate == 32000) ||
 	    (sample_rate == 48000) ||
 	    (sample_rate !=  (long unsigned)baudRate))
 	      baudRate = sample_rate;
@@ -168,7 +167,7 @@ NeAACDecFrameInfo	hInfo;
 	      buffer [2 * i]	= ((int16_t *)outBuffer) [i];
 	      buffer [2 * i + 1] = buffer [2 * i];
 	   }
-	   audioBuffer	-> putDataIntoBuffer (buffer, samples);
+	   audioBuffer	-> putDataIntoBuffer (buffer, 2 * samples);
 	   if (audioBuffer -> GetRingBufferReadAvailable () > sample_rate / 8)
 	      newAudio (sample_rate);
 	}

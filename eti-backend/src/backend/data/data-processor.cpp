@@ -25,7 +25,7 @@
 #include	"ip-datahandler.h"
 #include	"mot-databuilder.h"
 #include	"journaline-datahandler.h"
-#include	"gui.h"
+#include	"radio.h"
 
 //	\class dataProcessor
 //	The main function of this class is to assemble the 

@@ -285,9 +285,8 @@ int16_t	option, protLevel, subChanSize;
 	(void)pd;		// not used right now, maybe later
 	ficList [SubChId]. id		= SubChId;
 	ficList [SubChId]. start_cu	= start_cu;
-	ficList [SubChId]. slForm	= getBits_1 (d, bitOffset + 16);
-	ficList [SubChId]. eepprot	= ficList [SubChId]. slForm;
-	if (ficList [SubChId]. slForm == 0) {	// short form
+	ficList [SubChId]. uepFlag	= getBits_1 (d, bitOffset + 16) == 0;
+	if (ficList [SubChId]. uepFlag) {	// short form
 	   ficList [SubChId]. uep_index  = getBits_6 (d, bitOffset + 18);
 	   uep_index = ficList [SubChId]. uep_index;
 	   ficList [SubChId]. size  	= ProtLevel [uep_index][0];
@@ -298,14 +297,13 @@ int16_t	option, protLevel, subChanSize;
 	}
 	else { 	// EEP long form
 	   option = getBits_3 (d, bitOffset + 17);
-	   if (!ficList [SubChId]. inUse)
-	      fprintf (stderr, "option = %d ", option);
 	   if (option == 0) { 		// A Level protection
 	      protLevel = getBits_2 (d, bitOffset + 20);
 //
 	      ficList [SubChId]. protlev = protLevel;
 	      subChanSize = getBits (d, bitOffset + 22, 10);
 	      ficList [SubChId]. size	= subChanSize;
+	      
 	      if (protLevel == 0)
 	         ficList [SubChId]. bitrate	= subChanSize / 12 * 8;
 	      if (protLevel == 1)
@@ -1028,11 +1026,10 @@ void	fib_processor::get_channelInfo (channel_data *d, int n) {
 	d	-> in_use	= ficList [n]. inUse;
 	d	-> id		= ficList [n]. id;
 	d	-> start_cu	= ficList [n]. start_cu;
-	d	-> eepprot	= ficList [n]. eepprot;
 	d	-> protlev	= ficList [n]. protlev;
 	d	-> size		= ficList [n]. size;
 	d	-> bitrate	= ficList [n]. bitrate;
-	d	-> slForm	= ficList [n]. slForm;
+	d	-> uepFlag	= ficList [n]. uepFlag;
 }
 
 void	fib_processor::get_CIFCount	(int16_t *high, int16_t *lo) {

@@ -21,9 +21,9 @@
  *
  * 	fib and fig processor
  */
-#include	"fib-processor.h"
 #include	<cstring>
-#include	"gui.h"
+#include	"radio.h"
+#include	"fib-processor.h"
 #include	"charsets.h"
 //
 //
@@ -113,7 +113,7 @@ int16_t	i;
 	         myRadioInterface,
 	         SLOT (changeinConfiguration (void)));
 	connect (this, SIGNAL (show_ficCRC (bool)),
-	         mr, SLOT (show_ficCRC (bool)));
+	         mr, SLOT (show_ficSuccess (bool)));
 }
 	
 	fib_processor::~fib_processor (void) {
@@ -317,45 +317,44 @@ int16_t	option, protLevel, subChanSize;
 	if (getBits_1 (d, bitOffset + 16) == 0) {	// short form
 	   tabelIndex = getBits_6 (d, bitOffset + 18);
 	   ficList [SubChId]. Length  	= ProtLevel [tabelIndex][0];
-	   ficList [SubChId]. uepFlag	= 0;
+	   ficList [SubChId]. shortForm	= true;
 	   ficList [SubChId]. protLevel	= ProtLevel [tabelIndex][1];
 	   ficList [SubChId]. BitRate	= ProtLevel [tabelIndex][2];
 	   bitOffset += 24;
 	}
 	else { 	// EEP long form
-	   ficList [SubChId]. uepFlag	= 1;
+	   ficList [SubChId]. shortForm	= false;
 	   option = getBits_3 (d, bitOffset + 17);
 	   if (option == 0) { 		// A Level protection
-	      protLevel = getBits_2 (d, bitOffset + 20) + 1;
+	      protLevel = getBits_2 (d, bitOffset + 20);
 //
-//	we encode the A level protection by adding 0100 to the level
-	      ficList [SubChId]. protLevel = protLevel + 0100;
+	      ficList [SubChId]. protLevel = protLevel;
 	      subChanSize = getBits (d, bitOffset + 22, 10);
 	      ficList [SubChId]. Length	= subChanSize;
-	      if (protLevel == 1)
+	      if (protLevel == 0)		// actually level 1
 	         ficList [SubChId]. BitRate	= subChanSize / 12 * 8;
-	      if (protLevel == 2)
+	      if (protLevel == 1)		// actually level 2
 	         ficList [SubChId]. BitRate	= subChanSize / 8 * 8;
-	      if (protLevel == 3)
+	      if (protLevel == 2)		// actually level 3
 	         ficList [SubChId]. BitRate	= subChanSize / 6 * 8;
-	      if (protLevel == 4)
+	      if (protLevel == 3)		// actually level 4
 	         ficList [SubChId]. BitRate	= subChanSize / 4 * 8;
 	   }
 	   else			// option should be 001
 	   if (option == 001) {		// B Level protection
-	      protLevel = getBits_2 (d, bitOffset + 20) + 1;
+	      protLevel = getBits_2 (d, bitOffset + 20);
 //
-//	we encode the B protection levels by adding a 0200 to the level
-	      ficList [SubChId]. protLevel = protLevel + 0200;
+//	we encode the B protection levels by adding a (1 << 2) to the level
+	      ficList [SubChId]. protLevel = protLevel + (1 << 2);
 	      subChanSize = getBits (d, bitOffset + 22, 10);
 	      ficList [SubChId]. Length = subChanSize;
-	      if (protLevel == 1)
+	      if (protLevel == 0)		// actually level 1
 	         ficList [SubChId]. BitRate	= subChanSize / 27 * 32;
-	      if (protLevel == 2)
+	      if (protLevel == 1)		// actually level 2
 	         ficList [SubChId]. BitRate	= subChanSize / 21 * 32;
-	      if (protLevel == 3)
+	      if (protLevel == 2)		// actally level 3
 	         ficList [SubChId]. BitRate	= subChanSize / 18 * 32;
-	      if (protLevel == 4)
+	      if (protLevel == 3)		// actually level 4
 	         ficList [SubChId]. BitRate	= subChanSize / 15 * 32;
 	   }
 
@@ -1004,15 +1003,25 @@ void	fib_processor::bind_audioService (int8_t TMid,
 	                                  int16_t ASCTy) {
 serviceId *s	= findServiceId	(SId);
 int16_t	i;
-	if (components [subChId]. inUse)
-	   return;
-	components [subChId]. inUse	= true;
-	components [subChId]. TMid	= TMid;
-	components [subChId]. componentNr = compnr;
-	components [subChId]. service	= s;
-	components [subChId]. subchannelId = subChId;
-	components [subChId]. PS_flag	= ps_flag;
-	components [subChId]. ASCTy	= ASCTy;
+int16_t firstFree       = -1;
+
+        for (i = 0; i < 64; i ++) {
+           if (!components [i]. inUse) {
+              if (firstFree == -1)
+                 firstFree = i;
+              continue;
+           }
+           if ((components [i]. service == s) &&
+               (components [i]. componentNr == compnr))
+              return;
+        }
+        components [firstFree]. inUse = true;
+        components [firstFree]. TMid    = TMid;
+        components [firstFree]. componentNr = compnr;
+        components [firstFree]. service = s;
+        components [firstFree]. subchannelId = subChId;
+        components [firstFree]. PS_flag = ps_flag;
+        components [firstFree]. ASCTy = ASCTy;
 }
 
 
@@ -1026,19 +1035,26 @@ void	fib_processor::bind_packetService (int8_t TMid,
 	                                   int16_t ps_flag,
 	                                   int16_t CAflag) {
 serviceId *s    = findServiceId (SId);
+int16_t i;
+int16_t firstFree       = -1;
 
-	if (s == NULL)
-	   return;
-	if (components [subChId]. inUse)
-	   return;
-
-	components [subChId]. inUse	= true;
-	components [subChId]. TMid	= TMid;
-	components [subChId]. service	= s;
-	components [subChId]. componentNr = compnr;
-	components [subChId]. SCId	= subChId;
-	components [subChId]. PS_flag	= ps_flag;
-	components [subChId]. CAflag	= CAflag;
+       for (i = 0; i < 64; i ++) {
+           if (!components [i]. inUse) {
+              if (firstFree == -1)
+                 firstFree = i;
+              continue;
+           }
+           if ((components [i]. service == s) &&
+               (components [i]. componentNr == compnr))
+              return;
+        }
+        components [firstFree]. inUse	= true;
+        components [firstFree]. TMid	= TMid;
+        components [firstFree]. service = s;
+        components [firstFree]. componentNr = compnr;
+        components [firstFree]. SCId	= subChId;
+        components [firstFree]. PS_flag = ps_flag;
+        components [firstFree]. CAflag	= CAflag;
 }
 
 void	fib_processor::setupforNewFrame (void) {
@@ -1063,38 +1079,6 @@ int16_t i;
 	selectedService	= -1;
 }
 
-void	fib_processor::printActions (int16_t ficno) {
-int16_t	i;
-uint16_t	subchId;
-
-	(void)ficno;
-	for (i = 0; i < 64; i ++) {
-	   if (!components [i]. inUse)
-	      continue;
-
-	   if ((uint16_t)(selectedService) !=
-	                        components [i]. service -> serviceId)
-	      continue;
-
-//	   fprintf (stderr, "%d >>> (component = %d) ", ficno, 
-//	                                 components [i]. componentNr);
-//	   for (j = 0; j < 16; j ++)
-//	      fprintf (stderr, "%1c", p [j]);
-//	   fprintf (stderr, "with SId = %d requests ", 
-//	                                       components [i]. service -> serviceId);
-//
-//	   fprintf (stderr, "SubChId = %d ", components [i]. subchannelId);
-	   subchId	= components [i]. subchannelId;
-
-//	   fprintf (stderr, "StartAdd = %d ", ficList [subchId]. StartAddr);
-//	   fprintf (stderr, "Length = %d ", ficList [subchId]. Length);
-//	   fprintf (stderr, "uepFlag = %d ", ficList [subchId]. uepFlag);
-//	   fprintf (stderr, "protLevel = %d ", ficList [subchId]. protLevel);
-//	   fprintf (stderr, "ASCTy = %d ", components [i]. ASCTy);
-//	   fprintf (stderr, "BitRate = %d\n", ficList [subchId]. BitRate);
-	}
-	(void)subchId;
-}
 
 uint8_t	fib_processor::kindofService (QString &s) {
 int16_t	i, j;
@@ -1161,7 +1145,7 @@ int32_t	selectedService;
 	     subchId	= components [j]. subchannelId;
 	      d	-> subchId	= subchId;
 	      d	-> startAddr	= ficList [subchId]. StartAddr;
-	      d	-> uepFlag	= ficList [subchId]. uepFlag;
+	      d	-> shortForm	= ficList [subchId]. shortForm;
 	      d	-> protLevel	= ficList [subchId]. protLevel;
 	      d	-> DSCTy	= components [j]. DSCTy;
 	      d	-> length	= ficList [subchId]. Length;
@@ -1207,7 +1191,7 @@ int16_t	i, j;
 	      subChId	= components [j]. subchannelId;
 	      d	-> subchId	= subChId;
 	      d	-> startAddr	= ficList [subChId]. StartAddr;
-	      d	-> uepFlag	= ficList [subChId]. uepFlag;
+	      d	-> shortForm	= ficList [subChId]. shortForm;
 	      d	-> protLevel	= ficList [subChId]. protLevel;
 	      d	-> length	= ficList [subChId]. Length;
 	      d	-> bitRate	= ficList [subChId]. BitRate;

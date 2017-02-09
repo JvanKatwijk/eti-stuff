@@ -29,10 +29,11 @@
 #define	__AUDIO_BASE__
 #include	"dab-constants.h"
 #include	<stdio.h>
-#include	"fir-filters.h"
+#include	<samplerate.h>
 #include	<sndfile.h>
 #include	<QMutex>
 #include	<QObject>
+#include	"newconverter.h"
 #include	"ringbuffer.h"
 
 
@@ -52,9 +53,9 @@ private:
 	void		audioOut_24000		(int16_t *, int32_t);
 	void		audioOut_32000		(int16_t *, int32_t);
 	void		audioOut_48000		(int16_t *, int32_t);
-	LowPassFIR	f_16000;
-	LowPassFIR	f_24000;
-	LowPassFIR	f_32000;
+	newConverter	converter_16;
+	newConverter	converter_24;
+	newConverter	converter_32;
 	SNDFILE		*dumpFile;
 	QMutex		myLocker;
 protected:

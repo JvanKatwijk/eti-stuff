@@ -22,13 +22,14 @@
  *
  */
 #
-#include	"eti-controller.h"
-#include	"gui.h"
 #include	<QThread>
+#include	"eti-controller.h"
+#include	"radio.h"
 #include	"fib-processor.h"
 #include	"mp2processor.h"
 #include	"mp4processor.h"
 #include	"data-processor.h"
+
 	etiController::etiController (RadioInterface *mr,
 	                              DabParams      *dp,
 	                              FILE           *f,
@@ -50,7 +51,8 @@
 void	etiController::stop		(void) {
 	running		= false;
 	msleep (100);
-	if (isRunning ()) terminate ();
+	if (isRunning ())
+	   terminate ();
 	wait ();
 }
 
@@ -110,10 +112,14 @@ bool	processingData	= false;
 	   }
 //
 //	OK, ready to read a frame
+//	However, we need some kind of clock. We know that we have 
+//	for 24 msec audio in each frame
+	   msleep (24);
 	   for (n_frame = 0; n_frame < 6144; n_frame += n) {
 	      n = fread (&buffer[n_frame], 1, 6144 - n_frame, input);
 	      if (n == 0) {
-	         fprintf (stderr, "End of file, exiting\n");
+	         fprintf (stderr, "End of file, restarting\n");
+	         fseek (input, 0, SEEK_SET);
 	         return;
 	      }
 

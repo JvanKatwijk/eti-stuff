@@ -29,25 +29,13 @@
 #include	<stdio.h>
 #include	<QDebug>
 #include	<QMessageBox>
-/*
- */
+#include	<QComboBox>
+
 	audioSink::audioSink	(int16_t latency,
-#ifdef	GUI_3
-	                         QStringList *s,
-#else
-	                         QComboBox *s,
-#endif
 	                         RingBuffer<int16_t> *b): audioBase (b) {
 int32_t	i;
 	this	-> latency	= latency;
-#ifdef	GUI_3
-	this	-> InterfaceList	= s;
-#else
-	this	-> streamSelector	= s;
-#endif
-
 	this	-> CardRate	= 48000;
-	this	-> latency	= latency;
 	_O_Buffer		= new RingBuffer<float>(2 * 32768);
 	portAudio		= false;
 	writerRunning		= false;
@@ -57,6 +45,7 @@ int32_t	i;
 	}
 
 	portAudio	= true;
+
 	qDebug ("Hostapis: %d\n", Pa_GetHostApiCount ());
 
 	for (i = 0; i < Pa_GetHostApiCount (); i ++)
@@ -67,16 +56,6 @@ int32_t	i;
 	for (i = 0; i < numofDevices; i ++)
 	   outTable [i] = -1;
 	ostream		= NULL;
-#ifdef	GUI_3
-	setupChannels (InterfaceList);
-#else
-	setupChannels (streamSelector);
-	connect (streamSelector, SIGNAL (activated (int)),
-	         this,  SLOT (set_streamSelector (int)));
-	streamSelector	-> show ();
-#endif
-	selectDefaultDevice ();
-	
 }
 
 	audioSink::~audioSink	(void) {
@@ -96,18 +75,20 @@ int32_t	i;
 
 	delete	_O_Buffer;
 	delete[] outTable;
-#ifndef	GUI_3
-	if (streamSelector != NULL)
-	   streamSelector	-> hide ();
-#endif
 }
 
-//
-bool	audioSink::selectDevice (int16_t odev) {
+bool	audioSink::selectDevice (int16_t idx) {
 PaError err;
-	fprintf (stderr, "select device with %d\n", odev);
-	if (!isValidDevice (odev))
+int16_t	outputDevice;
+
+	if (idx	== 0)
 	   return false;
+
+	outputDevice	= outTable [idx];
+	if (!isValidDevice (outputDevice)) {
+	   fprintf (stderr, "invalid device (%d) selected\n", outputDevice);
+	   return false;
+	}
 
 	if ((ostream != NULL) && !Pa_IsStreamStopped (ostream)) {
 	   paCallbackReturn = paAbort;
@@ -120,30 +101,26 @@ PaError err;
 	if (ostream != NULL)
 	   Pa_CloseStream (ostream);
 
-	outputParameters. device		= odev;
+	outputParameters. device		= outputDevice;
 	outputParameters. channelCount		= 2;
 	outputParameters. sampleFormat		= paFloat32;
 	outputParameters. suggestedLatency	= 
-	                          Pa_GetDeviceInfo (odev) ->
-	                                      defaultHighOutputLatency * 4;
-//	bufSize	= (int)((float)outputParameters. suggestedLatency);
-	bufSize	= latency * 10 * 256;
-
-//	if (bufSize < 0 || bufSize > 17300)
-//	   bufSize = 16384;
+	                          Pa_GetDeviceInfo (outputDevice) ->
+	                                      defaultLowOutputLatency;
+//	bufSize	= (int)((float)outputParameters. suggestedLatency * latency);
+	bufSize	= latency * 20 * 256;
 
 	outputParameters. hostApiSpecificStreamInfo = NULL;
 //
 	fprintf (stderr, "Suggested size for outputbuffer = %d\n", bufSize);
-	err = Pa_OpenStream (
-	             &ostream,
-	             NULL,
-	             &outputParameters,
-	             CardRate,
-	             bufSize,
-	             0,
-	             this	-> paCallback_o,
-	             this
+	err = Pa_OpenStream (&ostream,
+	                     NULL,
+	                     &outputParameters,
+	                     CardRate,
+	                     bufSize,
+	                     0,
+	                     this	-> paCallback_o,
+	                     this
 	      );
 
 	if (err != paNoError) {
@@ -266,14 +243,13 @@ int32_t	audioSink::cardRate	(void) {
 	return 48000;
 }
 
-#ifndef	GUI_3
 bool	audioSink::setupChannels (QComboBox *streamOutSelector) {
 uint16_t	ocnt	= 1;
 uint16_t	i;
 
 	for (i = 0; i <  numofDevices; i ++) {
 	   const QString so = 
-	             outputChannelwithRate (i, CardRate);
+	             outputChannelwithRate (i, 48000);
 	   qDebug ("Investigating Device %d\n", i);
 
 	   if (so != QString ("")) {
@@ -288,51 +264,7 @@ uint16_t	i;
 	qDebug () << "added items to combobox";
 	return ocnt > 1;
 }
-#else
-bool	audioSink::setupChannels (QStringList *streamOutSelector) {
-uint16_t	ocnt	= 1;
-uint16_t	i;
 
-	for (i = 0; i <  numofDevices; i ++) {
-	   const QString so = 
-	             outputChannelwithRate (i, CardRate);
-	   qDebug ("Investigating Device %d\n", i);
-
-	   if (so != QString ("")) {
-	      streamOutSelector -> append (so);
-	      outTable [ocnt] = i;
-	      qDebug (" (output):item %d wordt stream %d (%s)\n", ocnt , i,
-	                      so. toLatin1 ().data ());
-	      ocnt ++;
-	   }
-	}
-
-	qDebug () << "added items to combobox";
-	return ocnt > 1;
-}
-#endif
-
-bool	audioSink::set_streamSelector (int idx) {
-int16_t	outputDevice;
-
-	if (idx == 0)
-	   return false;
-
-	outputDevice = outTable [idx];
-	if (!isValidDevice (outputDevice)) {
-	   return false;
-	}
-
-	stop	();
-	if (!selectDevice (outputDevice)) {
-	   fprintf (stderr, "error selecting device\n");
-	   selectDefaultDevice ();
-	   return false;
-	}
-
-	qWarning () << "selected output device " << idx << outputDevice;
-	return true;
-}
 //
 int16_t	audioSink::numberofDevices	(void) {
 	return numofDevices;

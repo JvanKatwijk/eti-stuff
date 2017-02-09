@@ -2,7 +2,7 @@
 /*
  *    Copyright (C) 2013
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
- *    Lazy Chair Computing
+ *    Lazy Chair Programming
  *
  *    This file is part of the SDR-J (JSDR).
  *    SDR-J is free software; you can redistribute it and/or modify
@@ -18,41 +18,32 @@
  *    You should have received a copy of the GNU General Public License
  *    along with SDR-J; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
  */
+#
+#ifndef	EEP_PROTECTION
+#define	EEP_PROTECTION
 
-#ifndef	__PAD_HANDLER__
-#define	__PAD_HANDLER__
-
-#include	<QObject>
-#include	<cstring>
+#include	<stdio.h>
 #include	<stdint.h>
+#include	"protection.h"
+#include	"viterbi.h"
 
-class	RadioInterface;
-class	motHandler;
 
-class	padHandler: public QObject {
-Q_OBJECT
+	class eep_protection: public protection, public viterbi {
 public:
-		padHandler	(RadioInterface *);
-		~padHandler	(void);
-	void	processPAD	(uint8_t *);
+		eep_protection		(int16_t, int16_t);
+		~eep_protection		(void);
+bool		deconvolve		(int16_t *, int32_t, uint8_t *);
 private:
-		RadioInterface	*myRadioInterface;
-	void	handle_variablePAD	(uint8_t *, int16_t, uint8_t);
-	void	handle_shortPAD		(uint8_t *, int16_t);
-	void	dynamicLabel		(uint8_t *, int16_t, uint8_t);
-	void	add_MSC_element		(uint8_t *, int16_t);
-	void	build_MSC_segment	(uint8_t *, int16_t);
-	bool	pad_crc			(uint8_t *, int16_t);
-	QString	dynamicLabelText;
-	int16_t	charSet;
-	motHandler	*my_motHandler;
-	int16_t	msc_dataGroupLength;
-	int16_t msc_dataGroupIndex;
-	uint8_t	msc_dataGroupBuffer	[8192];
-	uint8_t	last_appType;
-signals:
-	void		showLabel			(QString);
+	int16_t		L1;
+	int16_t		L2;
+	int8_t		*PI1;
+	int8_t		*PI2;
+	int16_t		bitRate;
+	int32_t		outSize;
+	int16_t		*viterbiBlock;
 };
 
 #endif
+

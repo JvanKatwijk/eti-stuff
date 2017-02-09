@@ -1,5 +1,6 @@
 #
 /*
+ *
  *    Copyright (C) 2013
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
@@ -21,8 +22,8 @@
  *
  */
 #
-#ifndef	__DAB_AUDIO
-#define	__DAB_AUDIO
+#ifndef	DAB_AUDIO
+#define	DAB_AUDIO
 
 #include	"dab-virtual.h"
 #include	<QThread>
@@ -32,17 +33,18 @@
 #include	<stdio.h>
 
 class	dabProcessor;
-class	protection;
+class	uep_deconvolve;
+class	eep_deconvolve;
 class	RadioInterface;
 
 class	dabAudio:public QThread, public dabVirtual {
 public:
-	dabAudio	(RadioInterface	*mr,
-	                 uint8_t dabModus,
+	dabAudio	(uint8_t dabModus,
 	                 int16_t fragmentSize,
 	                 int16_t bitRate,
-	                 bool	uepFlag,
+	                 int16_t uepFlag,
 	                 int16_t protLevel,
+	                 RadioInterface *mr,
 	                 RingBuffer<int16_t> *);
 	~dabAudio	(void);
 int32_t	process		(int16_t *, int16_t);
@@ -56,7 +58,7 @@ volatile bool		running;
 	uint8_t		dabModus;
 	int16_t		fragmentSize;
 	int16_t		bitRate;
-	bool		uepFlag;
+	int16_t		uepFlag;
 	int16_t		protLevel;
 	uint8_t		*outV;
 	int16_t		**interleaveData;
@@ -64,7 +66,8 @@ volatile bool		running;
 	QWaitCondition	Locker;
 	QMutex		ourMutex;
 
-	protection	*protectionHandler;
+	uep_deconvolve	*uepProcessor;
+	eep_deconvolve	*eepProcessor;
 	dabProcessor	*our_dabProcessor;
 	RingBuffer<int16_t>	*Buffer;
 };

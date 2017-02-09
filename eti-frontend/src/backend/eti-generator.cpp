@@ -36,7 +36,8 @@
 #
 #include	"dab-constants.h"
 #include	"eti-generator.h"
-#include	"deconvolve.h"
+#include	"eep-protection.h"
+#include	"uep-protection.h"
 #include	"gui.h"
 
 static uint16_t const crctab_1021[256] = {
@@ -293,19 +294,16 @@ int32_t	outLength	= 0;
 	   memset (outVector, 0, 24 * data. bitrate);
 	   totalLength += data. size * CUSize;
 //	Apply appropriate depuncturing for each subchannel 
-	   if (data. eepprot == 0) {
-	      uep_deconvolve uep_deconvolver (data. bitrate,
-	                            data. slForm == 0 ? data. protlev :
-	                                                data. protlev + 1);
+	   if (data. uepFlag) {
+	      uep_protection uep_deconvolver (data. bitrate, data. protlev);
 	      uep_deconvolver.
 	          deconvolve (&input [data. start_cu * CUSize],
 	                      data. size * CUSize,
 	                      outVector);
 	   }
 	   else {
-	      eep_deconvolve eep_deconvolver (data. bitrate,
-	                            data. slForm == 0 ? data. protlev :
-	                                                data. protlev + 1);
+	      eep_protection eep_deconvolver (data. bitrate,
+	                                                data. protlev);
 	      eep_deconvolver.
 	         deconvolve (&input [data. start_cu * CUSize],
 	                     data. size * CUSize,
@@ -443,7 +441,7 @@ channel_data data;
 	      int SCID	= data. id;
 	      int  SAD	= data. start_cu;
 	      int  TPL;
-	      if (data. slForm == 0) 
+	      if (data. uepFlag) 
 	         TPL = 0x10 | (data. protlev - 1);
 	      else
 	         TPL = 0x20 | data. protlev;

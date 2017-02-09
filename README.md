@@ -48,8 +48,6 @@ So, if you want to emulate a full dab-receiver, then just do
 
     eti-frontend -O - | eti-backend
 
-
-
 Since the software is derived from the DAB-rpi software, it supports
 - if so configured - the same devices, i.e. dabsticks, airspy and sdrplay
 (and prerecorded files of course).

@@ -1,9 +1,8 @@
 #
 /*
- *
- *    Copyright (C) 2013
+ *    Copyright (C) 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
- *    Lazy Chair programming 
+ *    Lazy Chair Programming
  *
  *    This file is part of the SDR-J (JSDR).
  *    SDR-J is free software; you can redistribute it and/or modify
@@ -20,28 +19,15 @@
  *    along with SDR-J; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
+ *
+ *	Simple base class for combining uep and eep deconvolvers
  */
-//
-//	dummy for the dab handler
-//
-#include	"dab-constants.h"
-#include	"dab-virtual.h"
+#include	"protection.h"
 
-	dabVirtual::dabVirtual	(void) {
-}
-
-	dabVirtual::~dabVirtual	(void) {
-}
-
-int32_t	dabVirtual::process	(int16_t *v, int16_t c) {
-	(void)v;
-	(void)c;
-	return 32768;
-}
-
-void	dabVirtual::stopRunning	(void) {
-}
-
-void	dabVirtual::stop	(void) {
+	protection::protection 	(void) {}
+	protection::~protection	(void) {}
+bool	protection::deconvolve	(int16_t *a, int32_t b, uint8_t *c) {
+	   (void)a; (void)b; (void)c;
+	   return false;
 }
 

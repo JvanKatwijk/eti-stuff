@@ -22,10 +22,9 @@
  */
 //
 //	Interface between msc packages and real MOT handling
+#include	"radio.h"
 #include	"mot-databuilder.h"
 #include	"mot-data.h"
-
-#include	"gui.h"
 
 	mot_databuilder::mot_databuilder (RadioInterface *mr) {
 	my_motHandler	= new motHandler (mr);

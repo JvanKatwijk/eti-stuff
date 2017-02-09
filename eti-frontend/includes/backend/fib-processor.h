@@ -79,8 +79,7 @@
 	   bool		inUse;
 	   int32_t	id;
 	   int32_t	start_cu;
-	   int32_t	slForm;
-	   int32_t	eepprot;
+	   bool		uepFlag;
 	   int32_t	size;
 	   int32_t	uep_index;
 	   int32_t	protlev;

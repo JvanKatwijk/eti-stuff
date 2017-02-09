@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>dab_rpi</class>
- <widget class="QMainWindow" name="dab_rpi">
+ <class>eti_backend</class>
+ <widget class="QMainWindow" name="eti_backend">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>491</width>
-    <height>300</height>
+    <height>312</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>sdr-j eti-backend</string>
+   <string>eti-backend</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QComboBox" name="streamoutSelector">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>120</y>
+      <y>110</y>
       <width>181</width>
       <height>29</height>
      </rect>
@@ -36,7 +36,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>90</y>
+      <y>80</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -64,8 +64,8 @@
    <widget class="QLabel" name="dynamicLabel">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>250</y>
+      <x>30</x>
+      <y>260</y>
       <width>401</width>
       <height>21</height>
      </rect>
@@ -126,50 +126,6 @@
      <string/>
     </property>
    </widget>
-   <widget class="QLCDNumber" name="errorDisplay">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>10</y>
-      <width>64</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Quality of the MP2/4 stream. 100 is good, lower means that there are (unrecoverable) errors, leading to hick ups in the resulting audio stream.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::NoFrame</enum>
-    </property>
-    <property name="digitCount">
-     <number>3</number>
-    </property>
-    <property name="segmentStyle">
-     <enum>QLCDNumber::Flat</enum>
-    </property>
-   </widget>
-   <widget class="QLCDNumber" name="ficRatioDisplay">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>10</y>
-      <width>51</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Quality indicator of the FIC data stream. 100 is good, less means that there are unrecoverable&lt;/p&gt;&lt;p&gt;errors, which usually means that the other quality indicator also shows a number less than 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::NoFrame</enum>
-    </property>
-    <property name="digitCount">
-     <number>3</number>
-    </property>
-    <property name="segmentStyle">
-     <enum>QLCDNumber::Flat</enum>
-    </property>
-   </widget>
    <widget class="QLCDNumber" name="ensembleId">
     <property name="geometry">
      <rect>
@@ -211,7 +167,7 @@
    <widget class="QLCDNumber" name="rateDisplay">
     <property name="geometry">
      <rect>
-      <x>383</x>
+      <x>350</x>
       <y>10</y>
       <width>51</width>
       <height>23</height>
@@ -233,14 +189,27 @@
    <widget class="QLabel" name="dabModus">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>170</y>
+      <x>260</x>
+      <y>10</y>
       <width>121</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="showProgramData">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>10</y>
+      <width>51</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PD</string>
     </property>
    </widget>
   </widget>

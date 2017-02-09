@@ -78,7 +78,7 @@
 	   int32_t	SubChId;
 	   int32_t	StartAddr;
 	   int32_t	Length;
-	   int32_t	uepFlag;
+	   bool		shortForm;
 	   int32_t	protLevel;
 	   int32_t	BitRate;
 	   int16_t	language;
@@ -96,7 +96,6 @@ public:
 	void	process_FIB		(uint8_t *, uint16_t);
 	void	setupforNewFrame	(void);
 	void	clearEnsemble		(void);
-	void	printActions		(int16_t);
 	void	setCIFparameters	(int16_t);
 	void	setSelectedService	(QString &);
 	uint8_t	kindofService		(QString &);

@@ -32,12 +32,33 @@
 #include	<QStringList>
 #include	<QStringListModel>
 #include	"dab-constants.h"
-#include	"gui.h"
+#include	"radio.h"
+#include	<fstream>
+#include	<iostream>
+#include	<numeric>
+#include	<unistd.h>
 #include	"eti-controller.h"
 #include	"audiosink.h"
 #ifdef	TCP_STREAMER
 #include	"tcp-streamer.h"
 #endif
+
+std::vector<size_t> get_cpu_times() {
+    std::ifstream proc_stat("/proc/stat");
+    proc_stat.ignore(5, ' '); // Skip the 'cpu' prefix.
+    std::vector<size_t> times;
+    for (size_t time; proc_stat >> time; times.push_back(time));
+    return times;
+}
+ 
+bool get_cpu_times(size_t &idle_time, size_t &total_time) {
+    const std::vector<size_t> cpu_times = get_cpu_times();
+    if (cpu_times.size() < 4)
+        return false;
+    idle_time = cpu_times[3];
+    total_time = std::accumulate(cpu_times.begin(), cpu_times.end(), 0);
+    return true;
+}
 /**
   *	We use the creation function merely to set up the
   *	user interface and make the connections between the
@@ -52,6 +73,11 @@ int16_t	latency;
 
 // 	the setup for the generated part of the ui
 	setupUi (this);
+	techData. setupUi (&dataDisplay);
+	show_data		= false;
+	connect (showProgramData, SIGNAL (clicked (void)),
+                 this, SLOT (toggle_show_data (void)));
+
 	dabSettings		= Si;
 //
 //	Before printing anything, we set
@@ -76,18 +102,32 @@ int16_t	latency;
 //	In this version, the default is sending the resulting PCM samples to the
 //	soundcard. However, defining TCP_STREAMER  will
 //	cause the PCM samples to be send to port 20040.
+/**
+	streamoutSelector	-> hide ();
 #ifdef	TCP_STREAMER
 	soundOut		= new tcpStreamer	(audioBuffer,
 	                                                 20040);
 #else			// just sound out
 	soundOut		= new audioSink		(latency,
-	                                                 streamoutSelector,
 	                                                 audioBuffer);
+	((audioSink *)soundOut)	-> setupChannels (streamoutSelector);
+	streamoutSelector	-> show ();
+	bool err;
+	QString h		=
+	           dabSettings -> value ("soundchannel", "default"). toString ();
+	k	= streamoutSelector -> findText (h);
+	if (k != -1) {
+	   streamoutSelector -> setCurrentIndex (k);
+	   err = !((audioSink *)soundOut) -> selectDevice (k);
+	}
+
+	if ((k == -1) || err)
+	   ((audioSink *)soundOut)	-> selectDefaultDevice ();
+	connect (streamoutSelector, SIGNAL (activated (int)),
+	         this,  SLOT (set_streamSelector (int)));
 #endif
-/**
   *	By default we select Mode 1 
   */
-
 	uint8_t dabMode	= 1;
 	setModeParameters (dabMode);
 /**
@@ -108,6 +148,18 @@ int16_t	latency;
 	                                                 audioBuffer);
 //
 	init_your_gui ();		// gui specific stuff
+	QPalette p      = techData. ficError_display -> palette ();
+        p. setColor (QPalette::Highlight, Qt::red);
+        techData. ficError_display      -> setPalette (p);
+        techData. frameError_display    -> setPalette (p);
+        techData. rsError_display       -> setPalette (p);
+        techData. aacError_display      -> setPalette (p);
+        techData. rsError_display       -> hide ();
+        techData. aacError_display      -> hide ();
+//
+//	and here forever
+	techData. frequency		-> hide ();
+	techData. frequencyLabel	-> hide ();
 }
 
 	RadioInterface::~RadioInterface () {
@@ -376,19 +428,33 @@ QString s;
 	ensembleName		-> setText (v);
 }
 
-void	RadioInterface::show_successRate (int s) {
-	errorDisplay	-> display (s);
+/**
+  *	\brief show_successRate
+  *	a slot, called by the MSC handler to show the
+  *	percentage of frames that could be handled
+  */
+void	RadioInterface::show_frameErrors (int s) {
+	techData. frameError_display	-> setValue (100 - 4 * s);
 }
 
-void    RadioInterface::show_ficCRC (bool b) {
-        if (b)
-           ficSuccess ++;
-        if (++ficBlocks >= 100) {
-           ficRatioDisplay      -> display (ficSuccess);
-           ficSuccess   = 0;
-           ficBlocks    = 0;
-        }
+void	RadioInterface::show_rsErrors (int s) {
+	techData. rsError_display	-> setValue (100 - 4 * s);
 }
+	
+void	RadioInterface::show_aacErrors (int s) {
+	techData. aacError_display	-> setValue (100 - 4 * s);
+}
+	
+void	RadioInterface::show_ficSuccess (bool b) {
+	if (b)
+	   ficSuccess ++;
+	if (++ficBlocks >= 100) {
+	   techData. ficError_display	-> setValue (ficSuccess);
+	   ficSuccess	= 0;
+	   ficBlocks	= 0;
+	}
+}
+
 
 //	showLabel is triggered by the message handler
 //	the GUI may decide to ignore this
@@ -469,16 +535,33 @@ void	RadioInterface::clear_showElements (void) {
 	ensembleLabel		= QString ();
 	ensembleName		-> setText (ensembleLabel);
 	dynamicLabel		-> setText ("");
-	
+
 //	Then the various displayed items
 	ensembleName		-> setText ("   ");
+
+        techData. frameError_display    -> setValue (0);
+        techData. rsError_display       -> setValue (0);
+        techData. aacError_display      -> setValue (0);
+        techData. ficError_display      -> setValue (0);
+        techData. ensemble              -> setText (QString (""));
+        techData. frequency             -> display (0);
+        techData. bitrateDisplay        -> display (0);
+        techData. startAddressDisplay   -> display (0);
+        techData. lengthDisplay         -> display (0);
+        techData. subChIdDisplay        -> display (0);
+        techData. protectionlevelDisplay -> display (0);
+        techData. uepField              -> setText (QString (""));
+        techData. ASCTy                 -> setText (QString (""));
+        techData. language              -> setText (QString (""));
+        techData. programType           -> setText (QString (""));
+
 	if (pictureLabel != NULL)
 	   delete pictureLabel;
 	pictureLabel = NULL;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 //	
 //	Private slots relate to the modeling of the GUI
 //
@@ -510,6 +593,8 @@ void	RadioInterface::TerminateProcess (void) {
 	   sf_close (audiofilePointer);
 	}
 	soundOut		-> stop ();
+	dataDisplay. hide ();
+
 //
 //	everything should be halted by now
 	my_etiController	-> stop ();
@@ -542,13 +627,50 @@ fibElement f;
 //	info on the service (i.e. rate, address, etc)
 void	RadioInterface::selectService (QModelIndex s) {
 QString a = ensemble. data (s, Qt::DisplayRole). toString ();
+	setStereo (false);
+	techData. rsError_display		-> hide ();
+        techData. aacError_display	-> hide ();
+	dataDisplay. hide ();
 
 	switch (my_fibHandler -> kindofService (a)) {
 	   case AUDIO_SERVICE:
 	      { audiodata d;
 	        my_fibHandler		-> dataforAudioService (a, &d);
 	        my_etiController	-> set_audioChannel (d);
-	        dabModus -> setText (d. ASCTy == 077 ? "DAB+" : "DAB");
+
+	        techData. ensemble	-> setText (ensembleLabel);
+	        techData. bitrateDisplay -> display (d. bitRate);
+	        techData. startAddressDisplay -> display (d. startAddr);
+	        techData. lengthDisplay	-> display (d. length);
+	        techData. subChIdDisplay -> display (d. subchId);
+	        uint16_t h = d. protLevel;
+	        QString protL;
+	        if (!d. shortForm) {
+	           protL = "EEP ";
+	           if ((h & (1 << 2)) == 0) 
+	              protL. append ("A ");
+	           else
+	              protL. append ("B ");
+	           h = (h & 03) + 1;
+	           protL. append (QString::number (h));
+	        }
+	        else  {
+	           h = h & 03;
+	           protL = "UEP ";
+	           protL. append (QString::number (h));
+	        }
+	        techData. uepField -> setText (protL);
+	        techData. protectionlevelDisplay -> display (h);
+	        techData. ASCTy -> setText (d. ASCTy == 077 ? "HeAAC" : "MP2");
+	        if (d. ASCTy == 077) {
+	           techData. rsError_display -> show ();
+	           techData. aacError_display -> show ();
+	        }
+	        techData. language -> setText (get_programm_language_string (d. language));
+	        techData. programType -> setText (get_programm_type_string (d. programType));
+	         if (show_data)
+	            dataDisplay. show ();
+
 	        showLabel (QString (" "));
 	        rateDisplay -> display (d. bitRate);
 	        fprintf (stderr, "subchannel %d\n", d. subchId);
@@ -623,11 +745,10 @@ SF_INFO	*sf_info	= (SF_INFO *)alloca (sizeof (SF_INFO));
 	soundOut		-> startDumping (audiofilePointer);
 }
 
-//
+static size_t previous_idle_time        = 0;
+static size_t previous_total_time       = 0;
+
 void	RadioInterface::updateTimeDisplay (void) {
-//QDateTime	currentTime = QDateTime::currentDateTime ();
-//	timeDisplay	-> setText (currentTime.
-//	                            toString (QString ("dd.MM.yy:hh:mm:ss")));
 	numberofSeconds ++;
 	int16_t	numberHours	= numberofSeconds / 3600;
 	int16_t	numberMinutes	= (numberofSeconds / 60) % 60;
@@ -637,5 +758,35 @@ void	RadioInterface::updateTimeDisplay (void) {
 	text. append (QString::number (numberMinutes));
 	text. append (" min");
 	timeDisplay	-> setText (text);
+#ifndef __MINGW32__
+
+        if ((numberofSeconds % 2) == 0) {
+           size_t idle_time, total_time;
+           get_cpu_times (idle_time, total_time);
+           const float idle_time_delta = idle_time - previous_idle_time;
+           const float total_time_delta = total_time - previous_total_time;
+           const float utilization = 100.0 * (1.0 - idle_time_delta / total_time_delta);
+           techData. cpuMonitor -> display (utilization);
+           previous_idle_time = idle_time;
+           previous_total_time = total_time;
+        }
+#endif
+
+}
+
+void    RadioInterface:: set_streamSelector (int k) {
+#ifndef TCP_STREAMER
+        ((audioSink *)(soundOut)) -> selectDevice (k);
+#else
+        (void)k;
+#endif
+}
+
+void    RadioInterface::toggle_show_data (void) {
+        show_data       = !show_data;
+        if (show_data)
+           dataDisplay. show ();
+        else
+           dataDisplay. hide ();
 }
 

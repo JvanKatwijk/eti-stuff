@@ -45,7 +45,7 @@ INCLUDEPATH += . \
 
 # Input
 HEADERS += ./includes/dab-constants.h \
-	   ./gui.h \
+	   ./radio.h \
 	   ./includes/backend/eti-controller.h \
 	   ./includes/backend/fib-processor.h  \
 	   ./includes/backend/galois.h \
@@ -73,24 +73,26 @@ HEADERS += ./includes/dab-constants.h \
 	   ./includes/backend/data/journaline/newsobject.h \
 	   ./includes/backend/data/journaline/NML.h \
 	   ./includes/output/audio-base.h \
+	   ./includes/output/newconverter.h \
 	   ./includes/output/audiosink.h \
 	   ./includes/output/fir-filters.h \
            ./includes/various/fft.h \
 	   ./includes/various/ringbuffer.h \
 	   ./includes/various/Xtan2.h 
 
-FORMS +=	./gui.ui
+FORMS +=	./forms/eti-backend.ui \
+	   ./forms/technical_data.ui
 
 SOURCES += ./main.cpp \
-	   ./gui.cpp \
+	   ./radio.cpp \
 	   ./src/backend/eti-controller.cpp \
 	   ./src/backend/fib-processor.cpp  \
 	   ./src/backend/galois.cpp \
 	   ./src/backend/reed-solomon.cpp \
 	   ./src/backend/charsets.cpp \
 	   ./src/backend/firecode-checker.cpp \
-	   ./src/backend/dab-virtual.cpp \
 	   ./src/backend/dab-processor.cpp \
+	   ./src/backend/dab-virtual.cpp \
 	   ./src/backend/audio/mp2processor.cpp \
 	   ./src/backend/audio/mp4processor.cpp \
            ./src/backend/data/data-processor.cpp \
@@ -108,6 +110,7 @@ SOURCES += ./main.cpp \
 	   ./src/backend/data/journaline/newsobject.cpp \
 	   ./src/backend/data/journaline/NML.cpp \
 	   ./src/output/audio-base.cpp \
+	   ./src/output/newconverter.cpp \
 	   ./src/output/audiosink.cpp \
 	   ./src/output/fir-filters.cpp \
            ./src/various/fft.cpp \
@@ -127,6 +130,7 @@ LIBS		+=  -lusb-1.0 -ldl  #
 LIBS		+= -lportaudio
 LIBS		+= -lz
 LIBS		+= -lsndfile
+LIBS		+= -lsamplerate
 LIBS		+= -lfaad
 }
 #
@@ -139,6 +143,7 @@ LIBS		+= -L/usr/i686-w64-mingw32/sys-root/mingw/lib
 LIBS		+= -lfftw3f
 LIBS		+= -lportaudio
 LIBS		+= -lsndfile
+LIBS		+= -lsamplerate
 LIBS		+= -lole32
 LIBS		+= -lwinpthread
 LIBS		+= -lwinmm
@@ -147,7 +152,6 @@ LIBS		+= -lws2_32
 LIBS		+= -lfaad
 LIBS		+= -lusb-1.0
 LIBS		+= -lz
-CONFIG		+= NO_SSE_SUPPORT 
 #CONFIG		+= tcp-streamer
 }
 

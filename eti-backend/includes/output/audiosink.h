@@ -33,39 +33,28 @@
 #include	<stdio.h>
 #include	"audio-base.h"
 #include	"ringbuffer.h"
-#include	<QComboBox>
+
+class	QComboBox;
 
 class	audioSink  : public audioBase {
-Q_OBJECT
 public:
 	                audioSink		(int16_t,
-#ifdef	GUI_3
-	                                         QStringList *,
-#else
-	                                         QComboBox *,
-#endif
 	                                         RingBuffer<int16_t> *);
 			~audioSink		(void);
+	bool		setupChannels		(QComboBox *);
 	void		stop			(void);
 	void		restart			(void);
-public slots:
-	bool		set_streamSelector	(int);
+	bool		selectDevice		(int16_t);
+	bool		selectDefaultDevice	(void);
 private:
 	int16_t		numberofDevices		(void);
 	QString		outputChannelwithRate	(int16_t, int32_t);
 	int16_t		invalidDevice		(void);
 	bool		isValidDevice		(int16_t);
-	bool		selectDefaultDevice	(void);
-	bool		selectDevice		(int16_t);
 	int32_t		cardRate		(void);
 
 	bool		OutputrateIsSupported	(int16_t, int32_t);
 	void		audioOutput		(float *, int32_t);
-#ifdef	GUI_3
-	bool		setupChannels		(QStringList *);
-#else
-	bool		setupChannels		(QComboBox *);
-#endif
 	int32_t		CardRate;
 	int16_t		latency;
 	int32_t		size;
@@ -80,11 +69,7 @@ private:
 	PaStreamParameters	outputParameters;
 
 	int16_t		*outTable;
-#ifdef	GUI_3
 	QStringList	*InterfaceList;
-#else
-	QComboBox	*streamSelector;
-#endif
 protected:
 static	int		paCallback_o	(const void	*input,
 	                                 void		*output,

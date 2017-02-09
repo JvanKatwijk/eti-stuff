@@ -25,7 +25,6 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 #####################################################################
 #	adjust to your likings
 
-#	add_definitions (-DMOT_BASICS__) 	# use at your own risk
 #	add_definitions (-DMSC_DATA__)		# use at your own risk
 #
 #	If you want a tcp stream of the audio rather than
@@ -65,6 +64,18 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
         endif ()
         list(APPEND extraLibs ${LIBSNDFILE_LIBRARY})
 
+        find_package(LibSndFile)
+        if (NOT LIBSNDFILE_FOUND)
+            message(FATAL_ERROR "please install libsndfile")
+        endif ()
+        list(APPEND extraLibs ${LIBSNDFILE_LIBRARY})
+
+	find_package(LibSampleRate)
+        if (NOT LIBSAMPLERATE_FOUND)
+            message(FATAL_ERROR "please install libsamplerate")
+        endif ()
+        list(APPEND extraLibs ${LIBSAMPLERATE_LIBRARY})
+
 	find_library (PTHREADS pthread)
 	if (NOT(PTHREADS))
 	   message (FATAL_ERROR "please install libpthread")
@@ -95,7 +106,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	)
 
 	set (${objectName}_HDRS
-	     ./gui.h
+	     ./radio.h
 	     ./includes/dab-constants.h
 	     ./includes/backend/eti-controller.h
 	     ./includes/backend/firecode-checker.h
@@ -125,6 +136,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	     ./includes/backend/data/mot-data.h 
 	     ./includes/output/fir-filters.h
 	     ./includes/output/audio-base.h
+	     ./includes/output/newconverter.h
 	     ./includes/output/audiosink.h
 	     ./includes/various/ringbuffer.h
 	     ./includes/various/Xtan2.h
@@ -133,7 +145,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	set (${objectName}_SRCS
 	     ${${objectName}_SRCS}
 	     ./main.cpp
-	     ./gui.cpp
+	     ./radio.cpp
 	     ./src/backend/eti-controller.cpp
 	     ./src/backend/fib-processor.cpp
 	     ./src/backend/firecode-checker.cpp
@@ -160,13 +172,14 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
              ./src/backend/data/data-processor.cpp 
 	     ./src/backend/data/mot-data.cpp 
 	     ./src/output/audio-base.cpp
+	     ./src/output/newconverter.cpp
 	     ./src/output/audiosink.cpp
 	     ./src/output/fir-filters.cpp
 	     ./src/various/Xtan2.cpp
 	)
 
 	set (${objectName}_MOCS
-	     ./gui.h
+	     ./radio.h
 	     ./includes/output/audio-base.h
 	     ./includes/output/audiosink.h
 	     ./includes/backend/fib-processor.h
@@ -203,7 +216,8 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	endif (TCP_STREAMER)
 
 	QT5_WRAP_UI (UIS ${${objectName}_UIS}
-	             ./gui.ui) 
+	             ./forms/eti-backend.ui
+	             ./forms/technical_data.ui) 
 
 	include_directories (
 	          ${SDRPLAY_INCLUDES}

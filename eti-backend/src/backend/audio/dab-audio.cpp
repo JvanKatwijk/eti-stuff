@@ -18,7 +18,6 @@
  *    You should have received a copy of the GNU General Public License
  *    along with SDR-J; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
  */
 #
 #include	"dab-constants.h"
@@ -28,8 +27,9 @@
 #include	<QWaitCondition>
 #include	"mp2processor.h"
 #include	"mp4processor.h"
-#include	"deconvolve.h"
-#include	"gui.h"
+#include	"eep-protection.h"
+#include	"uep-protection.h"
+#include	"radio.h"
 //
 //	As an experiment a version of the backend is created
 //	that will be running in a separate thread. Might be
@@ -43,12 +43,12 @@
 //
 //
 //	fragmentsize == Length * CUSize
-	dabAudio::dabAudio	(uint8_t dabModus,
+	dabAudio::dabAudio	(RadioInterface *mr,
+	                         uint8_t dabModus,
 	                         int16_t fragmentSize,
 	                         int16_t bitRate,
-	                         int16_t uepFlag,
+	                         bool	uepFlag,
 	                         int16_t protLevel,
-	                         RadioInterface *mr,
 	                         RingBuffer<int16_t> *buffer) {
 int32_t i, j;
 	this	-> dabModus		= dabModus;
@@ -66,16 +66,13 @@ int32_t i, j;
 	   memset (interleaveData [i], 0, fragmentSize * sizeof (int16_t));
 	}
 
-	uepProcessor		= NULL;
-	eepProcessor		= NULL;
-	if (uepFlag == 0)
-	   uepProcessor	= new uep_deconvolve (bitRate,
-	                                      protLevel);
+	if (uepFlag)
+	   protectionHandler	= new uep_protection (bitRate,
+	                                              protLevel);
 	else
-	   eepProcessor	= new eep_deconvolve (bitRate,
-	                                      protLevel);
+	   protectionHandler	= new eep_protection (bitRate,
+	                                              protLevel);
 //
-	
 	if (dabModus == DAB) 
 	   our_dabProcessor = new mp2Processor (myRadioInterface,
 	                                        bitRate,
@@ -99,10 +96,7 @@ int16_t	i;
 	running = false;
 	while (this -> isRunning ())
 	   usleep (1);
-	if (uepProcessor != NULL)
-	   delete uepProcessor;
-	if (eepProcessor != NULL)
-	   delete eepProcessor;
+	delete protectionHandler;
 	delete our_dabProcessor;
 	delete	Buffer;
 	delete[]	outV;
@@ -113,26 +107,29 @@ int16_t	i;
 
 int32_t	dabAudio::process	(int16_t *v, int16_t cnt) {
 int32_t	fr;
-	   if (Buffer -> GetRingBufferWriteAvailable () < cnt)
-	      fprintf (stderr, "dab-concurrent: buffer full\n");
-	   while ((fr = Buffer -> GetRingBufferWriteAvailable ()) <= cnt) {
-	      if (!running)
-	         return 0;
-	      usleep (1);
-	   }
 
-	   Buffer	-> putDataIntoBuffer (v, cnt);
-	   Locker. wakeAll ();
-	   return fr;
+	if (Buffer -> GetRingBufferWriteAvailable () < cnt)
+	   fprintf (stderr, "dab-concurrent: buffer full\n");
+	while ((fr = Buffer -> GetRingBufferWriteAvailable ()) <= cnt) {
+	   if (!running)
+	      return 0;
+	   usleep (1);
+	}
+
+	Buffer	-> putDataIntoBuffer (v, cnt);
+	Locker. wakeAll ();
+	return fr;
 }
 
-const	int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
+const	int16_t interleaveMap [] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 void	dabAudio::run	(void) {
 int16_t	i, j;
 int16_t	countforInterleaver	= 0;
 int16_t	interleaverIndex	= 0;
 uint8_t	shiftRegister [9];
 int16_t	Data [fragmentSize];
+int16_t tempX [fragmentSize];
+
 	while (running) {
 	   while (Buffer -> GetRingBufferReadAvailable () <= fragmentSize) {
 	      ourMutex. lock ();
@@ -148,21 +145,19 @@ int16_t	Data [fragmentSize];
 	   Buffer	-> getDataFromBuffer (Data, fragmentSize);
 
 	   for (i = 0; i < fragmentSize; i ++) {
+	      tempX [i] = interleaveData [(interleaverIndex + 
+	                                  interleaveMap [i & 017]) & 017][i];
 	      interleaveData [interleaverIndex][i] = Data [i];
-	      Data [i] = interleaveData [(interleaverIndex + 
-	                                 interleaveMap [i & 017]) & 017][i];
 	   }
 	   interleaverIndex = (interleaverIndex + 1) & 0x0F;
+//
 //	only continue when de-interleaver is filled
 	   if (countforInterleaver <= 15) {
 	      countforInterleaver ++;
 	      continue;
 	   }
 //
-	   if (uepFlag == 0)
-	      uepProcessor -> deconvolve (Data, fragmentSize, outV);
-	   else
-	      eepProcessor -> deconvolve (Data, fragmentSize, outV);
+	   protectionHandler -> deconvolve (tempX, fragmentSize, outV);
 //
 //	and the inline energy dispersal
 	   memset (shiftRegister, 1, 9);
@@ -173,7 +168,7 @@ int16_t	Data [fragmentSize];
 	      shiftRegister [0] = b;
 	      outV [i] ^= b;
 	   }
-	   our_dabProcessor -> addtoFrame (outV, 24 * bitRate);
+	   our_dabProcessor -> addtoFrame (outV);
 	}
 }
 //

@@ -170,8 +170,7 @@ typedef	struct {
 	bool	in_use;
 	int16_t	id;
 	int16_t	start_cu;
-	uint8_t	eepprot;
-	uint8_t	slForm;
+	bool	uepFlag;
 	int16_t	protlev;
 	int16_t	size;
 	int16_t	bitrate;

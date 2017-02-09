@@ -26,10 +26,10 @@
 /*
  *
  */
-#include	"dab-constants.h"
 #include	<QThread>
 #include	<QObject>
 #include	"stdint.h"
+#include	"dab-constants.h"
 #include	"ringbuffer.h"
 //
 class	RadioInterface;
