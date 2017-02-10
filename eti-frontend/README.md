@@ -10,7 +10,8 @@ the eti-backend as well
 
 Operation is simple:
 on the command line you may specify -O file for the output file.
-"-O -" sends the output to standard output.
+"-O -" sends the output to standard output. If no output file
+is specified, itput is send to standard output.
 
 After starting the program, and selecting a channel, one may press
 the button that says "eti waits", after pressing this button

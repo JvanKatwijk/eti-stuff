@@ -32,38 +32,24 @@
 #include	"dab-constants.h"
 #include	"gui.h"
 
-void	fullPathfor (const char *v, char *out) {
-int16_t	i;
-QString	homeDir;
+QString	fullPathfor (QString v) {
+QString	fileName;
 
-	if (v == NULL) {
-	   sprintf (out, "%s", "/tmp/xxx");
-	   return;	// should not happen
-	}
+	if (v == QString ("")) 
+	   return QString ("/tmp/xxx");
 
-	if (v [0] == '/') {		// full path specified
-	   sprintf (out, "%s", v);
-	   return;
-	}
+	if (v. at (0) == QChar ('/')) 		// full path specified
+	   return v;
 
-	homeDir = QDir::homePath ();
-	homeDir. append ("/");
-	homeDir. append (v);
-	homeDir	= QDir::toNativeSeparators (homeDir);
-	sprintf (out, "%s", homeDir. toLatin1 (). data ());
-	fprintf (stderr, "ini file = %s\n", out);
+	fileName = QDir::homePath ();
+	fileName. append ("/");
+	fileName. append (v);
+	fileName = QDir::toNativeSeparators (fileName);
 
-	for (i = 0; out [i] != 0; i ++);
-	if (out [i - 4] != '.' ||
-	    out [i - 3] != 'i' ||
-	    out [i - 2] != 'n' ||
-	    out [i - 1] != 'i') {
-	    out [i] = '.';
-	    out [i + 1] = 'i';
-	    out [i + 2] = 'n';
-	    out [i + 3] = 'i';
-	    out [i + 4] = 0;
-	}
+	if (!fileName. endsWith (".ini"))
+	   fileName. append (".ini");
+
+	return fileName;
 }
 
 bool	fileExists (char *v) {
@@ -82,8 +68,8 @@ int	main (int argc, char **argv) {
 /*
  *	The default values
  */
-char		defaultInit [512];
-char		outputFilename [512];
+QString		initFileName;
+QString		outputFileName;
 RadioInterface	*MyRadioInterface;
 int32_t		opt;
 uint8_t		syncMethod	= 1;
@@ -91,14 +77,13 @@ QSettings	*dabSettings;		// ini file
 uint8_t		dabMode		= 127;	// illegal value
 QString		dabDevice	= QString ("");
 QString		dabBand		= QString ("");
-FILE		*outputFile	= NULL;
+FILE		*outputFile	= stdout;	// probably overruled
 
-	fullPathfor (DEFAULT_INI, defaultInit);
 
 	while ((opt = getopt (argc, argv, "i:D:S:M:B:O:")) != -1) {
 	   switch (opt) {
 	      case 'i':
-	         fullPathfor (optarg, defaultInit);
+	         initFileName = fullPathfor (optarg);
 	         break;
 
 	      case 'S':
@@ -119,16 +104,18 @@ FILE		*outputFile	= NULL;
 	         if (optarg [0] == '-')
 	            outputFile = stdout;
 	         else {
-	            fullPathfor (optarg, outputFilename);
-	            outputFile = fopen (outputFilename, "w");
+	            outputFileName = fullPathfor (optarg);
+	            fprintf (stderr, "output to %s\n",
+	                                    outputFileName. toLatin1 (). data ());
+	            outputFile = fopen (outputFileName. toLatin1 (). data (), "w");
 	         }
 	         break;
 	      default:
 	         break;
 	   }
 	}
-	dabSettings =  new QSettings (defaultInit, QSettings::IniFormat);
 
+	dabSettings =  new QSettings (initFileName, QSettings::IniFormat);
 
 	if (dabMode == 127)
 	   dabMode = dabSettings -> value ("dabMode", 1). toInt ();

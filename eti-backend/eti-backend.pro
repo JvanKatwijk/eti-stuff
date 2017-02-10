@@ -8,12 +8,12 @@ TEMPLATE	= app
 TARGET		= eti-backend
 QT		+= widgets 
 CONFIG		+= console
-QMAKE_CFLAGS	+=  -flto -ffast-math 
-QMAKE_CXXFLAGS	+=  -flto -ffast-math 
-QMAKE_LFLAGS	+=  -flto 
-#QMAKE_CFLAGS	+=  -pg
-#QMAKE_CXXFLAGS	+=  -pg
-#QMAKE_LFLAGS	+=  -pg
+#QMAKE_CFLAGS	+=  -flto -ffast-math 
+#QMAKE_CXXFLAGS	+=  -flto -ffast-math 
+#QMAKE_LFLAGS	+=  -flto 
+QMAKE_CFLAGS	+=  -g
+QMAKE_CXXFLAGS	+=  -g
+QMAKE_LFLAGS	+=  -g
 #	Uncomment this when compiling on/for a machine with sse support
 #CONFIG		+= NO_SSE_SUPPORT 
 DEPENDPATH += . \
@@ -76,9 +76,7 @@ HEADERS += ./includes/dab-constants.h \
 	   ./includes/output/newconverter.h \
 	   ./includes/output/audiosink.h \
 	   ./includes/output/fir-filters.h \
-           ./includes/various/fft.h \
-	   ./includes/various/ringbuffer.h \
-	   ./includes/various/Xtan2.h 
+	   ./includes/various/ringbuffer.h 
 
 FORMS +=	./forms/eti-backend.ui \
 	   ./forms/technical_data.ui
@@ -112,9 +110,7 @@ SOURCES += ./main.cpp \
 	   ./src/output/audio-base.cpp \
 	   ./src/output/newconverter.cpp \
 	   ./src/output/audiosink.cpp \
-	   ./src/output/fir-filters.cpp \
-           ./src/various/fft.cpp \
-	   ./src/various/Xtan2.cpp 
+	   ./src/output/fir-filters.cpp 
 #
 #	for unix systems this is about it. Adapt when needed for naming
 #	and locating libraries. If you do not need a device as
@@ -124,7 +120,7 @@ unix {
 #CONFIG		+= tcp-streamer		# use for remote listening
 DEFINES		+= MOT_BASICS__		# use at your own risk
 DEFINES		+= MSC_DATA__		# use at your own risk
-DESTDIR		= ./linux-bin
+DESTDIR		= ../linux-bin
 INCLUDEPATH	+= /usr/local/include
 LIBS		+=  -lusb-1.0 -ldl  #
 LIBS		+= -lportaudio
@@ -136,7 +132,7 @@ LIBS		+= -lfaad
 #
 # an attempt to have it run under W32
 win32 {
-DESTDIR	= ../../windows-bin
+DESTDIR	= ../../../windows-bin
 # includes in mingw differ from the includes in fedora linux
 INCLUDEPATH += /usr/i686-w64-mingw32/sys-root/mingw/include
 LIBS		+= -L/usr/i686-w64-mingw32/sys-root/mingw/lib

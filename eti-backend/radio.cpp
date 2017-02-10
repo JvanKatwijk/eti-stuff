@@ -102,7 +102,6 @@ int16_t	latency;
 //	In this version, the default is sending the resulting PCM samples to the
 //	soundcard. However, defining TCP_STREAMER  will
 //	cause the PCM samples to be send to port 20040.
-/**
 	streamoutSelector	-> hide ();
 #ifdef	TCP_STREAMER
 	soundOut		= new tcpStreamer	(audioBuffer,
@@ -115,7 +114,7 @@ int16_t	latency;
 	bool err;
 	QString h		=
 	           dabSettings -> value ("soundchannel", "default"). toString ();
-	k	= streamoutSelector -> findText (h);
+	int k	= streamoutSelector -> findText (h);
 	if (k != -1) {
 	   streamoutSelector -> setCurrentIndex (k);
 	   err = !((audioSink *)soundOut) -> selectDevice (k);
@@ -126,8 +125,6 @@ int16_t	latency;
 	connect (streamoutSelector, SIGNAL (activated (int)),
 	         this,  SLOT (set_streamSelector (int)));
 #endif
-  *	By default we select Mode 1 
-  */
 	uint8_t dabMode	= 1;
 	setModeParameters (dabMode);
 /**
@@ -575,7 +572,9 @@ void	RadioInterface::setStart	(void) {
 //
 	clearEnsemble ();		// the display
 	my_etiController	-> start ();
+	fprintf (stderr, "x1");
 	soundOut	-> restart ();
+	fprintf (stderr, "x2");
 	running = true;
 }
 

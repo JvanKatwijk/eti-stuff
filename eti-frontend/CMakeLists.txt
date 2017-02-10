@@ -24,10 +24,6 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 #       R E A D T H I S
 #####################################################################
 #	adjust to your likings
-#	if you do not want to use the SSE support on your machine, uncomment
-#	but recall that MINGW does not support it (yet)
-#	set(NO_SSE_SUPPORT true)
-
 
 #	if you want support for any of these devices, uncomment the line
 	set(SDRPLAY true)

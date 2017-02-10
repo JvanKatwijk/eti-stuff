@@ -97,7 +97,7 @@ CONFIG		+= dabstick
 CONFIG		+= sdrplay-exp
 CONFIG		+= rtl_tcp
 CONFIG		+= airspy
-DESTDIR		= ./linux-bin
+DESTDIR		= ../linux-bin
 INCLUDEPATH	+= /usr/local/include
 LIBS		+= -lfftw3f  -lusb-1.0 -ldl -lsndfile  #
 LIBS		+= -lz
@@ -105,7 +105,7 @@ LIBS		+= -lz
 #
 # an attempt to have it run under W32
 win32 {
-DESTDIR	= ../../windows-bin
+DESTDIR	= ../../../windows-bin
 # includes in mingw differ from the includes in fedora linux
 INCLUDEPATH += /usr/i686-w64-mingw32/sys-root/mingw/include
 LIBS		+= -L/usr/i686-w64-mingw32/sys-root/mingw/lib

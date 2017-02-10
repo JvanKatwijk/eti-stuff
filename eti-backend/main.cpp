@@ -63,7 +63,7 @@ FILE *f;
 	return true;
 }
 
-#define	DEFAULT_INI	".dab-backend.ini"
+#define	DEFAULT_INI	".eti-backend.ini"
 
 int	main (int argc, char **argv) {
 /*

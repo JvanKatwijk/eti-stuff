@@ -139,7 +139,6 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	     ./includes/output/newconverter.h
 	     ./includes/output/audiosink.h
 	     ./includes/various/ringbuffer.h
-	     ./includes/various/Xtan2.h
 	)
 
 	set (${objectName}_SRCS
@@ -175,7 +174,6 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	     ./src/output/newconverter.cpp
 	     ./src/output/audiosink.cpp
 	     ./src/output/fir-filters.cpp
-	     ./src/various/Xtan2.cpp
 	)
 
 	set (${objectName}_MOCS

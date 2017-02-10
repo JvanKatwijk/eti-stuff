@@ -114,12 +114,10 @@ bool	processingData	= false;
 //	OK, ready to read a frame
 //	However, we need some kind of clock. We know that we have 
 //	for 24 msec audio in each frame
-	   msleep (24);
 	   for (n_frame = 0; n_frame < 6144; n_frame += n) {
 	      n = fread (&buffer[n_frame], 1, 6144 - n_frame, input);
 	      if (n == 0) {
-	         fprintf (stderr, "End of file, restarting\n");
-	         fseek (input, 0, SEEK_SET);
+	         fprintf (stderr, "we kappen ermee\n");
 	         return;
 	      }
 
@@ -128,7 +126,7 @@ bool	processingData	= false;
 	         return;
 	      }
 	   }
-//
+	   msleep (24);
 //	extract the relevant data
 	   FICF			= (buffer [5] & 0x80) >> 7;
 	   NST			=  buffer [5] & 0x7F;
@@ -138,7 +136,6 @@ bool	processingData	= false;
 	      fe. fibno = buffer [4] & 0x03;
 	      my_fibProcessor -> process_FIC (fe. fibdata, fe. fibno);
 	   }
-
 //	if there was a request for a service, we have to recompute
 //	the data_offset where to find it
 	   if (channelSearch) {

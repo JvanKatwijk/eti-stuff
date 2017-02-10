@@ -697,11 +697,9 @@ serviceId	*s;
 	   bool	L_flag	= getBits_1 (d, offset + 18);
 	   bool	CC_flag	= getBits_1 (d, offset + 19);
 	   int16_t type;
-	   int16_t Language = 0x00;	// init with unknown language
 	   s	= findServiceId (SId);
 	   if (L_flag) {		// language field present
-	      Language = getBits_8 (d, offset + 24);
-	      s -> language = Language;
+	      s -> language = getBits_8 (d, offset + 24);
 	      s -> hasLanguage = true;
 	      offset += 8;
 	   }
