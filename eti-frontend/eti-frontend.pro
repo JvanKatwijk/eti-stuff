@@ -119,13 +119,11 @@ LIBS		+= -lsndfile
 LIBS		+= -lfaad
 LIBS		+= -lusb-1.0
 LIBS		+= -lz
-DEFINES		+= MSC_DATA__		# use at your own risk
 CONFIG		+= extio
 CONFIG		+= airspy
 CONFIG		+= rtl_tcp
 CONFIG		+= dabstick
 CONFIG		+= sdrplay-exp
-#CONFIG		+= tcp-streamer
 FORMS 		+= ./gui.ui 
 }
 

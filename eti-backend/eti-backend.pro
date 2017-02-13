@@ -149,6 +149,7 @@ LIBS		+= -lfaad
 LIBS		+= -lusb-1.0
 LIBS		+= -lz
 #CONFIG		+= tcp-streamer
+DEFINES         += MSC_DATA__           # use at your own risk
 }
 
 tcp-streamer	{
