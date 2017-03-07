@@ -94,7 +94,7 @@ FORMS 		+= ./gui.ui
 #	Note
 unix {
 CONFIG		+= dabstick
-CONFIG		+= sdrplay-exp
+CONFIG		+= sdrplay
 CONFIG		+= rtl_tcp
 CONFIG		+= airspy
 DESTDIR		= ../linux-bin
@@ -123,7 +123,7 @@ CONFIG		+= extio
 CONFIG		+= airspy
 CONFIG		+= rtl_tcp
 CONFIG		+= dabstick
-CONFIG		+= sdrplay-exp
+CONFIG		+= sdrplay
 FORMS 		+= ./gui.ui 
 }
 
@@ -133,15 +133,15 @@ FORMS 		+= ./gui.ui
 #	devices
 #
 #	dabstick
-dabstick_osmo {
+dabstick {
 	DEFINES		+= HAVE_DABSTICK
 	INCLUDEPATH	+= /home/jan/rtl-sdr/include
-	INCLUDEPATH	+= ./src/input/dabstick-osmo
-	HEADERS		+= ./src/input/dabstick-osmo/dabstick.h \
-	                   ./src/input/dabstick-osmo/dongleselect.h
-	SOURCES		+= ./src/input/dabstick-osmo/dabstick.cpp \
-	                   ./src/input/dabstick-osmo/dongleselect.cpp
-	FORMS		+= ./src/input/dabstick-osmo/dabstick-widget-osmo.ui
+	INCLUDEPATH	+= ./src/input/dabstick
+	HEADERS		+= ./src/input/dabstick/dabstick.h \
+	                   ./src/input/dabstick/dongleselect.h
+	SOURCES		+= ./src/input/dabstick/dabstick.cpp \
+	                   ./src/input/dabstick/dongleselect.cpp
+	FORMS		+= ./src/input/dabstick/dabstick-widget.ui
 }
 #
 #	the SDRplay
@@ -149,22 +149,9 @@ dabstick_osmo {
 sdrplay {
 	DEFINES		+= HAVE_SDRPLAY
 	INCLUDEPATH	+= ./src/input/sdrplay
-	HEADERS		+= ./src/input/sdrplay/sdrplay.h \
-	                   ./src/input/sdrplay/sdrplay-loader.h \
-	                   ./src/input/sdrplay/sdrplay-worker.h 
-	SOURCES		+= ./src/input/sdrplay/sdrplay.cpp \
-	                   ./src/input/sdrplay/sdrplay-loader.cpp \
-	                   ./src/input/sdrplay/sdrplay-worker.cpp 
+	HEADERS		+= ./src/input/sdrplay/sdrplay.h 
+	SOURCES		+= ./src/input/sdrplay/sdrplay.cpp 
 	FORMS		+= ./src/input/sdrplay/sdrplay-widget.ui
-}
-#
-#
-sdrplay-exp {
-	DEFINES		+= HAVE_SDRPLAY
-	INCLUDEPATH	+= ./src/input/sdrplay-exp
-	HEADERS		+= ./src/input/sdrplay-exp/sdrplay.h 
-	SOURCES		+= ./src/input/sdrplay-exp/sdrplay.cpp 
-	FORMS		+= ./src/input/sdrplay-exp/sdrplay-widget.ui
 }
 #
 #

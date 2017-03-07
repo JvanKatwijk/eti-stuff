@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>491</width>
-    <height>300</height>
+    <height>281</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -120,26 +120,6 @@
     </property>
     <property name="segmentStyle">
      <enum>QLCDNumber::Flat</enum>
-    </property>
-   </widget>
-   <widget class="QLCDNumber" name="crcErrors_1">
-    <property name="geometry">
-     <rect>
-      <x>420</x>
-      <y>240</y>
-      <width>64</width>
-      <height>23</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLCDNumber" name="crcErrors_2">
-    <property name="geometry">
-     <rect>
-      <x>420</x>
-      <y>260</y>
-      <width>64</width>
-      <height>23</height>
-     </rect>
     </property>
    </widget>
    <widget class="QPushButton" name="startButton">
