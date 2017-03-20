@@ -41,7 +41,7 @@ INCLUDEPATH += . \
 	      ./src/input/wavfiles 
 
 # Input
-HEADERS		+= ./gui.h \
+HEADERS		+= ./radio.h \
 	   ./includes/dab-constants.h \
 	   ./includes/ofdm/ofdm-processor.h \
 	   ./includes/ofdm/phasereference.h \
@@ -66,7 +66,7 @@ HEADERS		+= ./gui.h \
 FORMS +=	./src/input/filereader-widget.ui 
 
 SOURCES += ./main.cpp \
-	   ./gui.cpp \
+	   ./radio.cpp \
 	   ./src/ofdm/ofdm-processor.cpp \
 	   ./src/ofdm/phasereference.cpp \
 	   ./src/ofdm/phasetable.cpp \
@@ -148,9 +148,11 @@ dabstick {
 #
 sdrplay {
 	DEFINES		+= HAVE_SDRPLAY
-	INCLUDEPATH	+= ./src/input/sdrplay
-	HEADERS		+= ./src/input/sdrplay/sdrplay.h 
-	SOURCES		+= ./src/input/sdrplay/sdrplay.cpp 
+	INCLUDEPATH	+= ./src/input/sdrplay 
+	HEADERS		+= ./src/input/sdrplay/sdrplay.h \
+	                   ./src/input/sdrplay/sdrplayselect.h
+	SOURCES		+= ./src/input/sdrplay/sdrplay.cpp \
+	                   ./src/input/sdrplay/sdrplayselect.cpp
 	FORMS		+= ./src/input/sdrplay/sdrplay-widget.ui
 }
 #

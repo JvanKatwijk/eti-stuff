@@ -94,7 +94,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
 	set (${objectName}_HDRS
 	     ${${objectName}_HDRS}
-	     ./gui.h
+	     ./radio.h
 	     ./includes/dab-constants.h
 	     ./includes/ofdm/ofdm-processor.h
 	     ./includes/ofdm/phasereference.h
@@ -118,7 +118,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	set (${objectName}_SRCS
 	     ${${objectName}_SRCS}
 	     ./main.cpp
-	     ./gui.cpp
+	     ./radio.cpp
 	     ./src/ofdm/ofdm-processor.cpp
 	     ./src/ofdm/phasereference.cpp
 	     ./src/ofdm/phasetable.cpp
@@ -145,7 +145,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	     ./includes/backend/fib-processor.h
 	     ./src/input/rawfiles/rawfiles.h
 	     ./src/input/wavfiles/wavfiles.h
-	     ./gui.h
+	     ./radio.h
 	)
 
 	set (${objectName}_UIS
@@ -161,27 +161,30 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
            include_directories (${SDRPLAYLIB_INCLUDE_DIR})
 	   set (${objectName}_UIS
 	        ${${objectName}_UIS}
-	        ./src/input/sdrplay-exp/sdrplay-widget.ui 
+	        ./src/input/sdrplay/sdrplay-widget.ui 
 	   )
 
-	   set (${objectName}_MOCS
-	        ${${objectName}_MOCS}
-	        ./src/input/sdrplay-exp/sdrplay.h
-	   )
-
-	   include_directories (
-	     ./src/input/sdrplay-exp
-	   )
-
-	   set ($(objectName)_HDRS
-	        ${${objectName}_HDRS}
-	        ./src/input/sdrplay-exp/sdrplay.h
+           set (${objectName}_MOCS
+                ${${objectName}_MOCS}
+                ./src/input/sdrplay/sdrplay.h
+                ./src/input/sdrplay/sdrplayselect.h
            )
 
-	   set (${objectName}_SRCS
-	        ${${objectName}_SRCS}
-	        ./src/input/sdrplay-exp/sdrplay.cpp
-	   )
+           include_directories (
+             ./src/input/sdrplay
+           )
+
+           set ($(objectName)_HDRS
+                ${${objectName}_HDRS}
+                ./src/input/sdrplay/sdrplay.h
+                ./src/input/sdrplay/sdrplayselect.h
+           )
+
+           set (${objectName}_SRCS
+                ${${objectName}_SRCS}
+                ./src/input/sdrplay/sdrplay.cpp
+                ./src/input/sdrplay/sdrplayselect.cpp
+           )
 
 	 add_definitions (-DHAVE_SDRPLAY)
 	endif (SDRPLAY)

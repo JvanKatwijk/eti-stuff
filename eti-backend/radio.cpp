@@ -4,7 +4,7 @@
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
- *    This file is part of the  SDR-J (JSDR).
+ *    This file is part of the  eti-backend of the SDR-J collection (JSDR).
  *    Many of the ideas as implemented in SDR-J are derived from
  *    other work, made available through the GNU general Public License. 
  *    All copyrights of the original authors are acknowledged.
@@ -127,6 +127,20 @@ int16_t	latency;
 #endif
 	uint8_t dabMode	= 1;
 	setModeParameters (dabMode);
+	if (input == NULL) {
+	   QString fileName;
+	   fileName	= QFileDialog::getOpenFileName (this,
+	                                                tr ("open file ..."),
+	                                                QDir::homePath (),
+	                                                tr ("eti data (*.eti)"));
+	   fileName	= QDir::toNativeSeparators (fileName);
+	   input 	= fopen (fileName. toLatin1 (). data (), "r");
+	   if (input == NULL) {
+	      fprintf (stderr, "failure, cannot open %s, fatal\n",
+	                              fileName. toLatin1 (). data ());
+	      exit (2);
+	   }
+	}
 /**
   *	The etiController reads the etiframes and processes them.
   *	The fib segments are put in a buffer and the GUI is

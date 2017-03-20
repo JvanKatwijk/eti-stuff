@@ -22,7 +22,7 @@
  */
 
 #include	"fic-handler.h"
-#include	"gui.h"
+#include	"radio.h"
 #include	"protTables.h"
 //
 //	The 3072 bits of the serial motherword shall be split into

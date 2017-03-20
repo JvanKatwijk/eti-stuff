@@ -81,21 +81,14 @@ FILE		*inputFile	= NULL;
 	      case 'i':
 	         initFileName = fullPathfor (optarg);
 	         break;
-	      case 'f':
-	      case 'F':
-	         inputName	= fullPathfor (optarg);
-	         inputFile	= fopen (inputName. toLatin1 (). data (), "r");
-	         if (inputFile == NULL)
-	            fprintf (stderr, "opening %s failed\n",
-	                                   inputName. toLatin1 (). data ());
+	      case '-':
+	         inputFile = stdin;
 	         break;
 	   }
 	}
 
 	if (initFileName == QString (""))
 	   initFileName = fullPathfor (DEFAULT_INI);
-	if (inputFile == NULL)
-	   inputFile	= stdin;
 
 	ISettings	= new QSettings (initFileName, QSettings::IniFormat);
 /*

@@ -1,10 +1,10 @@
 #
 /*
- *    Copyright (C) 2010, 2011, 2012
+ *    Copyright (C) 2016. 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
- *    This file is part of the SDR-J.
+ *    This file is part of the  eti-frontend of SDR-J.
  *    Many of the ideas as implemented in SDR-J are derived from
  *    other work, made available through the GNU general Public License. 
  *    All copyrights of the original authors are recognized.
@@ -30,7 +30,7 @@
 #include	<QDir>
 #include	<unistd.h>
 #include	"dab-constants.h"
-#include	"gui.h"
+#include	"radio.h"
 
 QString	fullPathfor (QString v) {
 QString	fileName;
@@ -77,7 +77,7 @@ QSettings	*dabSettings;		// ini file
 uint8_t		dabMode		= 127;	// illegal value
 QString		dabDevice	= QString ("");
 QString		dabBand		= QString ("");
-FILE		*outputFile	= stdout;	// probably overruled
+FILE		*outputFile	= NULL;	// probably overruled
 
 
 	while ((opt = getopt (argc, argv, "i:D:S:M:B:O:")) != -1) {

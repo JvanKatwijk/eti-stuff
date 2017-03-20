@@ -84,6 +84,9 @@ typedef mir_sdr_ErrT (*pfn_mir_sdr_DebugEnable)(uint32_t);
 typedef mir_sdr_ErrT (*pfn_mir_sdr_GetDevices) (mir_sdr_DeviceT *, uint32_t *, uint32_t);
 typedef mir_sdr_ErrT (*pfn_mir_sdr_GetCurrentGain) (mir_sdr_GainValuesT *);
 typedef mir_sdr_ErrT (*pfn_mir_sdr_GetHwVersion) (unsigned char *);
+typedef mir_sdr_ErrT (*pfn_mir_sdr_RSPII_AntennaControl) (mir_sdr_RSPII_AntennaSelectT);
+typedef mir_sdr_ErrT (*pfn_mir_sdr_SetDeviceIdx) (unsigned int);
+typedef mir_sdr_ErrT (*pfn_mir_sdr_ReleaseDeviceIdx) (unsigned int);
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -129,7 +132,13 @@ private:
 	pfn_mir_sdr_GetDevices  my_mir_sdr_GetDevices;
 	pfn_mir_sdr_GetCurrentGain my_mir_sdr_GetCurrentGain;
 	pfn_mir_sdr_GetHwVersion my_mir_sdr_GetHwVersion;
+	pfn_mir_sdr_RSPII_AntennaControl my_mir_sdr_RSPII_AntennaControl;
+	pfn_mir_sdr_SetDeviceIdx my_mir_sdr_SetDeviceIdx;
+	pfn_mir_sdr_ReleaseDeviceIdx my_mir_sdr_ReleaseDeviceIdx;
 
+	int16_t		hwVersion;
+	uint32_t	numofDevs;
+	int16_t		deviceIndex;
 	bool		loadFunctions	(void);
 	QSettings	*sdrplaySettings;
 	QFrame		*myFrame;
@@ -144,6 +153,7 @@ private slots:
 	void		setExternalGain	(int);
 	void		agcControl_toggled	(int);
 	void		set_ppmControl		(int);
+	void		set_antennaControl	(const QString &);
 };
 #endif
 

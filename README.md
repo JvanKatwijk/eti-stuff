@@ -1,6 +1,6 @@
 "Eti-stuff" consists of two programs and is an attempt to
 understand the eti structure as defined in ETS 300 799.
-It is based on the DAB-rpi software, with code included
+It is based on the Qt-DAB software, with code included
 from dabtools to actually generate the eti frames.
 
 It consists of two programs, one generating a stream of ETI frames,
@@ -12,7 +12,7 @@ Copyright
 
 Copyright Jan van Katwijk (J.vanKatwijk@gmail.com).
 
-This software is part of the  SDR-J (JSDR), SDR-J is free software; you can redistribute it and/or modify
+This software is part of the  SDR-J, SDR-J is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version, taking into account the licensing conditions of the parts of the
 software that are derived from wotk of others.
 
@@ -27,9 +27,9 @@ from the dabtools remain with Dave Chapman.
 
 The set consists (currently) of two programs (both under continuous development)
 
-a. eti-frontend, which is a stripped dab-rpi version which
+a. eti-frontend, which is a stripped Qt-DAB version that
    generates eti-frames as output.
-   GUI is - obviously - based on dab-rpi. There is an additional
+   The GUI is - obviously - based on Qt-DAB. There is an additional
    command line option "-O -", that will cause the ETI files to be
    send to stdout.
    The "normal" way of working is to have an input device selected, select
@@ -37,18 +37,25 @@ a. eti-frontend, which is a stripped dab-rpi version which
    identified, and the GUI shows the names of the programs, to press
    the button "eti is waiting", after which it will send the eti frames
    to the selected output device.
-b. eti-backend, which is a stripped dab-rpi version which takes
-   eti-frames as input. A command line option is to specify an input file,
-   if none is specified, the program will take its input from stdin.
+b. eti-backend, which is a stripped Qt-DAB version which takes
+   eti-frames as input. A command line option is to specify stdin as
+   input file,
+   if none is specified, the program will show a widget for selecting an
+   input file.
    The GUI is simple, it will show the name of the ensemble and the names
-   of programs. Selecting a program is as in the DAB-rpi software. It will start reading
-   after pressing the start button.
+   of programs. Selecting a program is as in the Qt-DAB software.
+   It will start reading after pressing the start button.
 
 So, if you want to emulate a full dab-receiver, then just do
 
-    eti-frontend -O - | eti-backend
+    eti-frontend -O - | eti-backend -
 
-Since the software is derived from the DAB-rpi software, it supports
+If you want to run the backend there are two options,
+a. one is to take input from stdin, indicated by a "-" as command line option.
+b. if no "-" is specified on the command line, you will get a menu when 
+starting the progra, to select a file.
+
+Since the software is derived from the Qt-DAB software, it supports
 - if so configured - the same devices, i.e. dabsticks, airspy and sdrplay
 (and prerecorded files of course).
 

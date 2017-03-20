@@ -38,7 +38,7 @@
 #include	"eti-generator.h"
 #include	"eep-protection.h"
 #include	"uep-protection.h"
-#include	"gui.h"
+#include	"radio.h"
 
 static uint16_t const crctab_1021[256] = {
   0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
@@ -103,7 +103,9 @@ bool	fibValid  [16];
 //	filling - and processing - indicates at the end of the frame
 //	again the last fib.
 //	In between there are more fib fields filled than CIFS
-#define	CUSize	(4 * 16)
+//
+//	Since the odpprocessor (together with the decoder) takes quite an
+//	amount of cycles, the eti-generation is done in a different thread
 //	Note CIF counts from 0 .. 3
 //
 		etiGenerator::etiGenerator	(RadioInterface *mr,
@@ -119,13 +121,13 @@ bool	fibValid  [16];
 	index_Out		= 0;
 	BitsperBlock		= 2 * p -> K;
 	numberofblocksperCIF	= 18;
-	running		= false;
-	amount		= 0;
-	processing	= false;
-	expected_block	= 2;
-	CIFCount_hi	= -1;
-	CIFCount_lo	= -1;
-	outputFile	= NULL;
+	running			= false;
+	amount			= 0;
+	processing		= false;
+	expected_block		= 2;
+	CIFCount_hi		= -1;
+	CIFCount_lo		= -1;
+	outputFile		= NULL;
 	start ();
 }
 
@@ -300,7 +302,11 @@ uint8_t	shiftRegister [9];
 	   memset (outVector, 0, 24 * data. bitrate);
 
 //	Apply appropriate depuncturing for each subchannel 
-//	Note time deinterleaving is done already
+//
+//	An "optimization" here could be to maintain a "cache" of
+//	xep_protection handlers, since it is most likely that
+//	more than one service is protected with the same parameters.
+//	(Note time deinterleaving is done already)
 	   if (data. uepFlag) {
 	      uep_protection uep_deconvolver (data. bitrate, data. protlev);
 	      uep_deconvolver.
@@ -316,10 +322,9 @@ uint8_t	shiftRegister [9];
 	                     data. size * CUSize,
 	                     outVector);
 	   }
-
 //
-//	What remains is dispersion the bits and adding them to the
-//	output vector
+//	What remains is dispersion of the bits, packing then as bytes
+//	and adding these bytes to the output vector.
 	   memset (shiftRegister, 1, 9);
            for (j = 0; j < 24 * data. bitrate; j ++) {
               uint8_t b = shiftRegister [8] ^ shiftRegister [4];
@@ -351,15 +356,17 @@ void	etiGenerator::startProcessing	(FILE *f) {
 }
 
 void	etiGenerator::stopProcessing	(void) {
+	processing	= false;
 	if (outputFile != NULL)
 	   fclose (outputFile);
 	outputFile	= NULL;
-	processing	= false;
 }
 
 //	Copied  from dabtools:
-int32_t	etiGenerator::init_eti (uint8_t* eti, int16_t CIFCount_hi,
-	                                      int16_t CIFCount_lo, int16_t minor) {
+int32_t	etiGenerator::init_eti (uint8_t* eti,
+	                        int16_t CIFCount_hi,
+	                        int16_t CIFCount_lo,
+	                        int16_t minor) {
 int	fillPointer = 0;
 int	j;
 channel_data data;
