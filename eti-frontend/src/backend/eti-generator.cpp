@@ -89,6 +89,7 @@ unsigned int temp;
 	return crc & 0xffff;
 } 
 
+int16_t cif_In    [55296];
 int16_t	cifVector [16][55296];
 uint8_t	fibVector [16][96];
 bool	fibValid  [16];
@@ -153,12 +154,13 @@ bufferElement s;
 }
 
 void	etiGenerator::run		(void) {
-int16_t	i, j, k;
+int	i, j, k;
 bufferElement b;
 int16_t	CIF_index;
 int16_t	temp [55296];
 uint8_t	theVector [6144];
 int16_t	Minor	= 0;
+const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 
 	running	= true;
 	while (running) {
@@ -216,17 +218,21 @@ int16_t	Minor	= 0;
 
 //	adding the MSC blocks
 	   CIF_index	= (b. blkno - 5) % numberofblocksperCIF;
-	   memcpy (&cifVector [index_Out][CIF_index * BitsperBlock],
+	   memcpy (&cif_In [CIF_index * BitsperBlock],
 	           b. data,
 	           BitsperBlock * sizeof (int16_t));
 	   if (CIF_index == numberofblocksperCIF - 1) {
-//	Minor is introduced to inform the init_eti function
-//	anout the CIF number in the dab frame, it runs from 0 .. 3
-	      time_deinterleave (temp);
+	      for (i = 0; i < 3072 * 18; i++) {
+	         int index = interleaveMap [i & 017];
+	         temp [i] = cifVector [(index_Out + index) & 017] [i];
+	         cifVector [index_Out & 0xF] [i] = cif_In [i];
+	      }
 //	we have to wait until the interleave matrix i filled
 	      if (amount < 15) {
 	         amount += 1;
 	         index_Out	= (index_Out + 1) & 017;
+//	Minor is introduced to inform the init_eti function
+//	anout the CIF number in the dab frame, it runs from 0 .. 3
 	         Minor		= 0;
 	         continue;
 	      }
@@ -281,19 +287,20 @@ int16_t	Minor	= 0;
 //	upon a segment in the eti vector
 int32_t	etiGenerator::process_CIF (int16_t *input,
 	                           uint8_t *output, int32_t offset) {
-int16_t	i, j;
-int32_t	totalLength	= 0;
-int32_t	outLength	= 0;
+int16_t	i, j, k;
+uint8_t	shiftRegister [9];
 
 	for (i = 0; i < 64; i ++) {
 	   channel_data data;
 	   my_ficHandler. get_channelInfo (&data, i);
 	   if (!data. in_use)
 	      continue;
+
 	   uint8_t outVector [24 * data. bitrate];
 	   memset (outVector, 0, 24 * data. bitrate);
-	   totalLength += data. size * CUSize;
+
 //	Apply appropriate depuncturing for each subchannel 
+//	Note time deinterleaving is done already
 	   if (data. uepFlag) {
 	      uep_protection uep_deconvolver (data. bitrate, data. protlev);
 	      uep_deconvolver.
@@ -310,19 +317,23 @@ int32_t	outLength	= 0;
 	                     outVector);
 	   }
 
-	   outLength += 24 * data. bitrate;
 //
-//	What remains is packing the bits and adding them to the
+//	What remains is dispersion the bits and adding them to the
 //	output vector
+	   memset (shiftRegister, 1, 9);
+           for (j = 0; j < 24 * data. bitrate; j ++) {
+              uint8_t b = shiftRegister [8] ^ shiftRegister [4];
+              for (k = 8; k > 0; k--)
+                 shiftRegister [k] = shiftRegister [k - 1];
+              shiftRegister [0] = b;
+              outVector [j] ^= b;
+           }
 	   for (j = 0; j < 24 * data. bitrate / 8; j ++) {
-	      int16_t k;
-	      output [offset + j] = 0;
-	      for (k = 0; k < 8; k ++) {
-	         output [offset + j] <<= 1;
-	         output [offset + j] |= (outVector [j * 8 + k] & 01);
-	      }
+              int temp = 0;
+              for (k = 0; k < 8; k ++)
+                 temp = (temp << 1) | (outVector [j * 8 + k] & 01);
+              output [offset + j] = temp;
 	   }
-	   disperse (&output [offset], 3 * data. bitrate);
 	   offset += 24 * data. bitrate / 8;
 	}
 	return offset;
@@ -344,38 +355,6 @@ void	etiGenerator::stopProcessing	(void) {
 	   fclose (outputFile);
 	outputFile	= NULL;
 	processing	= false;
-}
-//
-//	simple and fast time-deinterleaver, borrowed from dabtools
-void	etiGenerator::time_deinterleave (int16_t *dst) {
-int	i;
-int16_t	index;
-const int16_t map[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
-	for (i = 0; i < 3072 * 18; i++) {
-	   index = map [i & 017];
-	   dst [i] = cifVector [(index_Out + index) & 017] [i];
-	}
-}
-//
-//	Copied directly from dabtools:
-
-void 	etiGenerator::disperse (uint8_t *buf, int16_t nbytes) {
-int16_t i,j;
-uint8_t q;
-uint16_t p = 0x01FF;
-int32_t pp;
-
-	for (i = 0; i < nbytes; i++) {
-	   q = 0;
-	   for (j = 0; j < 8; j++) {
-	      p = p << 1;
-	      pp = ((p >> 9) & 1) ^ ((p >> 5) & 1);
-	      p |= pp;
-	      q = (q << 1) | pp;
-	   }
-	   buf [i] ^= q;
-	}
-	return;
 }
 
 //	Copied  from dabtools:

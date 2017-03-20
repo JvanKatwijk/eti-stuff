@@ -83,9 +83,6 @@ private:
 	ficHandler	my_ficHandler;
 	bool		processing;
 	int16_t		expected_block;
-	void		time_deinterleave	(int16_t *);
-	void		disperse		(uint8_t *, int16_t);
-	void		dab_descramble_bytes	(uint8_t *, int32_t); 
 	int32_t		init_eti		(uint8_t *,
 	                                         int16_t, int16_t, int16_t);
 	int32_t		process_CIF		(int16_t *,

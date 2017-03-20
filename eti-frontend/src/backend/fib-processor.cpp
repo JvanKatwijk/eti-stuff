@@ -298,7 +298,7 @@ int16_t	option, protLevel, subChanSize;
 	else { 	// EEP long form
 	   option = getBits_3 (d, bitOffset + 17);
 	   if (option == 0) { 		// A Level protection
-	      protLevel = getBits_2 (d, bitOffset + 20);
+	      protLevel = getBits (d, bitOffset + 20, 2);
 //
 	      ficList [SubChId]. protlev = protLevel;
 	      subChanSize = getBits (d, bitOffset + 22, 10);
@@ -969,15 +969,26 @@ void	fib_processor::bind_audioService (int8_t TMid,
 serviceId *s	= findServiceId	(SId);
 int16_t	i;
 int16_t	firstFree	= -1;
-	if (components [subChId]. inUse)
-	   return;
-	components [subChId]. inUse	= true;
-	components [subChId]. TMid	= TMid;
-	components [subChId]. componentNr = compnr;
-	components [subChId]. service	= s;
-	components [subChId]. subchannelId = subChId;
-	components [subChId]. PS_flag	= ps_flag;
-	components [subChId]. ASCTy	= ASCTy;
+
+	for (i = 0; i < 64; i ++) {
+           if (!components [i]. inUse) {
+              if (firstFree == -1)
+                 firstFree = i;
+              continue;
+           }
+           if ((components [i]. service == s) &&
+               (components [i]. componentNr == compnr))
+              return;
+        }
+        components [firstFree]. inUse = true;
+        components [firstFree]. TMid    = TMid;
+        components [firstFree]. componentNr = compnr;
+        components [firstFree]. service = s;
+        components [firstFree]. subchannelId = subChId;
+        components [firstFree]. PS_flag = ps_flag;
+        components [firstFree]. ASCTy = ASCTy;
+//	fprintf (stderr, "service %8x (comp %d) is audio\n", subChId, firstFree);
+
 }
 
 
@@ -994,16 +1005,24 @@ serviceId *s    = findServiceId (SId);
 int16_t i;
 int16_t	firstFree	= -1;
 
-	if (components [subChId]. inUse)
-	   return;
-	
-	components [subChId]. inUse  = true;
-	components [subChId]. TMid   = TMid;
-	components [subChId]. service = s;
-	components [subChId]. componentNr = compnr;
-	components [subChId]. SCId   = subChId;
-	components [subChId]. PS_flag = ps_flag;
-	components [subChId]. CAflag = CAflag;
+       for (i = 0; i < 64; i ++) {
+	   if (!components [i]. inUse) {
+	      if (firstFree == -1)
+	         firstFree = i;
+	      continue;
+	   }
+	   if ((components [i]. service == s) && 
+	       (components [i]. componentNr == compnr))
+	      return;
+	}
+	components [firstFree]. inUse  = true;
+	components [firstFree]. TMid   = TMid;
+	components [firstFree]. service = s;
+	components [firstFree]. componentNr = compnr;
+	components [firstFree]. SCId   = SId;
+	components [firstFree]. PS_flag = ps_flag;
+	components [firstFree]. CAflag = CAflag;
+//	fprintf (stderr, "service %8x (comp %d) is packet\n", SId, compnr);
 }
 
 

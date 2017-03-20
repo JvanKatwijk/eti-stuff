@@ -99,12 +99,13 @@ FILE		*outputFile	= stdout;	// probably overruled
 	      case 'B':
 	         dabBand 	= optarg;
 	         break;
+
 	      case 'o':
 	      case 'O':
 	         if (optarg [0] == '-')
 	            outputFile = stdout;
 	         else {
-	            outputFileName = fullPathfor (optarg);
+	            outputFileName = optarg;
 	            fprintf (stderr, "output to %s\n",
 	                                    outputFileName. toLatin1 (). data ());
 	            outputFile = fopen (outputFileName. toLatin1 (). data (), "w");
