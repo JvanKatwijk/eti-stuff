@@ -7,29 +7,27 @@ It consists of two programs, one generating a stream of ETI frames, the other on
 
 ## Contents
 
-The set consists (currently) of two programs (both under continuous development)
-
 
 ### eti-frontend
 
-which is a stripped Qt-DAB version that generates ETI frames as output or save them to a file. The GUI is - obviously - based on Qt-DAB.
+Is a stripped Qt-DAB version that generates ETI frames as output or save them to a `*.eti` file. The GUI is - obviously - based on Qt-DAB.
 
 
 #### Syntax
 
    `eti-frontend -O -`
 
-will cause the ETI files to be sent to stdout, whereas
+will cause the ETI frames to be sent to stdout, whereas
 
    `eti-frontend -O`
 
 will show a file save menu for selecting an output file (`*.eti`).
 
-Then select an input device or `*.raw` or `*.sdr` file, select a VHF III or L-Band channel carrying the DAB or DAB+ signal, press the start button. After it, an ensemble will be identified and the GUI shows the names of the services. Please wait until the quality indicator shows the value 100. Then press the button "eti is waiting", which then will send the ETI frames to the selected output device or to a file.
+Then select an input device or a `*.raw` or `*.sdr` file, choose the VHF III or L-Band channel carrying the DAB or DAB+ signal, and press the start button. After it, an ensemble will be identified and the GUI shows the names of the services. Please wait until the quality indicator shows the value 100. Then press the button "eti is waiting" which then will send the ETI frames to the selected output device resp. to a file.
    
 ### eti-backend
 
-which is a stripped Qt-DAB version which takes EIT frames as input or from a `*.eti` file.
+Is a stripped Qt-DAB version which takes ETI frames as input or from a `*.eti` file.
 
 
 #### Syntax
@@ -42,7 +40,7 @@ specifies stdin as input, whereas
 
 will show a file open menu for selecting an input file (`*.eti`).
 
-The GUI is simple, it will show the name of the ensemble and the names of programs. Selecting a service is the same as in the Qt-DAB software.
+The GUI is simple, it will show the name of the ensemble and the names of the services. Selecting a service is the same as in the Qt-DAB software.
 
 It will start reading after pressing the start button.
 
@@ -52,7 +50,7 @@ So, if you want to emulate a full dab-receiver, then just place both commands to
    eti-frontend -O - | eti-backend -
    ```
   
-Since the software is derived from the Qt-DAB software, it supports therefore - if so configured - the same devices, i.e. dabsticks, airspy and sdrplay (and prerecorded files of course).
+Since the software is derived from the Qt-DAB software, it supports therefore - if so configured - the same devices, i.e. dabsticks, Airspy (mini) and sdrplay (and prerecorded files of course).
 
 
 ## Windows
