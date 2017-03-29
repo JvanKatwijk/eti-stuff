@@ -1,3 +1,5 @@
+# eti stuff
+
 "Eti-stuff" consists of three programs and is an attempt to
 understand the eti structure as defined in ETS 300 799.
 eti-frontend and eti-backend are based on the Qt-DAB software,
@@ -7,22 +9,10 @@ eti-cmdline is based on the dab-cmdline software,
 The eti-frontend and eti-cmdline programs take as input a sample stream
 and create an eti file, while eti-backend is interpreting the eti file.
 
-Copyright
+It consists of two programs, one generating a stream of ETI frames, the other one reading and interpreting the ETI frames, such that by piping the output from the one into the other one has a more or less complete DAB receiver.
 
-Copyright Jan van Katwijk (J.vanKatwijk@gmail.com).
 
-This software is part of the  SDR-J, SDR-J is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version, taking into account the licensing conditions of the parts of the
-software that are derived from wotk of others.
-
-This software uses parts of dabtools.
-Excerpt from the README of dabtools  reads
-"dabtools is written by Dave Chapman <dave@dchapman.com>
-Large Parts of the code in both eti-frontend and eti-backend are copied verbatim (or with trivial
-modifications) from David Crawley's OpenDAB and hence retain his copyright."
-
-Obviously, the copyrights for the parts copied (or directly derived)
-from the dabtools remain with Dave Chapman.
+## Contents
 
 The set consists (currently) of two programs (both under continuous development)
 
@@ -62,10 +52,24 @@ i.e. rtlsdr based dabsticks, airspy and sdrplay
 (and the GUI based programs prerecorded files).
 
 Disclaimer
-
+========================================================================
 The software is under development and most likely contains errors.
-SDR-J is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+
+eti-stuff is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 
+## Copyright
 
+Copyright Jan van Katwijk <J.vanKatwijk@gmail.com>.
+
+This software is part of the Qt-DAB, Qt-DAB is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version, taking into account the licensing conditions of the parts of the software that are derived from wotk of others.
+
+This software uses parts of dabtools.
+Excerpt from the README of dabtools reads
+
+"dabtools is written by Dave Chapman <dave@dchapman.com>
+   
+Large Parts of the code in both eti-frontend and eti-backend are copied verbatim (or with trivial modifications) from David Crawley's OpenDAB and hence retain his copyright."
+
+Obviously, the copyrights for the parts copied (or directly derived) from the dabtools remain with Dave Chapman.
