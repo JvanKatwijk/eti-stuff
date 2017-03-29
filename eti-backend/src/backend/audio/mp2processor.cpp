@@ -28,6 +28,7 @@
 //
 #include	"mp2processor.h"
 #include	"radio.h"
+#include	"pad-handler.h"
 
 #ifdef _MSC_VER
     #define FASTCALL __fastcall
@@ -220,7 +221,8 @@ struct quantizer_spec quantizer_table [17] = {
 
 	mp2Processor::mp2Processor (RadioInterface	*mr,
 	                            int16_t		bitRate,
-	                            RingBuffer<int16_t> *buffer) {
+	                            RingBuffer<int16_t> *buffer):
+	                                my_padhandler (mr) {
 int16_t	i, j;
 int16_t *nPtr = &N [0][0];
 
@@ -238,6 +240,7 @@ int16_t *nPtr = &N [0][0];
 
 	myRadioInterface	= mr;
 	this	-> buffer	= buffer;
+	this	-> bitRate	= bitRate;
 	connect (this, SIGNAL (show_frameErrors (int)),
 	         mr, SLOT (show_frameErrors (int)));
 	connect (this, SIGNAL (newAudio (int)),
@@ -390,6 +393,7 @@ int32_t table_idx;
 	   return 0;
 	}
 
+
 	// set up the bitstream reader
 	bit_window	= frame [2] << 16;
 	bits_in_window	= 8;
@@ -424,13 +428,13 @@ int32_t table_idx;
 
 // discard the last 4 bits of the header and the CRC value, if present
 	get_bits(4);
-	if ((frame[1] & 1) == 0)
+	if ((frame [1] & 1) == 0)
 	   get_bits(16);
 
 // compute the frame size
 	frame_size = (144000 * bitrates[bit_rate_index_minus1]
 	   / sample_rates [sampling_frequency]) + padding_bit;
-
+	
 	if (!pcm)
 	   return frame_size;  // no decoding
 
@@ -458,14 +462,14 @@ int32_t table_idx;
 
 	for (sb = bound;  sb < sblimit;  ++sb)
 	   allocation[0][sb] =
-	   allocation[1][sb] = read_allocation(sb, table_idx);
+	   allocation[1][sb] = read_allocation (sb, table_idx);
 
 	// read scale factor selector information
 	nch = (mode == MONO) ? 1 : 2;
 	for (sb = 0;  sb < sblimit;  ++sb) {
 	   for (ch = 0;  ch < nch;  ++ch)
-	      if (allocation[ch][sb])
-	         scfsi [ch][sb] = get_bits(2);
+	      if (allocation [ch][sb])
+	         scfsi [ch][sb] = get_bits (2);
 
 	   if (mode == MONO)
 	      scfsi[1][sb] = scfsi[0][sb];
@@ -578,6 +582,21 @@ void	mp2Processor::addtoFrame (uint8_t *v) {
 int16_t	i, j;
 int16_t	lf	= baudRate == 48000 ? MP2framesize : 2 * MP2framesize;
 int16_t	amount	= MP2framesize;
+int16_t	vLength	= 23 * bitRate / 8;
+uint8_t	help [vLength];
+
+	for (i = 0; i < vLength; i ++) {
+	   help [i] = 0;
+	   for (j = 0; j < 8; j ++) {
+	      help [i] <<= 1;
+	      help [i] |= v [8 * i + j] & 01;
+	   }
+	}
+	{ uint8_t L0    = help [vLength - 1];
+          uint8_t L1    = help [vLength - 2];
+          int16_t down  = bitRate * 1000 >= 56000 ? 4 : 2;
+          my_padhandler. processPAD (help, vLength - 2 - down - 1, L1, L0);
+        }
 
 	for (i = 0; i < amount; i ++) {
 	   if (MP2Header_OK == 2) {
@@ -617,6 +636,7 @@ int16_t	amount	= MP2framesize;
 	      }
 	   }
 	}
+
 }
 
 void	mp2Processor::addbittoMP2 (uint8_t *v, uint8_t b, int16_t nm) {

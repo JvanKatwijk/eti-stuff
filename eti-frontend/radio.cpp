@@ -1,6 +1,6 @@
 #
 /*
- *    Copyright (C) 2013, 2014, 2015
+ *    Copyright (C) 2016, 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
@@ -41,9 +41,6 @@
 #endif
 #ifdef	HAVE_SDRPLAY
 #include	"sdrplay.h"
-#endif
-#ifdef	HAVE_UHD
-#include	"uhd-input.h"
 #endif
 #ifdef	HAVE_EXTIO
 #include	"extio-handler.h"
@@ -89,17 +86,16 @@
 	isSynced		= UNSYNCED;
 //
 	this -> dabBand		= dabBand == "BAND III" ? BAND_III : L_BAND;
-	setupChannels	(channelSelector, this -> dabBand);
+	theBand. setupChannels	(channelSelector, this -> dabBand);
 	this	-> dabMode	= dabMode;
-	setModeParameters (dabMode);
 /**
   */
 	this	-> freqsyncMethod	= freqsyncMethod;
 	my_etiGenerator		= new etiGenerator	(this,
-	                                                 &dabModeParameters);
+	                                                 dabMode);
 
 	my_ofdmProcessor	= new ofdmProcessor   (inputDevice,
-	                                               &dabModeParameters,
+	                                               dabMode,
 	                                               this,
 	                                               my_etiGenerator,
 	                                               threshold,
@@ -125,146 +121,6 @@ void	RadioInterface::dumpControlState (QSettings *s) {
 	s	-> setValue ("device", deviceSelector -> currentText ());
 }
 //
-///	the values for the different Modes:
-void	RadioInterface::setModeParameters (uint8_t Mode) {
-	if (Mode == 2) {
-	   dabModeParameters. dabMode	= 2;
-	   dabModeParameters. L		= 76;		// blocks per frame
-	   dabModeParameters. K		= 384;		// carriers
-	   dabModeParameters. T_null	= 664;		// null length
-	   dabModeParameters. T_F	= 49152;	// samples per frame
-	   dabModeParameters. T_s	= 638;		// block length
-	   dabModeParameters. T_u	= 512;		// useful part
-	   dabModeParameters. guardLength	= 126;
-	   dabModeParameters. carrierDiff	= 4000;
-	} else
-	if (Mode == 4) {
-	   dabModeParameters. dabMode		= 4;
-	   dabModeParameters. L			= 76;
-	   dabModeParameters. K			= 768;
-	   dabModeParameters. T_F		= 98304;
-	   dabModeParameters. T_null		= 1328;
-	   dabModeParameters. T_s		= 1276;
-	   dabModeParameters. T_u		= 1024;
-	   dabModeParameters. guardLength	= 252;
-	   dabModeParameters. carrierDiff	= 2000;
-	} else 
-	if (Mode == 3) {
-	   dabModeParameters. dabMode		= 3;
-	   dabModeParameters. L			= 153;
-	   dabModeParameters. K			= 192;
-	   dabModeParameters. T_F		= 49152;
-	   dabModeParameters. T_null		= 345;
-	   dabModeParameters. T_s		= 319;
-	   dabModeParameters. T_u		= 256;
-	   dabModeParameters. guardLength	= 63;
-	   dabModeParameters. carrierDiff	= 2000;
-	} else {	// default = Mode I
-	   dabModeParameters. dabMode		= 1;
-	   dabModeParameters. L			= 76;
-	   dabModeParameters. K			= 1536;
-	   dabModeParameters. T_F		= 196608;
-	   dabModeParameters. T_null		= 2656;
-	   dabModeParameters. T_s		= 2552;
-	   dabModeParameters. T_u		= 2048;
-	   dabModeParameters. guardLength	= 504;
-	   dabModeParameters. carrierDiff	= 1000;
-	}
-}
-
-struct dabFrequencies {
-	const char	*key;
-	int	fKHz;
-};
-
-struct dabFrequencies bandIII_frequencies [] = {
-{"5A",	174928},
-{"5B",	176640},
-{"5C",	178352},
-{"5D",	180064},
-{"6A",	181936},
-{"6B",	183648},
-{"6C",	185360},
-{"6D",	187072},
-{"7A",	188928},
-{"7B",	190640},
-{"7C",	192352},
-{"7D",	194064},
-{"8A",	195936},
-{"8B",	197648},
-{"8C",	199360},
-{"8D",	201072},
-{"9A",	202928},
-{"9B",	204640},
-{"9C",	206352},
-{"9D",	208064},
-{"10A",	209936},
-{"10B", 211648},
-{"10C", 213360},
-{"10D", 215072},
-{"11A", 216928},
-{"11B",	218640},
-{"11C",	220352},
-{"11D",	222064},
-{"12A",	223936},
-{"12B",	225648},
-{"12C",	227360},
-{"12D",	229072},
-{"13A",	230748},
-{"13B",	232496},
-{"13C",	234208},
-{"13D",	235776},
-{"13E",	237488},
-{"13F",	239200},
-{NULL, 0}
-};
-
-struct dabFrequencies Lband_frequencies [] = {
-{"LA", 1452960},
-{"LB", 1454672},
-{"LC", 1456384},
-{"LD", 1458096},
-{"LE", 1459808},
-{"LF", 1461520},
-{"LG", 1463232},
-{"LH", 1464944},
-{"LI", 1466656},
-{"LJ", 1468368},
-{"LK", 1470080},
-{"LL", 1471792},
-{"LM", 1473504},
-{"LN", 1475216},
-{"LO", 1476928},
-{"LP", 1478640},
-{NULL, 0}
-};
-
-/**
-  *	\brief setupChannels
-  *	sets the entries in the GUI
-  */
-//
-//	Note that the ComboBox is GUI specific, but we assume
-//	a comboBox is available to act later on as selector
-//	for the channels
-//
-void	RadioInterface::setupChannels (QComboBox *s, uint8_t band) {
-struct dabFrequencies *t;
-int16_t	i;
-int16_t	c	= s -> count ();
-
-//	clear the fields in the conboBox
-	for (i = 0; i < c; i ++) 
-	   s	-> removeItem (c - (i + 1));
-
-	if (band == BAND_III)
-	   t = bandIII_frequencies;
-	else
-	   t = Lband_frequencies;
-
-	for (i = 0; t [i]. key != NULL; i ++) 
-	   s -> insertItem (i, t [i]. key, QVariant (i));
-}
 
 void	RadioInterface::init_your_gui (void) {
 	ficBlocks		= 0;
@@ -284,9 +140,6 @@ void	RadioInterface::init_your_gui (void) {
 #endif
 #ifdef	HAVE_AIRSPY
 	deviceSelector	-> addItem ("airspy");
-#endif
-#ifdef HAVE_UHD
-	deviceSelector	-> addItem ("UHD");
 #endif
 #ifdef HAVE_EXTIO
 	deviceSelector	-> addItem ("extio");
@@ -337,7 +190,6 @@ void	RadioInterface::init_your_gui (void) {
 /**
   *	we now handle the settings as saved by previous incarnations.
   */
-	setDevice 		(deviceSelector 	-> currentText ());
 	QString h		=
 	           dabSettings -> value ("device", "no device"). toString ();
 	if (h == "no device")	// no autostart here
@@ -345,8 +197,8 @@ void	RadioInterface::init_your_gui (void) {
 	int k		= deviceSelector -> findText (h);
 	if (k != -1) {
 	   deviceSelector	-> setCurrentIndex (k);
-	   setDevice 		(deviceSelector 	-> currentText ());
 	}
+	setDevice 		(deviceSelector 	-> currentText ());
 
 	h		= dabSettings -> value ("channel", "12C"). toString ();
 	k		= channelSelector -> findText (h);
@@ -539,8 +391,6 @@ void	RadioInterface::TerminateProcess (void) {
   *	or some magic will cause a channel to be selected
   */
 void	RadioInterface::set_channelSelect (QString s) {
-int16_t	i;
-struct dabFrequencies *finger;
 bool	localRunning	= running;
 int32_t	tunedFrequency;
 
@@ -556,22 +406,7 @@ int32_t	tunedFrequency;
 
 	clear_showElements ();
 
-	tunedFrequency		= 0;
-	if (dabBand == BAND_III)
-	   finger = bandIII_frequencies;
-	else
-	   finger = Lband_frequencies;
-
-	for (i = 0; finger [i]. key != NULL; i ++) {
-	   if (finger [i]. key == s) {
-	      tunedFrequency	= KHz (finger [i]. fKHz);
-	      break;
-	   }
-	}
-
-	if (tunedFrequency == 0)
-	   return;
-
+	tunedFrequency		= theBand. Frequency (dabBand, s);
 	inputDevice		-> setVFOFrequency (tunedFrequency);
 
 	if (localRunning) {
@@ -615,7 +450,6 @@ void	RadioInterface::autoCorrector_on (void) {
 //	single device to go with, then if suffices to extract some
 //	code specific to that device
 void	RadioInterface::setDevice (QString s) {
-bool	success;
 QString	file;
 //
 ///	first stop dumping
@@ -635,32 +469,16 @@ QString	file;
 ///	OK, everything quiet, now looking what to do
 #ifdef	HAVE_AIRSPY
 	if (s == "airspy") {
-	   inputDevice	= new airspyHandler (dabSettings, &success);
-	   if (!success) {
-	      delete inputDevice;
+	   try {
+	      inputDevice	= new airspyHandler (dabSettings);
+	      set_channelSelect	(channelSelector -> currentText ());
+	   }
+	   catch (int e) {
 	      QMessageBox::warning (this, tr ("sdr"),
 	                               tr ("airspy: no luck\n"));
 	      inputDevice = new virtualInput ();
 	      resetSelector ();
 	   }
-	   else 
-	      set_channelSelect	(channelSelector -> currentText ());
-	}
-	else
-#endif
-#ifdef HAVE_UHD
-//	UHD is - at least in its current setting - for Linux
-//	and not tested by me
-	if (s == "UHD") {
-	   inputDevice = new uhdInput (dabSettings, &success );
-	   if (!success) {
-	      delete inputDevice;
-	      QMessageBox::warning( this, tr ("sdr"), tr ("UHD: no luck\n") );
-	      inputDevice = new virtualInput();
-	      resetSelector ();
-	   }
-	   else 
-	      set_channelSelect (channelSelector->currentText() );
 	}
 	else
 #endif
@@ -668,64 +486,63 @@ QString	file;
 //	extio is - in its current settings - for Windows, it is a
 //	wrap around the dll
 	if (s == "extio") {
-	   inputDevice = new extioHandler (dabSettings, &success);
-	   if (!success) {
-	      delete inputDevice;
+	   try {
+	      inputDevice = new extioHandler (dabSettings);
+	      set_channelSelect (channelSelector -> currentText() );
+	   }
+	   catch (int e) {
 	      QMessageBox::warning( this, tr ("sdr"), tr ("extio: no luck\n") );
 	      inputDevice = new virtualInput();
 	      resetSelector ();
 	   }
-	   else 
-	      set_channelSelect (channelSelector -> currentText() );
 	}
 	else
 #endif
 #ifdef HAVE_RTL_TCP
 //	RTL_TCP might be working. 
 	if (s == "rtl_tcp") {
-	   inputDevice = new rtl_tcp_client (dabSettings, &success);
-	   if (!success) {
-	      delete inputDevice;
-	      QMessageBox::warning( this, tr ("sdr"), tr ("UHD: no luck\n") );
+	   try {
+	      inputDevice = new rtl_tcp_client (dabSettings);
+	      set_channelSelect (channelSelector->currentText() );
+	   }
+	   catch (int e) {
+	      QMessageBox::warning (this, tr ("sdr"), tr ("RTL_TCP: no luck\n") );
 	      inputDevice = new virtualInput();
 	      resetSelector ();
 	   }
-	   else 
-	      set_channelSelect (channelSelector->currentText() );
 	}
 	else
 #endif
 #ifdef	HAVE_SDRPLAY
 	if (s == "sdrplay") {
-	   inputDevice	= new sdrplay (dabSettings, &success);
-	   if (!success) {
-	      delete inputDevice;
+	   try {
+	      inputDevice	= new sdrplay (dabSettings);
+	      set_channelSelect	(channelSelector -> currentText ());
+	   }
+	   catch (int e) {
 	      QMessageBox::warning (this, tr ("sdr"),
-	                               tr ("SDRplay: no library\n"));
+	                               tr ("SDRplay: no library or device\n"));
 	      inputDevice = new virtualInput ();
 	      resetSelector ();
 	   }
-	   else 
-	      set_channelSelect	(channelSelector -> currentText ());
 	}
 	else
 #endif
 #ifdef	HAVE_DABSTICK
 	if (s == "dabstick") {
-	   inputDevice	= new dabStick (dabSettings, &success);
-	   if (!success) {
-	      delete inputDevice;
+	   try {
+	      inputDevice	= new dabStick (dabSettings);
+	      set_channelSelect	(channelSelector -> currentText ());
+	   }
+	   catch (int e) {
 	      QMessageBox::warning (this, tr ("sdr"),
 	                               tr ("Dabstick: no luck\n"));
 	      inputDevice = new virtualInput ();
 	      resetSelector ();
 	   }
-	   else 
-	      set_channelSelect	(channelSelector -> currentText ());
 	}
 	else
 #endif
-//
 //	We always have fileinput!!
 	if (s == "file input (.raw)") {
 	   file		= QFileDialog::getOpenFileName (this,
@@ -733,9 +550,25 @@ QString	file;
 	                                                QDir::homePath (),
 	                                                tr ("raw data (*.raw)"));
 	   file		= QDir::toNativeSeparators (file);
-	   inputDevice	= new rawFiles (file, &success);
-	   if (!success) {
-	      delete inputDevice;
+	   try {
+	      inputDevice	= new rawFiles (file);
+	   }
+	   catch (int e) {
+	      inputDevice = new virtualInput ();
+	      resetSelector ();
+	   }
+	}
+	else
+	if (s == "file input (.iq)") {
+	   file		= QFileDialog::getOpenFileName (this,
+	                                                tr ("open file ..."),
+	                                                QDir::homePath (),
+	                                                tr ("raw data (*.iq)"));
+	   file		= QDir::toNativeSeparators (file);
+	   try {
+	      inputDevice	= new rawFiles (file);
+	   }
+	   catch (int e) {
 	      inputDevice = new virtualInput ();
 	      resetSelector ();
 	   }
@@ -747,21 +580,22 @@ QString	file;
 	                                                QDir::homePath (),
 	                                                tr ("raw data (*.sdr)"));
 	   file		= QDir::toNativeSeparators (file);
-	   inputDevice	= new wavFiles (file, &success);
-	   if (!success) {
-	      delete inputDevice;
+	   try {
+	      inputDevice	= new wavFiles (file);
+	   }
+	   catch (int e) {
 	      inputDevice = new virtualInput ();
 	      resetSelector ();
 	   }
 	}
 	else {	// s == "no device" 
-//	and as default option, we have a "no device"
+//	and as default option, we have an always existing "no device"
 	   inputDevice	= new virtualInput ();
 	}
 ///	we have a new device, so we can re-create the ofdmProcessor
 ///	Note: the fichandler and etiGenerator remain unchanged
 	my_ofdmProcessor	= new ofdmProcessor   (inputDevice,
-	                                               &dabModeParameters,
+	                                               dabMode,
 	                                               this,
 	                                               my_etiGenerator,
 	                                               threshold,
@@ -783,10 +617,6 @@ int	k	= deviceSelector -> findText (QString ("no device"));
 ///	switch for dumping on/off
 void	RadioInterface::set_dumping (void) {
 SF_INFO *sf_info	= (SF_INFO *)alloca (sizeof (SF_INFO));
-
-	if (!someStick (inputDevice -> myIdentity ()))
-	   return;
-
 	if (sourceDumping) {
 	   my_ofdmProcessor	-> stopDumping ();
 	   sf_close (dumpfilePointer);
@@ -831,7 +661,7 @@ QString	filename;
               if (!filename. endsWith (".wav", Qt::CaseInsensitive) &&
 	          !filename. endsWith (".eti", Qt::CaseInsensitive))
                  filename. append (".eti");
-	      eti_file	= fopen (filename. toLatin1 (). data (), "w");
+	      eti_file	= fopen (filename. toLatin1 (). data (), "wb");
 	   }
 	   my_etiGenerator	-> startProcessing (eti_file);
 	   eti_control		-> setText ("eti is working");

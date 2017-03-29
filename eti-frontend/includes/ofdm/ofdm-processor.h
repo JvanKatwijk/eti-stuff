@@ -1,22 +1,22 @@
 #
 /*
- *    Copyright (C) 2013
+ *    Copyright (C) 2016 .. 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
- *    This file is part of the SDR-J (JSDR).
- *    SDR-J is free software; you can redistribute it and/or modify
+ *    This file is part of the eti-frontend 
+ *    eti-frontend is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    SDR-J is distributed in the hope that it will be useful,
+ *    eti-frontend is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with SDR-J; if not, write to the Free Software
+ *    along with eti-frontend; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
@@ -36,6 +36,8 @@
 #include	"phasereference.h"
 #include	"virtual-input.h"
 #include	"ringbuffer.h"
+#include	"dab-params.h"
+#include	"freq-interleaver.h"
 
 //	Note:
 //	It was found that enlarging the buffersize to e.g. 8192
@@ -43,14 +45,14 @@
 #define	DUMPSIZE		4096
 class	RadioInterface;
 class	common_fft;
-class	ofdmDecoder;
 class	etiGenerator;
+class	dabParams;
 
 class ofdmProcessor: public QThread {
 Q_OBJECT
 public:
 		ofdmProcessor  	(virtualInput *,
-	                         DabParams	*,
+	                         uint8_t,
 	                         RadioInterface *,
 	                         etiGenerator *,
 	                         int16_t,
@@ -64,7 +66,7 @@ public:
 	void	set_scanMode		(bool, QString);
 	void	startDumping	(SNDFILE *);
 	void	stopDumping	(void);
-protected:
+private:
 	bool		running;
 	int16_t		gain;
 	bool		dumping;
@@ -73,13 +75,15 @@ protected:
 	int16_t		dumpBuffer [DUMPSIZE];
 	SNDFILE		*dumpFile;
 	virtualInput	*theRig;
-	DabParams	*params;
+	dabParams	params;
 	int32_t		T_null;
 	int32_t		T_u;
 	int32_t		T_s;
 	int32_t		T_g;
 	int32_t		T_F;
+	int32_t		nrBlocks;
 	int32_t		carriers;
+	int32_t		carrierDiff;
 	float		sLevel;
 	RadioInterface	*myRadioInterface;
 	DSPCOMPLEX	*dataBuffer;
@@ -97,9 +101,8 @@ protected:
 	uint32_t	ofdmSymbolCount;
 	int16_t		*dabFrame;
 	DSPCOMPLEX	*referenceFase;
-	phaseReference	*phaseSynchronizer;
-	interLeaver	*myMapper;
-	ofdmDecoder	*my_ofdmDecoder;
+	phaseReference	phaseSynchronizer;
+	interLeaver	myMapper;
 	DSPFLOAT	avgCorr;
 	etiGenerator	*my_etiGenerator;
 private:

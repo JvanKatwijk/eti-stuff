@@ -127,20 +127,6 @@ int16_t	latency;
 #endif
 	uint8_t dabMode	= 1;
 	setModeParameters (dabMode);
-	if (input == NULL) {
-	   QString fileName;
-	   fileName	= QFileDialog::getOpenFileName (this,
-	                                                tr ("open file ..."),
-	                                                QDir::homePath (),
-	                                                tr ("eti data (*.eti)"));
-	   fileName	= QDir::toNativeSeparators (fileName);
-	   input 	= fopen (fileName. toLatin1 (). data (), "r");
-	   if (input == NULL) {
-	      fprintf (stderr, "failure, cannot open %s, fatal\n",
-	                              fileName. toLatin1 (). data ());
-	      exit (2);
-	   }
-	}
 /**
   *	The etiController reads the etiframes and processes them.
   *	The fib segments are put in a buffer and the GUI is
@@ -151,6 +137,20 @@ int16_t	latency;
   *	With that information, the etiController will extract the 
   *	data segment and pass it on to the appropriate decoder.
   */
+	if (input == NULL) {
+	   QString fileName;
+	   fileName	= QFileDialog::getOpenFileName (this,
+	                                                tr ("open file ..."),
+	                                                QDir::homePath (),
+	                                                tr ("eti data (*.eti)"));
+	   fileName	= QDir::toNativeSeparators (fileName);
+	   input 	= fopen (fileName. toLatin1 (). data (), "rb");
+	   if (input == NULL) {
+	      fprintf (stderr, "failure, cannot open %s, fatal\n",
+	                              fileName. toLatin1 (). data ());
+	      exit (2);
+	   }
+	}
 	my_fibHandler		= new fib_processor	(this);
 	my_etiController	= new etiController	(this,
 	                                                 &dabModeParameters,
@@ -167,6 +167,8 @@ int16_t	latency;
         techData. aacError_display      -> setPalette (p);
         techData. rsError_display       -> hide ();
         techData. aacError_display      -> hide ();
+	techData. motDisplay		->
+                       setStyleSheet ("QLabel {background-color : red}");
 //
 //	and here forever
 	techData. frequency		-> hide ();
@@ -565,6 +567,8 @@ void	RadioInterface::clear_showElements (void) {
         techData. ASCTy                 -> setText (QString (""));
         techData. language              -> setText (QString (""));
         techData. programType           -> setText (QString (""));
+	techData. motDisplay          ->
+                       setStyleSheet ("QLabel {background-color : red}");
 
 	if (pictureLabel != NULL)
 	   delete pictureLabel;
@@ -641,8 +645,11 @@ fibElement f;
 void	RadioInterface::selectService (QModelIndex s) {
 QString a = ensemble. data (s, Qt::DisplayRole). toString ();
 	setStereo (false);
-	techData. rsError_display		-> hide ();
+	techData. rsError_display	-> hide ();
         techData. aacError_display	-> hide ();
+	techData. motDisplay		->
+                       setStyleSheet ("QLabel {background-color : red}");
+
 	dataDisplay. hide ();
 
 	switch (my_fibHandler -> kindofService (a)) {
@@ -801,5 +808,17 @@ void    RadioInterface::toggle_show_data (void) {
            dataDisplay. show ();
         else
            dataDisplay. hide ();
+}
+
+
+void    RadioInterface::show_motHandling (bool b) {
+        if (b) {
+           techData. motDisplay ->
+                       setStyleSheet ("QLabel {background-color : green}");
+        }
+        else {
+           techData. motDisplay ->
+                       setStyleSheet ("QLabel {background-color : red}");
+        }
 }
 

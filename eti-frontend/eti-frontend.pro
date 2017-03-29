@@ -20,9 +20,9 @@ DEPENDPATH += . \
 	      ./src/ofdm \
 	      ./src/backend \
 	      ./src/various \
-	      ./src/input \
-	      ./src/input/rawfiles \
-	      ./src/input/wavfiles \
+	      ./input \
+	      ./input/rawfiles \
+	      ./input/wavfiles \
 	      ./includes/ofdm \
 	      ./includes/backend \
 	      ./includes/output \
@@ -36,9 +36,9 @@ INCLUDEPATH += . \
 	      ./includes/backend \
 	      ./includes/output \
 	      ./includes/various \
-	      ./src/input \
-	      ./src/input/rawfiles \
-	      ./src/input/wavfiles 
+	      ./input \
+	      ./input/rawfiles \
+	      ./input/wavfiles 
 
 # Input
 HEADERS		+= ./radio.h \
@@ -59,11 +59,13 @@ HEADERS		+= ./radio.h \
            ./includes/various/fft.h \
 	   ./includes/various/ringbuffer.h \
 	   ./includes/various/Xtan2.h \
-	   ./src/input/virtual-input.h \
-	   ./src/input/rawfiles/rawfiles.h \
-	   ./src/input/wavfiles/wavfiles.h 
+	   ./includes/various/band-handler.h \
+	   ./includes/various/dab-params.h \
+	   ./input/virtual-input.h \
+	   ./input/rawfiles/rawfiles.h \
+	   ./input/wavfiles/wavfiles.h 
 
-FORMS +=	./src/input/filereader-widget.ui 
+FORMS +=	./input/filereader-widget.ui 
 
 SOURCES += ./main.cpp \
 	   ./radio.cpp \
@@ -82,9 +84,11 @@ SOURCES += ./main.cpp \
 	   ./src/backend/protTables.cpp \
            ./src/various/fft.cpp \
 	   ./src/various/Xtan2.cpp \
-	   ./src/input/virtual-input.cpp \
-	   ./src/input/rawfiles/rawfiles.cpp \
-	   ./src/input/wavfiles/wavfiles.cpp 
+	   ./src/various/band-handler.cpp \
+	   ./src/various/dab-params.cpp \
+	   ./input/virtual-input.cpp \
+	   ./input/rawfiles/rawfiles.cpp \
+	   ./input/wavfiles/wavfiles.cpp 
 #
 FORMS 		+= ./gui.ui 
 #	for unix systems this is about it. Adapt when needed for naming
@@ -136,24 +140,24 @@ FORMS 		+= ./gui.ui
 dabstick {
 	DEFINES		+= HAVE_DABSTICK
 	INCLUDEPATH	+= /home/jan/rtl-sdr/include
-	INCLUDEPATH	+= ./src/input/dabstick
-	HEADERS		+= ./src/input/dabstick/dabstick.h \
-	                   ./src/input/dabstick/dongleselect.h
-	SOURCES		+= ./src/input/dabstick/dabstick.cpp \
-	                   ./src/input/dabstick/dongleselect.cpp
-	FORMS		+= ./src/input/dabstick/dabstick-widget.ui
+	INCLUDEPATH	+= ./input/dabstick
+	HEADERS		+= ./input/dabstick/dabstick.h \
+	                   ./input/dabstick/dongleselect.h
+	SOURCES		+= ./input/dabstick/dabstick.cpp \
+	                   ./input/dabstick/dongleselect.cpp
+	FORMS		+= ./input/dabstick/dabstick-widget.ui
 }
 #
 #	the SDRplay
 #
 sdrplay {
 	DEFINES		+= HAVE_SDRPLAY
-	INCLUDEPATH	+= ./src/input/sdrplay 
-	HEADERS		+= ./src/input/sdrplay/sdrplay.h \
-	                   ./src/input/sdrplay/sdrplayselect.h
-	SOURCES		+= ./src/input/sdrplay/sdrplay.cpp \
-	                   ./src/input/sdrplay/sdrplayselect.cpp
-	FORMS		+= ./src/input/sdrplay/sdrplay-widget.ui
+	INCLUDEPATH	+= ./input/sdrplay 
+	HEADERS		+= ./input/sdrplay/sdrplay.h \
+	                   ./input/sdrplay/sdrplayselect.h
+	SOURCES		+= ./input/sdrplay/sdrplay.cpp \
+	                   ./input/sdrplay/sdrplayselect.cpp
+	FORMS		+= ./input/sdrplay/sdrplay-widget.ui
 }
 #
 #
@@ -161,25 +165,24 @@ sdrplay {
 #
 airspy {
 	DEFINES		+= HAVE_AIRSPY
-	INCLUDEPATH	+= ./src/input/airspy \
-	                    /usr/local/include/libairspy
-	HEADERS		+= ./src/input/airspy/airspy-handler.h \
+	INCLUDEPATH	+= ./input/airspy \
+	                    /usr/local/include/
+	HEADERS		+= ./input/airspy/airspy-handler.h \
 	                    /usr/local/include/libairspy/airspy.h
-	SOURCES		+= ./src/input/airspy/airspy-handler.cpp 
-	FORMS		+= ./src/input/airspy/airspy-widget.ui
+	SOURCES		+= ./input/airspy/airspy-handler.cpp 
+	FORMS		+= ./input/airspy/airspy-widget.ui
 }
 
-# airspy support (still struggling with the sliders)
 #
-airspy-exp {
-	DEFINES		+= HAVE_AIRSPY
-	INCLUDEPATH	+= ./src/input/airspy-exp \
-	                   /usr/local/include/libairspy
-	HEADERS		+= ./src/input/airspy-exp/airspy-handler.h \
-	                   /usr/local/include/libairspy/airspy.h
-	SOURCES		+= ./src/input/airspy-exp/airspy-handler.cpp 
-	FORMS		+= ./src/input/airspy-exp/airspy-widget.ui
+rtl_tcp {
+	DEFINES		+= HAVE_RTL_TCP
+	QT		+= network
+	INCLUDEPATH	+= ./input/rtl_tcp
+	HEADERS		+= ./input/rtl_tcp/rtl_tcp_client.h
+	SOURCES		+= ./input/rtl_tcp/rtl_tcp_client.cpp
+	FORMS		+= ./input/rtl_tcp/rtl_tcp-widget.ui
 }
+
 
 tcp-streamer	{
 	DEFINES		+= TCP_STREAMER
@@ -187,31 +190,4 @@ tcp-streamer	{
 	HEADERS		+= ./includes/output/tcp-streamer.h
 	SOURCES		+= ./src/output/tcp-streamer.cpp
 }
-
-#
-rtl_tcp {
-	DEFINES		+= HAVE_RTL_TCP
-	QT		+= network
-	INCLUDEPATH	+= ./src/input/rtl_tcp
-	HEADERS		+= ./src/input/rtl_tcp/rtl_tcp_client.h
-	SOURCES		+= ./src/input/rtl_tcp/rtl_tcp_client.cpp
-	FORMS		+= ./src/input/rtl_tcp/rtl_tcp-widget.ui
-}
-
-
-##for FreeBSD use the third set (Thanks to Juergen Lock)
-#unix {
-#DESTDIR	= ../../linux-bin
-#	QMAKE_CXXFLAGS += -D__FREEBSD__
-#	INCLUDEPATH += ${LOCALBASE}/include/qwt
-#	INCLUDEPATH += ${LOCALBASE}/include/portaudio2
-#	INCLUDEPATH += ${LOCALBASE}/include/ffmpeg1
-#	INCLUDEPATH += ${LOCALBASE}/include
-#	INCLUDEPATH += /usr/include/
-#	QMAKE_LIBDIR = ${LOCALBASE}/lib/portaudio2
-#	QMAKE_LIBDIR += ${LOCALBASE}/lib/ffmpeg${FFMPEG_SUFFIX}
-#	QMAKE_LIBDIR += ${LOCALBASE}/lib
-#	LIBS+=  -lqwt -lusb -lrt -lportaudio  -lsndfile -lfftw3  -lrtlsdr -lz
-#	LIBS += -lfaad
-#}
 

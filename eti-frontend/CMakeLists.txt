@@ -86,9 +86,9 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	           ./includes/backend
 	           ./includes/various
 	           ./includes/output
-	           ./src/input
-	           ./src/input/rawfiles
-	           ./src/input/wavfiles
+	           ./input
+	           ./input/rawfiles
+	           ./input/wavfiles
 	           /usr/include/
 	)
 
@@ -106,13 +106,15 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	     ./includes/backend/eep-protection.h
 	     ./includes/backend/charsets.h
 	     ./includes/backend/eti-generator.h
-	     ./src/input/virtual-input.h
-	     ./src/input/rawfiles/rawfiles.h
-	     ./src/input/wavfiles/wavfiles.h
+	     ./input/virtual-input.h
+	     ./input/rawfiles/rawfiles.h
+	     ./input/wavfiles/wavfiles.h
 	     ./includes/output/fir-filters.h
 	     ./includes/various/fft.h
 	     ./includes/various/ringbuffer.h
 	     ./includes/various/Xtan2.h
+	     ./includes/various/band-handler.h
+	     ./includes/various/dab-params
 	)
 
 	set (${objectName}_SRCS
@@ -132,19 +134,21 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	     ./src/backend/protTables.cpp
 	     ./src/backend/charsets.cpp
 	     ./src/backend/eti-generator.cpp
-	     ./src/input/virtual-input.cpp
-	     ./src/input/rawfiles/rawfiles.cpp
-	     ./src/input/wavfiles/wavfiles.cpp
+	     ./input/virtual-input.cpp
+	     ./input/rawfiles/rawfiles.cpp
+	     ./input/wavfiles/wavfiles.cpp
 	     ./src/various/fft.cpp
 	     ./src/various/Xtan2.cpp
+	     ./src/various/band-handler.cpp
+	     ./src/various/dab-params.cpp
 	)
 
 	set (${objectName}_MOCS
 	     ./includes/ofdm/ofdm-processor.h
 	     ./includes/backend/fic-handler.h
 	     ./includes/backend/fib-processor.h
-	     ./src/input/rawfiles/rawfiles.h
-	     ./src/input/wavfiles/wavfiles.h
+	     ./input/rawfiles/rawfiles.h
+	     ./input/wavfiles/wavfiles.h
 	     ./radio.h
 	)
 
@@ -161,29 +165,29 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
            include_directories (${SDRPLAYLIB_INCLUDE_DIR})
 	   set (${objectName}_UIS
 	        ${${objectName}_UIS}
-	        ./src/input/sdrplay/sdrplay-widget.ui 
+	        ./input/sdrplay/sdrplay-widget.ui 
 	   )
 
            set (${objectName}_MOCS
                 ${${objectName}_MOCS}
-                ./src/input/sdrplay/sdrplay.h
-                ./src/input/sdrplay/sdrplayselect.h
+                ./input/sdrplay/sdrplay.h
+                ./input/sdrplay/sdrplayselect.h
            )
 
            include_directories (
-             ./src/input/sdrplay
+             ./input/sdrplay
            )
 
            set ($(objectName)_HDRS
                 ${${objectName}_HDRS}
-                ./src/input/sdrplay/sdrplay.h
-                ./src/input/sdrplay/sdrplayselect.h
+                ./input/sdrplay/sdrplay.h
+                ./input/sdrplay/sdrplayselect.h
            )
 
            set (${objectName}_SRCS
                 ${${objectName}_SRCS}
-                ./src/input/sdrplay/sdrplay.cpp
-                ./src/input/sdrplay/sdrplayselect.cpp
+                ./input/sdrplay/sdrplay.cpp
+                ./input/sdrplay/sdrplayselect.cpp
            )
 
 	 add_definitions (-DHAVE_SDRPLAY)
@@ -198,26 +202,26 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
 	   set (${objectName}_UIS
 	        ${${objectName}_UIS}
-	        ./src/input/airspy/airspy-widget.ui 
+	        ./input/airspy/airspy-widget.ui 
 	   )
 
 	   set (${objectName}_MOCS
 	        ${${objectName}_MOCS}
-	        ./src/input/airspy/airspy-handler.h
+	        ./input/airspy/airspy-handler.h
 	   )
 
 	   include_directories (
-	     ./src/input/airspy
+	     ./input/airspy
 	   )
 
 	   set ($(objectName)_HDRS
 	        ${${objectName}_HDRS}
-	        ./src/input/airspy/airspy-handler.h
+	        ./input/airspy/airspy-handler.h
 	   )
 
 	   set (${objectName}_SRCS
 	        ${${objectName}_SRCS}
-	        ./src/input/airspy/airspy-handler.cpp
+	        ./input/airspy/airspy-handler.cpp
 	   )
 
 	   add_definitions (-DHAVE_AIRSPY)
@@ -233,29 +237,29 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
 	   set (${objectName}_UIS
 	        ${${objectName}_UIS}
-	        ./src/input/dabstick/dabstick-widget.ui
+	        ./input/dabstick/dabstick-widget.ui
 	   )
 
 	   set (${objectName}_MOCS
 	        ${${objectName}_MOCS}
-	        ./src/input/dabstick/dongleselect.h
-	        ./src/input/dabstick/dabstick.h
+	        ./input/dabstick/dongleselect.h
+	        ./input/dabstick/dabstick.h
 	   )
 
 	   include_directories (
-	        ./src/input/dabstick/
+	        ./input/dabstick/
 	   )
 
 	   set (${objectName}_HDRS
 	        ${${objectName}_HDRS}
-	        ./src/input/dabstick/dabstick.h 
-	        ./src/input/dabstick/dongleselect.h
+	        ./input/dabstick/dabstick.h 
+	        ./input/dabstick/dongleselect.h
 	   )
 
 	   set (${objectName}_SRCS
 	        ${${objectName}_SRCS}
-	        ./src/input/dabstick/dabstick.cpp
-	        ./src/input/dabstick/dongleselect.cpp
+	        ./input/dabstick/dabstick.cpp
+	        ./input/dabstick/dongleselect.cpp
 	   )
 
 	   add_definitions (-DHAVE_DABSTICK)
@@ -266,27 +270,27 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	   find_package (Qt5Network REQUIRED)
 	   set (${objectName}_UIS
 	        ${${objectName}_UIS}
-	        ./src/input/rtl_tcp/rtl_tcp-widget.ui 
+	        ./input/rtl_tcp/rtl_tcp-widget.ui 
 	   )
 
 	   set (${objectName}_MOCS
 	        ${${objectName}_MOCS}
-	        ./src/input/rtl_tcp/rtl_tcp_client.h
+	        ./input/rtl_tcp/rtl_tcp_client.h
 	   )
 
 	   include_directories (
-	      ./src/input/rtl_tcp
+	      ./input/rtl_tcp
 	      ${Qt5Network_INCLUDE_DIRS}
 	   )
 
 	   set ($(objectName)_HDRS
 	        ${${objectName}_HDRS}
-	        ./src/input/rtl_tcp/rtl_tcp_client.h
+	        ./input/rtl_tcp/rtl_tcp_client.h
 	   )
 
 	   set (${objectName}_SRCS
 	        ${${objectName}_SRCS}
-	        ./src/input/rtl_tcp/rtl_tcp_client.cpp
+	        ./input/rtl_tcp/rtl_tcp_client.cpp
 	   )
 
 	   set (RTLTCP_lib Qt5::Network)
@@ -294,7 +298,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	endif (RTLTCP)
 
 	QT5_WRAP_UI (UIS ${${objectName}_UIS}
-	             ./src/input/filereader-widget.ui) 
+	             ./input/filereader-widget.ui) 
 
 	include_directories (
 	          ${SDRPLAY_INCLUDES}

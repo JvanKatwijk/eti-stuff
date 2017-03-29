@@ -1,28 +1,30 @@
-
 #
 /*
- *    Copyright (C) 2013
+ *    Copyright (C) 2016 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
- *    This file is part of the SDR-J (JSDR).
- *    SDR-J is free software; you can redistribute it and/or modify
+ *    This file is part of the eti-backend
+ *    eti-backend is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    SDR-J is distributed in the hope that it will be useful,
+ *    eti-backend is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with SDR-J; if not, write to the Free Software
+ *    along with eti-backend; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
  */
 #
 #include	<QThread>
+#ifdef	__MINGW32__
+#include	<unistd.h>
+#endif
+#include	<QFileDialog>
 #include	"eti-controller.h"
 #include	"radio.h"
 #include	"fib-processor.h"
@@ -50,7 +52,11 @@
 
 void	etiController::stop		(void) {
 	running		= false;
+#ifdef	__MINGW32__
+	usleep (100000);
+#else
 	msleep (100);
+#endif
 	if (isRunning ())
 	   terminate ();
 	wait ();
@@ -67,6 +73,7 @@ int	n;
 int16_t	NST, FICF;
 bool	channelSearch	= false;
 bool	processingData	= false;
+int	counter		= 0;
 
 	the_Processor	= NULL;
 	running	= true;
@@ -115,9 +122,9 @@ bool	processingData	= false;
 //	However, we need some kind of clock. We know that we have 
 //	for 24 msec audio in each frame
 	   for (n_frame = 0; n_frame < 6144; n_frame += n) {
-	      n = fread (&buffer[n_frame], 1, 6144 - n_frame, input);
+	      n = fread ((void *)(&buffer[n_frame]), 1, 6144 - n_frame, input);
 	      if (n == 0) {
-	         fprintf (stderr, "we kappen ermee\n");
+	         fprintf (stderr, "end of file, (counter = %d) we quit\n", counter);
 	         return;
 	      }
 
@@ -126,7 +133,12 @@ bool	processingData	= false;
 	         return;
 	      }
 	   }
+	   counter ++;
+#ifdef	__MINGW32__
+	   usleep (24000);
+#else
 	   msleep (24);
+#endif
 //	extract the relevant data
 	   FICF			= (buffer [5] & 0x80) >> 7;
 	   NST			=  buffer [5] & 0x7F;
@@ -185,7 +197,11 @@ bool	processingData	= false;
               the_Processor -> addtoFrame (dataVector);
 	   }
 	}
+#ifdef	__MINGW32__
+	usleep (10000000);
+#else
 	msleep (10000);
+#endif
 }
 
 void	etiController::set_audioChannel (audiodata a) {

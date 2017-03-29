@@ -109,17 +109,16 @@ bool	fibValid  [16];
 //	Note CIF counts from 0 .. 3
 //
 		etiGenerator::etiGenerator	(RadioInterface *mr,
-	                                         DabParams	*p):
-	                                            my_ficHandler (mr, p) {
+	                                         uint8_t dabMode):
+	                                            params (dabMode),
+	                                            my_ficHandler (mr, &params) {
 
 	int	i;
-
-	this -> params		= p;
 	myRadioInterface	= mr;
-	fibInput		= new int16_t [3 * 2 * p -> K];
+	fibInput		= new int16_t [3 * 2 * params. get_carriers ()];
 	dataBuffer		= new RingBuffer<bufferElement> (512);
 	index_Out		= 0;
-	BitsperBlock		= 2 * p -> K;
+	BitsperBlock		= 2 * params. get_carriers ();
 	numberofblocksperCIF	= 18;
 	running			= false;
 	amount			= 0;
@@ -149,7 +148,8 @@ void	etiGenerator::newFrame		(void) {
 void	etiGenerator::processBlock	(int16_t *softbits, int16_t blkno) { 
 bufferElement s;
 	s. blkno = blkno;
-	memcpy (s. data, softbits, 2 * params -> K * sizeof (int16_t));
+	memcpy (s. data, softbits,
+	                 2 * params. get_carriers () * sizeof (int16_t));
 	while (dataBuffer ->  GetRingBufferWriteAvailable () < 1) 
 	   msleep (1);
 	dataBuffer -> putDataIntoBuffer (&s, 1);
@@ -184,7 +184,7 @@ const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 //
 //	Note, we officially count from 1 .. params -> L
 	   expected_block ++;
-	   if (expected_block > params -> L) {
+	   if (expected_block > params. get_L ()) {
 	      expected_block = 2;
 	   }
 //

@@ -1,27 +1,28 @@
 #
 /*
- *    Copyright (C) 2013, 2014
+ *    Copyright (C) 2016 .. 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
- *    This file is part of the SDR-J (JSDR).
- *    SDR-J is free software; you can redistribute it and/or modify
+ *    This file is part of the eti-frontend
+ *    eti-frontend is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    SDR-J is distributed in the hope that it will be useful,
+ *    eyi-frontend is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with SDR-J; if not, write to the Free Software
+ *    along with eti-frontend; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 #include	"ofdm-processor.h"
 #include	"radio.h"
 #include	"fft.h"
+#include	"dab-params.h"
 #include	"eti-generator.h"
 
 #define	SEARCH_RANGE		(2 * 36)
@@ -45,21 +46,26 @@ int16_t	res	= 1;
 }
 
 	ofdmProcessor::ofdmProcessor	(virtualInput	*theRig,
-	                                 DabParams	*p,
+	                                 uint8_t	dabMode,
 	                                 RadioInterface *mr,
 	                                 etiGenerator 	*eti,
 	                                 int16_t	threshold,
-	                                 uint8_t	freqSyncMethod){
+	                                 uint8_t	freqSyncMethod):
+	                                    params (dabMode),
+	                                    myMapper (&params),
+	                                    phaseSynchronizer (dabMode,
+	                                                       threshold) {
 int32_t	i;
 	this	-> theRig		= theRig;
-	this	-> params		= p;
 	this	-> freqSyncMethod	= freqSyncMethod;
-	this	-> T_null		= p	-> T_null;
-	this	-> T_s			= p 	-> T_s;
-	this	-> T_u			= p	-> T_u;
+	this	-> T_null		= params. get_T_null ();
+	this	-> T_s			= params. get_T_s ();
+	this	-> T_u			= params. get_T_u ();
 	this	-> T_g			= T_s - T_u;
-	this	-> T_F			= p	-> T_F;
-	this	-> carriers		= p 	-> K;
+	this	-> T_F			= params. get_T_F ();
+	this	-> nrBlocks		= params. get_L ();
+	this	-> carriers		= params. get_carriers ();
+	this	-> carrierDiff		= params. get_carrierDiff ();
 	this	-> myRadioInterface	= mr;
 	this	-> my_etiGenerator	= eti;
 	fft_handler			= new common_fft (T_u);
@@ -76,12 +82,10 @@ int32_t	i;
 	sampleCnt			= 0;
 
 	referenceFase		= new DSPCOMPLEX [T_u];
-	myMapper		= new interLeaver (params);
 	connect (this, SIGNAL (show_snr (int)),
                  mr, SLOT (show_snr (int)));
         snrCount                = 0;
         snr                     = 0;
-
 /**
   *	the class phaseReference will take a number of samples
   *	and indicate - using some threshold - whether there is
@@ -91,9 +95,6 @@ int32_t	i;
   *	The size of the blocks handed over for inspection
   *	is T_u
   */
-	phaseSynchronizer	= new phaseReference (params,
-	                                              T_u,
-	                                              threshold);
 	fineCorrector		= 0;	
 	coarseCorrector		= 0;
 	f2Correction		= false;
@@ -117,8 +118,8 @@ int32_t	i;
 	refArg			= new float [CORRELATION_LENGTH];
 	correlationVector	= new float [SEARCH_RANGE + CORRELATION_LENGTH];
 	for (i = 0; i < CORRELATION_LENGTH; i ++)  {
-	   refArg [i] = arg (phaseSynchronizer -> refTable [(T_u + i) % T_u] *
-	              conj (phaseSynchronizer -> refTable [(T_u + i + 1) % T_u]));
+	   refArg [i] = arg (phaseSynchronizer. refTable [(T_u + i) % T_u] *
+	              conj (phaseSynchronizer. refTable [(T_u + i + 1) % T_u]));
 	}
 	start ();
 }
@@ -133,7 +134,6 @@ int32_t	i;
 	wait ();
 	delete		ofdmBuffer;
 	delete		referenceFase;
-	delete		phaseSynchronizer;
 	delete		oscillatorTable;
 	delete		fft_handler;
 	delete[] 	correlationVector;
@@ -193,7 +193,6 @@ DSPCOMPLEX temp;
 	}
 	return temp;
 }
-//
 
 void	ofdmProcessor::getSamples (DSPCOMPLEX *v, int16_t n, int32_t phase) {
 int32_t		i;
@@ -344,19 +343,14 @@ SyncOnPhase:
   *	as long as we can be sure that the first sample to be identified
   *	is part of the samples read.
   */
-	   for (i = 0; i <  params -> T_u; i ++) 
+	   for (i = 0; i < T_u; i ++) 
 	      ofdmBuffer [i] = getSample (coarseCorrector + fineCorrector);
 //
 ///	and then, call upon the phase synchronizer to verify/compute
 ///	the real "first" sample
-	   startIndex = phaseSynchronizer ->
-	                        findIndex (ofdmBuffer);
+	   startIndex = phaseSynchronizer. findIndex (ofdmBuffer);
 	   if (startIndex < 0) { // no sync, try again
-/**
-  *	In case we do not have a correlation value larger than
-  *	a given threshold, we start all over again.
-  */
-//	      fprintf (stderr, "startIndex = %d\n", startIndex);
+	      fprintf (stderr, "startIndex = %d\n", startIndex);
 	      goto notSynced;
 	   }
 /**
@@ -365,8 +359,8 @@ SyncOnPhase:
   */
 	
 	   memmove (ofdmBuffer, &ofdmBuffer [startIndex],
-	                  (params -> T_u - startIndex) * sizeof (DSPCOMPLEX));
-	   ofdmBufferIndex	= params -> T_u - startIndex;
+	                  (T_u - startIndex) * sizeof (DSPCOMPLEX));
+	   ofdmBufferIndex	= T_u - startIndex;
 
 	  my_etiGenerator -> newFrame ();
 Block_0:
@@ -385,7 +379,7 @@ Block_0:
 //
 	   if (f2Correction) {
 	      if (correction != 100) {
-	         coarseCorrector	+= correction * params -> carrierDiff;
+	         coarseCorrector	+= correction * carrierDiff;
 	         if (abs (coarseCorrector) > Khz (35))
 	            coarseCorrector = 0;
 	      }
@@ -402,7 +396,7 @@ Data_blocks:
   */
 	   FreqCorr		= DSPCOMPLEX (0, 0);
 	   for (ofdmSymbolCount = 2;
-	        ofdmSymbolCount <= (uint16_t)params -> L;
+	        ofdmSymbolCount <= (uint16_t)nrBlocks;
 	        ofdmSymbolCount ++) {
 	      getSamples (ofdmBuffer, T_s, coarseCorrector + fineCorrector);
 	      for (i = (int)T_u; i < (int)T_s; i ++) 
@@ -415,7 +409,7 @@ NewOffset:
 ///	we integrate the newly found frequency error with the
 ///	existing frequency error.
 	   fineCorrector += 0.1 * arg (FreqCorr) / M_PI *
-	                        (params -> carrierDiff / 2);
+	                        (carrierDiff / 2);
 //
 /**
   *	OK,  here we are at the end of the frame
@@ -432,14 +426,14 @@ NewOffset:
 	   counter	= 0;
 //
 
-	   if (fineCorrector > params -> carrierDiff / 2) {
-	      coarseCorrector += params -> carrierDiff;
-	      fineCorrector -= params -> carrierDiff;
+	   if (fineCorrector > carrierDiff / 2) {
+	      coarseCorrector += carrierDiff;
+	      fineCorrector -= carrierDiff;
 	   }
 	   else
-	   if (fineCorrector < -params -> carrierDiff / 2) {
-	      coarseCorrector -= params -> carrierDiff;
-	      fineCorrector += params -> carrierDiff;
+	   if (fineCorrector < -carrierDiff / 2) {
+	      coarseCorrector -= carrierDiff;
+	      fineCorrector += carrierDiff;
 	   }
 
 ReadyForNewFrame:
@@ -462,7 +456,7 @@ int16_t		i;
 //	we did not set the fft output to low .. high
 
 	for (i = 0; i < carriers; i ++) {
-	   int16_t	index	= myMapper -> mapIn (i);
+	   int16_t	index	= myMapper.  mapIn (i);
 	   if (index < 0) 
 	      index += T_u;
 	      
@@ -632,18 +626,19 @@ DSPFLOAT	oldMax	= 0;
 //	The range in which the carrier should be is
 //	T_u / 2 - K / 2 .. T_u / 2 + K / 2
 //	We first determine an initial sum over params -> K carriers
-	for (i = 40; i < params -> K + 40; i ++)
+	for (i = 40; i < carriers + 40; i ++)
 	   sum += abs (v [(T_u / 2 + i) % T_u]);
 //
 //	Now a moving sum, look for a maximum within a reasonable
 //	range (around (T_u - K) / 2, the start of the useful frequencies)
-	for (i = 40; i < T_u - (params -> K - 40); i ++) {
+	for (i = 40; i < T_u - (carriers - 40); i ++) {
 	   sum -= abs (v [(T_u / 2 + i) % T_u]);
-	   sum += abs (v [(T_u / 2 + i + params -> K) % T_u]);
+	   sum += abs (v [(T_u / 2 + i + carriers) % T_u]);
 	   if (sum > oldMax) {
 	      sum = oldMax;
 	      maxIndex = i;
 	   }
 	}
-	return maxIndex - (T_u - params -> K) / 2;
+
+	return maxIndex - (T_u - carriers) / 2;
 }

@@ -39,8 +39,8 @@
  * 	eti generator
  */
 #
-#ifndef	ETI_GENERATOR
-#define	ETI_GENERATOR
+#ifndef	__ETI_GENERATOR__
+#define	__ETI_GENERATOR__
 #include	<QThread>
 #include	<stdio.h>
 #include	<stdint.h>
@@ -48,6 +48,7 @@
 #include	"dab-constants.h"
 #include	"ringbuffer.h"
 #include	"fic-handler.h"
+#include	"dab-params.h"
 
 class	RadioInterface;
 
@@ -58,8 +59,7 @@ typedef struct {
 
 class etiGenerator: public QThread {
 public:
-		etiGenerator	(RadioInterface *,
-	                         DabParams	*);
+		etiGenerator	(RadioInterface *, uint8_t);
 		~etiGenerator	(void);
 	void	newFrame	(void);
 	void	processBlock	(int16_t *fbits, int16_t blkno);
@@ -69,7 +69,7 @@ protected:
 	void	run		(void);
 private:
 	RadioInterface	*myRadioInterface;
-	DabParams	*params;
+	dabParams	params;
 	RingBuffer<bufferElement> *dataBuffer;
 	FILE		*outputFile;
 	bool		running;

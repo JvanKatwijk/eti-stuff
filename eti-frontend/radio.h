@@ -1,31 +1,27 @@
 #
 /*
- *    Copyright (C)  2010, 2011, 2012
+ *    Copyright (C)  2016, 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
- *    This file is part of the SDR-J.
- *    Many of the ideas as implemented in SDR-J are derived from
- *    other work, made available through the GNU general Public License. 
- *    All copyrights of the original authors are recognized.
- *
- *    SDR-J is free software; you can redistribute it and/or modify
+ *    This file is part of the eti-frontend
+ *    eti-frontend is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    SDR-J is distributed in the hope that it will be useful,
+ *    eti-frontend is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with SDR-J; if not, write to the Free Software
+ *    along with eti-frontend; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef _GUI
-#define _GUI
+#ifndef __RADIO__
+#define __RADIO__
 
 #include	"dab-constants.h"
 #include	<QMainWindow>
@@ -37,18 +33,15 @@
 #include	<QTimer>
 #include	"ofdm-processor.h"
 #include	"ringbuffer.h"
+#include	"band-handler.h"
 
 class	QSettings;
 class	virtualInput;
-
-class	etiGenerator;
 class	ficHandler;
+class	etiGenerator;
 
-class	common_fft;
 
 /*
- *	GThe main gui object. It inherits from
- *	QDialog and the generated form
  */
 class RadioInterface: public QMainWindow,
 		      private Ui_dab2eti {
@@ -69,12 +62,10 @@ private:
 	uint8_t		freqsyncMethod;
 	FILE		*eti_file;
 	int32_t		vfoFrequency;
-	void		setupChannels		(QComboBox *s, uint8_t band);
-	void		setModeParameters	(uint8_t);
 	void		clear_showElements	(void);
-	DabParams	dabModeParameters;
 	uint8_t		isSynced;
 	uint8_t		dabBand;
+	bandHandler	theBand;
 	uint8_t		dabMode;
 	bool		running;
 	bool		eti_running;
@@ -82,7 +73,6 @@ private:
 	ofdmProcessor	*my_ofdmProcessor;
 	ficHandler	*my_ficHandler;
 	etiGenerator	*my_etiGenerator;
-	RingBuffer<int16_t>	*audioBuffer;
 	bool		autoCorrector;
 	void		init_your_gui		(void);
 	void		dumpControlState	(QSettings *);

@@ -76,12 +76,13 @@ RadioInterface	*MyRadioInterface;
 int32_t		opt;
 FILE		*inputFile	= NULL;
 
-	while ((opt = getopt (argc, argv, "LABCi:F:f:")) != -1) {
+	while ((opt = getopt (argc, argv, "i:s")) != -1) {
 	   switch (opt) {
 	      case 'i':
 	         initFileName = fullPathfor (optarg);
 	         break;
-	      case '-':
+
+	      case 's':
 	         inputFile = stdin;
 	         break;
 	   }

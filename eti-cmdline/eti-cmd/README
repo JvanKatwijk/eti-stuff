@@ -1,0 +1,13 @@
+
+As an example of how to use the eti-library, we present a program that
+-together with the library - is a command line only version of the
+eti front end.
+
+If/when you have installed the eti-library
+
+mkdir build; cd build; cmake ..; make
+
+should do the trick
+
+The resulting program is named eti-cmdline
+

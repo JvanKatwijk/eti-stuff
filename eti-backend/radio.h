@@ -108,6 +108,7 @@ public slots:
 //
 	void		show_mscErrors		(int);
 	void		setStereo		(bool);
+	void		show_motHandling	(bool);
 	void		set_streamSelector	(int);
 private slots:
 //
