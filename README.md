@@ -2,6 +2,7 @@
 
 "Eti-stuff" consists of three programs and is an attempt to
 understand the eti structure as defined in ETS 300 799.
+
 eti-frontend and eti-backend are based on the Qt-DAB software,
 with code included from dabtools to actually generate the eti frames.
 eti-cmdline is based on the dab-cmdline software,
@@ -9,12 +10,11 @@ eti-cmdline is based on the dab-cmdline software,
 The eti-frontend and eti-cmdline programs take as input a sample stream
 and create an eti file, while eti-backend is interpreting the eti file.
 
-It consists of two programs, one generating a stream of ETI frames, the other one reading and interpreting the ETI frames, such that by piping the output from the one into the other one has a more or less complete DAB receiver.
+By piping the output from either eti-frontend of eti-cmdline into eti-backend, a more or less complete DAB receiver exists.
 
+# Contents
 
-## Contents
-
-The set consists (currently) of two programs (both under continuous development)
+The set consists (currently) of three programs (all under continuous development)
 
 a. eti-frontend, which is a stripped Qt-DAB version that
    generates eti-frames as output.
@@ -41,15 +41,17 @@ So, if you want to emulate a full dab-receiver, then just do
 
     eti-frontend -O - | eti-backend -s
 
+or
+
+    eti-cmdline -C 11C -G 80 | eti-backend -s
+
 If you want to run the backend there are two options,
 a. one is to take input from stdin, indicated by a "-s" as command line option.
 b. if no "-s" is specified on the command line, you will get a menu when 
 starting the program, to select a file.
 
-Since the software is derived from the Qt-DAB and the dab-cmdline
-software, it supports - if so configured - the same devices,
-i.e. rtlsdr based dabsticks, airspy and sdrplay
-(and the GUI based programs prerecorded files).
+Since the software is derived from the Qt-DAB and the dab-cmdline software, it supports - if so configured - the same devices,
+i.e. rtlsdr based dabsticks, airspy and sdrplay (and the GUI based et-frontend program supports prerecorded files).
 
 Disclaimer
 ========================================================================
