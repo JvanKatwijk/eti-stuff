@@ -629,6 +629,8 @@ SF_INFO *sf_info	= (SF_INFO *)alloca (sizeof (SF_INFO));
 	                                     tr ("open file ..."),
 	                                     QDir::homePath (),
 	                                     tr ("raw data (*.sdr)"));
+	if (file == QString (""))
+	   return;
 	file	= QDir::toNativeSeparators (file);
 	if (!file. endsWith (".sdr", Qt::CaseInsensitive))
 	   file. append (".sdr");
@@ -657,6 +659,8 @@ QString	filename;
                                                 tr ("open file .."),
                                                 QDir::homePath (),
                                                 tr ("Eti (*.eti)"));
+	      if (filename == QString (""))
+	         return;
               filename	= QDir::toNativeSeparators (filename);
               if (!filename. endsWith (".wav", Qt::CaseInsensitive) &&
 	          !filename. endsWith (".eti", Qt::CaseInsensitive))

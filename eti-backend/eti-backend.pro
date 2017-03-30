@@ -8,14 +8,13 @@ TEMPLATE	= app
 TARGET		= eti-backend
 QT		+= widgets 
 CONFIG		+= console
-#QMAKE_CFLAGS	+=  -flto -ffast-math 
-#QMAKE_CXXFLAGS	+=  -flto -ffast-math 
-#QMAKE_LFLAGS	+=  -flto 
-QMAKE_CFLAGS	+=  -g
-QMAKE_CXXFLAGS	+=  -g
-QMAKE_LFLAGS	+=  -g
-#	Uncomment this when compiling on/for a machine with sse support
-#CONFIG		+= NO_SSE_SUPPORT 
+QMAKE_CFLAGS	+=  -flto -ffast-math 
+QMAKE_CXXFLAGS	+=  -flto -ffast-math 
+QMAKE_LFLAGS	+=  -flto 
+#QMAKE_CFLAGS	+=  -g
+#QMAKE_CXXFLAGS	+=  -g
+#QMAKE_LFLAGS	+=  -g
+
 DEPENDPATH += . \
 	      ./src \
 	      ./includes \
