@@ -7,16 +7,15 @@ The program is derived from the existing eti-frontend, however no GUI is
 provided.
 
 To allow the construction of various GUI's, the functionality is implemented
-as a library.
+as a library and a separate "main" program.
 
-The library provides entries for the functionality through
-some simple calls, while a callback function provides some
+The library provides through a simple API entries for the functionality
+through some simple calls, while a callback function provides some
 communication back from the library to the gui.
 
 To show the use of the library, a - functioning - command-line handler
 is included in this repository, written in C++.
 The sources can be found in the directory "eti-cmd".
-
 
 Command-line Parameters for the C++ version
 -----------------------------------------------------------------------
@@ -65,21 +64,22 @@ The program - when started - will try to identify a DAB datastream in the select
 	
 
 Creating the library
------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
-The library can be created by - if needed - adapting the `CMakeLists.txt` file in the dab-library directory and running
+Note that - to keep things simple - the supported device, i.e. one of dabstick, airspy or sdrplay, is "compiled in" the library.
+The library can be created by  the commands (to be executed within the
+directory "dab-library"
 
 	mkdir build 
 	cd build 
-	cmake .. 
+	cmake .. -DXXXX=ON
 	make 
 	sudo make install
-	
-from within the dab-library directory.
 
-IMPORTANT: YOU NEED C++11 SUPPORT FOR THIS
+substitute for XXXX the name of the device that is to be supported,
+either "DABSTICK", "SDRPLAY" or "AIRSPY"
 
-Note that - to keep things simple - the supported device, i.e. one of dabstick, airspy or sdrplay, is "compiled in" the library, so do not forget to select the device by adapting the `CMakeLists.txt` file before running the sequence mentioned above, since I am experimenting with all three, it might happen that your choice is not the selected one.
+The CMake file contains a command line option to include C++11 support.
 
 ============================================================================
 Libraries (together with the "development" or ".h" files) needed for creating the library are
@@ -145,13 +145,13 @@ The gain of the device can be set and changed to a value in the range 0 .. 100 u
   
 	void	eti_Gain	(void *handle, uint16_t);	
 
-The function dab_Channel maps the name of the channel onto a frequency for the device and prepares the device for action. If the software was already running for another channel, then the thread running the software will be halted first.
+The function eti_Channel maps the name of the channel onto a frequency for the device and prepares the device for action. If the software was already running for another channel, then the thread running the software will be halted first.
  
      bool	eti_Channel	(void *handle, std::string);
  
 The function returns - pretty obvious - true if the string for the channel could be recognized and the device could be set to the associated frequency, if not the function returns false (e.g. "23C" is a non-existent channel in Band III).
 
-The function dab_run will start a separate thread, running the dab decoding software at the selected channel. Behaviour is undefined if no channel was selected. If after some time, DAB data, i.e. an ensemble, is found, then the function passed as callback is called with the boolean parameter set to true, and the std::list of strings, representing the names of the programs in that ensemble. If no data was found, the boolean parameter is set to false, and the list is empty. 
+The function eti_run will start a separate thread, running the dab decoding software at the selected channel. Behaviour is undefined if no channel was selected. If after some time, DAB data, i.e. an ensemble, is found, then the function passed as callback is called with the boolean parameter set to true, and the std::list of strings, representing the names of the programs in that ensemble. If no data was found, the boolean parameter is set to false, and the list is empty. 
  
 Note that the thread executing the dab decoding will continue to run.
  

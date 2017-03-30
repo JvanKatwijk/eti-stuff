@@ -10,7 +10,7 @@
  * @license GPL-3.0+ <http://spdx.org/licenses/GPL-3.0+>
  *
  *	recoding, taking parts and extending for the airspyHandler interface
- *	for the SDR-J-DAB receiver.
+ *	for the eti frontend library
  *	jan van Katwijk
  *	Lazy Chair Computing
  */

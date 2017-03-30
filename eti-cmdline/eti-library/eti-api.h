@@ -4,27 +4,24 @@
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
- *    This file is the API description of the DAB-library.
- *    Many of the ideas as implemented in the DAB-library are derived from
- *    other work, made available through the GNU general Public License. 
- *    All copyrights of the original authors are acknowledged.
+ *    This file is the API description of the eti-library.
  *
- *    DAB-library is free software; you can redistribute it and/or modify
+ *    eti-library is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    DAB-library is distributed in the hope that it will be useful,
+ *    eti-library is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with DAB-library, if not, write to the Free Software
+ *    along with eti-library, if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-#ifndef	__DAB_API__
-#define	 __DAB_API__
+#ifndef	__ETI_API__
+#define	 __ETI_API__
 #include	<stdio.h>
 #include	<stdint.h>
 #include	<string>
