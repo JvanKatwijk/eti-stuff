@@ -164,17 +164,17 @@ endif ()
 	   ### include_directories (${AIRSPYLIB_INCLUDE_DIR})
 
 	   include_directories (
-	     ./devices/airspy
+	     ./devices/airspy-handler
 	   )
 
 	   set ($(objectName)_HDRS
 	        ${${objectName}_HDRS}
-	        ./devices/input/airspy/airspy-handler.h
+	        ./devices/input/airspy-handler/airspy-handler.h
 	   )
 
 	   set (${objectName}_SRCS
 	        ${${objectName}_SRCS}
-	        ./devices/airspy/airspy-handler.cpp
+	        ./devices/airspy-handler/airspy-handler.cpp
 	   )
 
 	   add_definitions (-DHAVE_AIRSPY)
@@ -188,17 +188,17 @@ endif ()
 	   ###include_directories (${RTLSDR_INCLUDE_DIR})
 
 	   include_directories (
-	      ./devices/rtlsdr/
+	      ./devices/rtlsdr-handler/
 	   )
 
 	   set (${objectName}_HDRS
 	        ${${objectName}_HDRS}
-	        ./devices/rtlsdr/rtlsdr.h 
+	        ./devices/rtlsdr-handler/rtlsdr-handler.h 
 	   )
 
 	   set (${objectName}_SRCS
 	        ${${objectName}_SRCS}
-	        ./devices/rtlsdr/rtlsdr.cpp
+	        ./devices/rtlsdr-handler/rtlsdr-handler.cpp
 	   )
 
 	   add_definitions (-DHAVE_DABSTICK)

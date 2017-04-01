@@ -27,7 +27,7 @@
 
 
 #include	"rtl-sdr.h"
-#include	"dabstick.h"
+#include	"rtlsdr-handler.h"
 
 #ifdef	__MINGW32__
 #define	GETPROCADDRESS	GetProcAddress
@@ -44,7 +44,7 @@
 //	ctx is the calling task
 static
 void	RTLSDRCallBack (uint8_t *buf, uint32_t len, void *ctx) {
-dabStick	*theStick	= (dabStick *)ctx;
+rtlsdrHandler	*theStick	= (rtlsdrHandler *)ctx;
 
 	if ((theStick == NULL) || (len != READLEN_DEFAULT))
 	   return;
@@ -55,7 +55,7 @@ dabStick	*theStick	= (dabStick *)ctx;
 //	for handling the events in libusb, we need a controlthread
 //	whose sole purpose is to process the rtlsdr_read_async function
 //	from the lib.
-void	controlThread (dabStick *theStick) {
+void	controlThread (rtlsdrHandler *theStick) {
 	(theStick -> rtlsdr_read_async) (theStick -> device,
 	                          (rtlsdr_read_async_cb_t)&RTLSDRCallBack,
 	                          (void *)theStick,
@@ -365,7 +365,7 @@ bool	rtlsdrHandler::load_rtlFunctions (void) {
 	return true;
 }
 
-void	rtlssdrHandler::resetBuffer (void) {
+void	rtlsdrHandler::resetBuffer (void) {
 	_I_Buffer -> FlushRingBuffer ();
 }
 

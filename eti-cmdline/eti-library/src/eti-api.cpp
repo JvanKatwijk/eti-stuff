@@ -133,7 +133,7 @@ deviceHandler	*inputDevice;
 	else 
 	   return inputDevice;
 #elif defined (HAVE_DABSTICK)
-	inputDevice	= new dabStick (&success, 75, KHz (220000));
+	inputDevice	= new rtlsdrHandler (&success, 75, KHz (220000));
 	if (!success) {
 	   delete inputDevice;
 	   return NULL;

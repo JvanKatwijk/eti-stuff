@@ -57,7 +57,7 @@ typedef	char *(* pfnrtlsdr_get_device_name)(int);
 //	This class is a simple wrapper around the
 //	rtlsdr library that is read is as dll
 //	It does not do any processing
-class	rtlsdrHandler: public inputHandler {
+class	rtlsdrHandler: public deviceHandler {
 public:
 			rtlsdrHandler	(bool *, int gain, int frequency);
 			~rtlsdrHandler	(void);
