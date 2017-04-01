@@ -88,6 +88,7 @@ FILE		*inputFile	= NULL;
 	                                          optarg);
 	               inputFile = stdin;
 	            }
+	         }
 	         break;
 	   }
 	}

@@ -26,9 +26,9 @@ a. eti-frontend, which is a stripped Qt-DAB version that
    identified, and the GUI shows the names of the programs, to press
    the button "eti is waiting", after which it will send the eti frames
    to the selected output device.
-b. eti-backend, which is a stripped Qt-DAB version which takes
-   eti-frames as input. A command line option (-s) is to specify stdin as
-   input file,
+b. eti-backend, which is a stripped Qt-DAB version that takes
+   eti-frames as input. A command line option (-s) can be used to
+   specify an input file.
    if none is specified, the program will show a widget for selecting an
    input file.
    The GUI is simple, it will show the name of the ensemble and the names
@@ -39,16 +39,11 @@ c. eti-cmdline, which is derived from the dab-cmdline program and shares
 
 So, if you want to emulate a full dab-receiver, then just do
 
-    eti-frontend -O - | eti-backend -s
+    eti-frontend -O - | eti-backend -s -
 
 or
 
-    eti-cmdline -C 11C -G 80 | eti-backend -s
-
-If you want to run the backend there are two options,
-a. one is to take input from stdin, indicated by a "-s" as command line option.
-b. if no "-s" is specified on the command line, you will get a menu when 
-starting the program, to select a file.
+    eti-cmdline -C 11C -G 80 | eti-backend -s -
 
 Since the software is derived from the Qt-DAB and the dab-cmdline software, it supports - if so configured - the same devices,
 i.e. rtlsdr based dabsticks, airspy and sdrplay (and the GUI based et-frontend program supports prerecorded files).
