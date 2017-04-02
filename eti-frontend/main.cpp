@@ -104,7 +104,7 @@ FILE		*outputFile	= NULL;	// probably overruled
 	            outputFile = fopen (optarg, "wb");
 	            if (outputFile == NULL) {
 	               fprintf (stderr, "opening %s failed, defaulting to stdout\n", optarg);
-	               outputFile = optarg;
+	               outputFile = stdin;
 	            }
 	         }
 	         break;
