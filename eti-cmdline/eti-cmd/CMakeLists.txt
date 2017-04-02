@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 2.8.11 )
 set (objectName eti_cmdline)
-add_definitions ( -Wall)
+add_definitions ( -Wall -g -std=c++11)
 #	modify if you want
 set (CMAKE_INSTALL_PREFIX ../../../)
 
