@@ -72,16 +72,18 @@ RadioInterface	*MyRadioInterface;
 int32_t		opt;
 FILE		*inputFile	= NULL;
 
-	while ((opt = getopt (argc, argv, "i:s")) != -1) {
+	while ((opt = getopt (argc, argv, "i:s:S:")) != -1) {
 	   switch (opt) {
 	      case 'i':
 	         initFileName = fullPathfor (optarg);
 	         break;
 
 	      case 's':
-	         if (optarg [0] == '-')
+	      case 'S':
+	         if (optarg[0]  == '-')
 	            inputFile = stdin;
 	         else {
+	            fprintf (stderr, "else part\n");
 	            inputFile = fopen (optarg, "rb");
 	            if (inputFile == NULL) {
 	               fprintf (stderr, "could not open %s, defaulting to stdin\n",
@@ -89,6 +91,7 @@ FILE		*inputFile	= NULL;
 	               inputFile = stdin;
 	            }
 	         }
+	fprintf (stderr, "end of -s\n");
 	         break;
 	   }
 	}

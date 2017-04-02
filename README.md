@@ -28,7 +28,7 @@ a. eti-frontend, which is a stripped Qt-DAB version that
    to the selected output device.
 b. eti-backend, which is a stripped Qt-DAB version that takes
    eti-frames as input. A command line option (-s) can be used to
-   specify an input file.
+   specify an input file or stdinput.
    if none is specified, the program will show a widget for selecting an
    input file.
    The GUI is simple, it will show the name of the ensemble and the names

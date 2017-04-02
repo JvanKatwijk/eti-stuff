@@ -144,11 +144,18 @@ int16_t	latency;
 	                                                QDir::homePath (),
 	                                                tr ("eti data (*.eti)"));
 	   fileName	= QDir::toNativeSeparators (fileName);
+	   if (fileName == QString ("")) {
+	      fprintf (stderr, "file selection cancelled, quitting\n");
+	      close ();
+	      return;
+	   }
+	
 	   input 	= fopen (fileName. toLatin1 (). data (), "rb");
 	   if (input == NULL) {
 	      fprintf (stderr, "failure, cannot open %s, fatal\n",
 	                              fileName. toLatin1 (). data ());
-	      exit (2);
+	      close ();
+	      return;
 	   }
 	}
 	my_fibHandler		= new fib_processor	(this);
