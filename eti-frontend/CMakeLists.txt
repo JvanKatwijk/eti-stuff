@@ -63,18 +63,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 #
 #	Here we really start
 
-	if (NO_SSE_SUPPORT) 
-	   set (${objectName}_SRCS
-	        ${${objectName}_SRCS}
-	        ./src/backend/spiral-code/spiral-no-sse.c )
-	else ()
-	   add_definitions (-DSSE_AVAILABLE)
-	   set (${objectName}_SRCS
-	        ${${objectName}_SRCS}
-	        ./src/backend/spiral-code/spiral-sse.c )
-	endif()
-
-	include_directories (
+		include_directories (
 	           ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
 	           ${QT5Widgets_INCLUDES}
 	           ${QT_QTCORE_INCLUDE_DIR}
