@@ -36,11 +36,8 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
 	find_package (Qt5Core REQUIRED)
 	find_package (Qt5Widgets REQUIRED)
-	find_package (Qt5Declarative REQUIRED)
+#	find_package (Qt5Declarative REQUIRED)
 
-	include_directories (
-	      ${Qt5Network_INCLUDE_DIRS}
-	)
 
         find_package(FFTW3f)
         if (NOT FFTW3F_FOUND)
@@ -310,13 +307,12 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
 	target_link_libraries (${objectName}
 	                       Qt5::Widgets
-	                       Qt5::Network
 	                       ${RTLTCP_lib}
 	                       ${FFTW3F_LIBRARIES}
 	                       ${extraLibs}
 	                       ${CMAKE_DL_LIBS}
 	)
-
+	
 	INSTALL (TARGETS ${objectName} DESTINATION ./linux-bin)
 
 ########################################################################

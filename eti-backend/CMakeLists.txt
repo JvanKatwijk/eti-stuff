@@ -29,17 +29,13 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 #
 #	If you want a tcp stream of the audio rather than
 #	audio being sent to the soundcard, uncomment
-#	set(TCP_STREAMER true)
+	set(TCP_STREAMER true)
 ########################################################################
 	find_package (PkgConfig)
 
 	find_package (Qt5Core REQUIRED)
 	find_package (Qt5Widgets REQUIRED)
-	find_package (Qt5Declarative REQUIRED)
-
-	include_directories (
-	      ${Qt5Network_INCLUDE_DIRS}
-	)
+#	find_package (Qt5Declarative REQUIRED)
 
         find_package(Portaudio)
         if (NOT PORTAUDIO_FOUND)
@@ -198,6 +194,10 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	if (TCP_STREAMER)
 	   add_definitions (-DTCP_STREAMER)
 	   find_package (Qt5Network REQUIRED)
+	   include_directories (
+                ${Qt5Network_INCLUDE_DIRS}
+           )
+
 	   set (${objectName}_MOCS
 	        ${${objectName}_MOCS}
 	        ./includes/output/tcp-streamer.h
@@ -211,6 +211,8 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 	        ${${objectName}_SRCS}
 	        ./src/output/tcp-streamer.cpp
 	   )
+	   set (TCPSTREAMER_lib Qt5::Network)
+
 	endif (TCP_STREAMER)
 
 	QT5_WRAP_UI (UIS ${${objectName}_UIS}
@@ -241,10 +243,10 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
 	target_link_libraries (${objectName}
 	                       Qt5::Widgets
-	                       Qt5::Network
 	                       ${extraLibs}
 	                       ${FAAD_LIBRARIES}
 	                       ${CMAKE_DL_LIBS}
+	                       ${TCPSTREAMER_lib}
 	)
 
 	INSTALL (TARGETS ${objectName} DESTINATION ./linux-bin)
