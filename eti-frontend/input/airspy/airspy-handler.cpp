@@ -232,6 +232,7 @@ uint32_t samplerate_count;
 	   return;	// nothing achieved earlier
 	}
 	my_airspy_exit ();
+	delete myFrame;
 #ifdef __MINGW32__
 	FreeLibrary (Handle);
 #else
