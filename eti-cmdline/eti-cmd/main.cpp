@@ -118,7 +118,7 @@ FILE	*etiFile = stdout;
 //	sigaction(SIGTERM, &sigact, NULL);
 //	sigaction(SIGQUIT, &sigact, NULL);
 
-	theRadio	= eti_initialize (theMode, theBand, 10, etiFile);
+	theRadio	= eti_initialize (theMode, theBand, del, etiFile);
 	if (theRadio == NULL) {
 	   fprintf (stderr, "sorry, no radio available, fatal\n");
 	   exit (4);
