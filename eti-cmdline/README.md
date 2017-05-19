@@ -102,3 +102,9 @@ For use with file input
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
 
+	Copyright (C)  2016, 2017
+	Jan van Katwijk (J.vanKatwijk@gmail.com)
+	Lazy Chair Programming
+
+The eti-cmdline software is made available under the GPL-2.0.
+All SDR-J software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 	GNU General Public License for more details.
