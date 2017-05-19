@@ -88,6 +88,7 @@ private:
 	int32_t		process_CIF		(int16_t *,
 	                                         uint8_t *, int32_t);
 	void		postProcess		(uint8_t *, int32_t);
+	void		disperse		(uint8_t *, int16_t);
 };
 
 #endif

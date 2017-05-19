@@ -342,7 +342,7 @@ void	RadioInterface::setStart	(void) {
 bool	r = 0;
 	if (running)		// only listen when not running yet
 	   return;
-//
+
 	r = inputDevice		-> restartReader ();
 	qDebug ("Starting %d\n", r);
 	if (!r) {

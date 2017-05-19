@@ -134,10 +134,12 @@ int	counter		= 0;
 	      }
 	   }
 	   counter ++;
+	   fprintf (stderr, "\t%d\r", counter);
+//	   if (!processingData)
 #ifdef	__MINGW32__
-	   usleep (24000);
+	      usleep (24000);
 #else
-	   msleep (24);
+	      msleep (24);
 #endif
 //	extract the relevant data
 	   FICF			= (buffer [5] & 0x80) >> 7;

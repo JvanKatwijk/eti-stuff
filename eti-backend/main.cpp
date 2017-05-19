@@ -119,6 +119,5 @@ FILE		*inputFile	= NULL;
 	qDebug ("It is done\n");
 	MyRadioInterface	-> ~RadioInterface ();
 	ISettings		-> ~QSettings ();
-	exit (1);
 }
 

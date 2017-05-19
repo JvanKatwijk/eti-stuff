@@ -325,26 +325,46 @@ uint8_t	shiftRegister [9];
 //
 //	What remains is dispersion of the bits, packing then as bytes
 //	and adding these bytes to the output vector.
-	   memset (shiftRegister, 1, 9);
-           for (j = 0; j < 24 * data. bitrate; j ++) {
-              uint8_t b = shiftRegister [8] ^ shiftRegister [4];
-              for (k = 8; k > 0; k--)
-                 shiftRegister [k] = shiftRegister [k - 1];
-              shiftRegister [0] = b;
-              outVector [j] ^= b;
-           }
+//	   memset (shiftRegister, 1, 9);
+//           for (j = 0; j < 24 * data. bitrate; j ++) {
+//              uint8_t b = shiftRegister [8] ^ shiftRegister [4];
+//              for (k = 8; k > 0; k--)
+//                 shiftRegister [k] = shiftRegister [k - 1];
+//              shiftRegister [0] = b;
+//              outVector [j] ^= b;
+//           }
 	   for (j = 0; j < 24 * data. bitrate / 8; j ++) {
               int temp = 0;
               for (k = 0; k < 8; k ++)
                  temp = (temp << 1) | (outVector [j * 8 + k] & 01);
               output [offset + j] = temp;
 	   }
+	   disperse (&output [offset], 24 * data. bitrate / 8);
 	   offset += 24 * data. bitrate / 8;
 	}
 	return offset;
 }
 
+//	Copied directly from dabtools:
 
+void 	etiGenerator::disperse (uint8_t *buf, int16_t nbytes) {
+int16_t i,j;
+uint8_t q;
+uint16_t p = 0x01FF;
+int32_t pp;
+
+	for (i = 0; i < nbytes; i++) {
+	   q = 0;
+	   for (j = 0; j < 8; j++) {
+	      p = p << 1;
+	      pp = ((p >> 9) & 1) ^ ((p >> 5) & 1);
+	      p |= pp;
+	      q = (q << 1) | pp;
+	   }
+	   buf [i] ^= q;
+	}
+	return;
+}
 void	etiGenerator::postProcess (uint8_t *theVector, int32_t offset){
 }
 
@@ -381,7 +401,8 @@ channel_data data;
 
 //	SYNC()
 //	ERR
-//	if (fibValid [index_Out + minor])
+	if (fibValid [index_Out + minor])
+	   fprintf (stderr, "x");
 	   eti [fillPointer ++] = 0xFF;		// error level 0
 //	else
 //	   eti [fillPointer ++] = 0x0F;		// error level 2, fib errors

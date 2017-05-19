@@ -38,7 +38,6 @@
 #include	"eti-generator.h"
 #include	"eep-protection.h"
 #include	"uep-protection.h"
-#include	"ensemble-handler.h"
 
 static uint16_t const crctab_1021[256] = {
   0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
@@ -108,25 +107,32 @@ bool	fibValid  [16];
 //	amount of cycles, the eti-generation is done in a different thread
 //	Note CIF counts from 0 .. 3
 //
-		etiGenerator::etiGenerator	(uint8_t dabMode,
-	                                         ensembleHandler *theEnsemble,
-	                                         FILE	*etiFile):
+		etiGenerator::etiGenerator	(uint8_t	dabMode,
+	                                         void		*userData,
+	                                         ensemblename_t ensembleName,
+	                                         programname_t	programName,
+	                                         fibquality_t	set_fibQuality,
+	                                         etiwriter_t	etiWriter):
 	                                            params (dabMode),
 	                                            my_ficHandler (&params,
-	                                                           theEnsemble) {
-
+	                                                           userData,
+	                                                           ensembleName,
+	                                                           programName,
+	                                                           set_fibQuality) {
+	this	-> userData	= userData;
+	this	-> etiWriter	= etiWriter;
+	
 	fibInput		= new int16_t [3 * 2 * params. get_carriers ()];
 	dataBuffer		= new RingBuffer<bufferElement> (512);
 	index_Out		= 0;
 	BitsperBlock		= 2 * params. get_carriers ();
 	numberofblocksperCIF	= 18;	// mode I
 	running. store (false);
-	amount. store (0);
+	amount.  store (0);
 	processing. store (false);
 	expected_block		= 2;
 	CIFCount_hi		= -1;
 	CIFCount_lo		= -1;
-	outputFile		= etiFile;
 	start ();
 }
 
@@ -143,9 +149,23 @@ void	etiGenerator::start	(void) {
 	running. store (true);
         threadHandle    = std::thread (&etiGenerator::run, this);
 }
-	
+
+//
+void	etiGenerator::reset	(void) { 
+	if (running. load ()) {
+	   running. store (false);
+	   threadHandle. join ();
+	}
+	running. store (false);
+	amount.  store (0);
+	processing. store (false);
+	expected_block		= 2;
+	CIFCount_hi		= -1;
+	CIFCount_lo		= -1;
+	start ();
+}
+
 void	etiGenerator::newFrame		(void) {
-//	expected_block	= 2;
 }
 
 void	etiGenerator::processBlock	(int16_t *softbits, int16_t blkno) { 
@@ -233,7 +253,7 @@ const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 	         temp [i] = cifVector [(index_Out + index) & 017] [i];
 	         cifVector [index_Out & 0xF] [i] = cif_In [i];
 	      }
-//	we have to wait until the interleave matrix i filled
+//	we have to wait until the interleave matrix is filled
 	      if (amount. load () < 15) {
 	         amount. store (amount. load () + 1);
 	         index_Out	= (index_Out + 1) & 017;
@@ -279,7 +299,10 @@ const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 //
 //	Padding
 	         memset (&theVector [offset], 0x55, 6144 - offset);
-	         fwrite (theVector, 1, 6144, outputFile);
+//	         fwrite (theVector, 1, 6144, outputFile);
+	         etiWriter (theVector, 6144, userData);
+	 static int cnt	= 0;
+//	         fprintf (stderr, "%d\r", ++cnt);
 	      }
 //	at the end, go for a new eti vector
 	      index_Out	= (index_Out + 1) & 017;
@@ -453,3 +476,4 @@ channel_data data;
 
 	return fillPointer;
 }
+
