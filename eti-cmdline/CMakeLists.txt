@@ -51,6 +51,15 @@ if(DEFINED RAWFILES)
    set(RAWFILES true)
    set (objectName eti-cmdline-rawfiles)
 endif ()
+
+if(DEFINED WAVFILES)
+   set(WAVFILES true)
+   set (objectName eti-cmdline-wavfiles)
+endif ()
+
+if(DEFINED DUMPING)
+   set(DUMPING true)
+endif ()
 ########################################################################
 	find_package (PkgConfig)
 
@@ -59,6 +68,18 @@ endif ()
             message(FATAL_ERROR "please install FFTW3")
         endif ()
 
+	find_package(LibSndFile)
+	if (NOT LIBSNDFILE_FOUND)
+	    message(FATAL_ERROR "please install libsndfile")
+	endif ()
+	list(APPEND extraLibs ${LIBSNDFILE_LIBRARY})
+
+	find_package(LibSampleRate)
+	if (NOT LIBSAMPLERATE_FOUND)
+	   message(FATAL_ERROR "please install libsamplerate")
+	endif ()
+	list(APPEND extraLibs ${LIBSAMPLERATE_LIBRARY})
+	add_definitions (-DHAVE_DUMPING)
 
 	find_library (PTHREADS pthread)
 	if (NOT(PTHREADS))
@@ -222,6 +243,24 @@ endif ()
 
 	   add_definitions (-DHAVE_RAWFILES)
 	endif (RAWFILES)
+
+	if (WAVFILES)
+	   include_directories (
+	     ./devices/wavfile-handler
+	   )
+
+	   set ($(objectName)_HDRS
+	        ${${objectName}_HDRS}
+	        ./devices/wavfile-handler/wavfile-handler.h
+	   )
+
+	   set (${objectName}_SRCS
+	        ${${objectName}_SRCS}
+	        ./devices/wavfile-handler/wavfile-handler.cpp
+	   )
+
+	   add_definitions (-DHAVE_WAVFILES)
+	endif (WAVFILES)
 
 	include_directories (
 	          ${SDRPLAY_INCLUDES}

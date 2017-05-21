@@ -25,11 +25,14 @@
 #define	__ETI_CLASS__
 #include	<string>
 #include	<stdint.h>
+#include	<stdio.h>
 #include	"callback-types.h"
 #include	"ofdm-processor.h"
 #include	"eti-generator.h"
 #include	"device-handler.h"
-
+#ifdef	HAVE_DUMPING
+#include	"sndfile.h"
+#endif
 //
 //
 //	A convenience class for the use of the functionality of the
@@ -65,6 +68,9 @@ public:
 //	Initialization:
 		etiClass	       (uint8_t	Mode,
 	                                deviceHandler	*handler,
+#ifdef	HAVE_DUMPING
+	                                SNDFILE		*dumpFile,
+#endif
 //	The callbacks
 		  			syncsignal_t	syncsignalHandler,
 	          	                snrsignal_t	snrsignalHandler,

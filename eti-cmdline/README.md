@@ -40,7 +40,8 @@ installed. Libraries that are required - apart from the libraries
 needed to support the device -
 
 * fftw3
-
+* libsndfile
+*libsamplerate
 -----------------------------------------------------------------------
 Configuring
 -----------------------------------------------------------------------
@@ -48,11 +49,15 @@ Configuring
 The "normal" way for configuring and installing is 
    mkdir build
    cd build
-   cmake .. -DXXX=ON
+   cmake .. -DXXX=ON  [-DDUMPING=ON]
    make
 
 where XXX refers to the input device being supported, one of
- (RTLSDR, SDRPLAY, AIRSPY, RAWFILES)
+ (RTLSDR, SDRPLAY, AIRSPY, RAWFILES, WAVFILES)
+
+If -DDUMPING=ON is added, the possibility for dumping the input to
+a ".sdr" file (note that an sdr file is a ".wav" file, with a samplerate
+of 2048000 and short int values).
 
 The resulting program is named eti-cmdline-XXX, for XXX read the devicename
    (sudo) make install
@@ -93,11 +98,14 @@ For use with one of the physical devices, one may set the following parameters
 6. -Q, for setting the autogain with the device (assuming the device supports
    autogain setting)
 
+7. -R filename, for dumping the input to a file as mentioned above. This
+   option only makes sense when dmping is configures.
+
 For use with file input 
 
-7. -F filename, the full pathname for the input file
+8. -F filename, the full pathname for the input file
 
-8. -E, is selected the file will be reread after reaching eof.
+9. -E, is selected the file will be reread after reaching eof.
 
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
@@ -107,4 +115,7 @@ For use with file input
 	Lazy Chair Programming
 
 The eti-cmdline software is made available under the GPL-2.0.
-All SDR-J software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 	GNU General Public License for more details.
+All SDR-J software is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ See the GNU General Public License for more details.

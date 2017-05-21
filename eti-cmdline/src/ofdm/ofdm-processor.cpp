@@ -38,7 +38,20 @@
   *	to the interpreters for FIC and MSC
   */
 
+#ifdef	HAVE_DUMPING
+static	inline
+int16_t	valueFor (int16_t b) {
+int16_t	res	= 1;
+	while (--b > 0)
+	   res <<= 1;
+	return res;
+}
+#endif
+
 	ofdmProcessor::ofdmProcessor	(deviceHandler	*inputDevice,
+#ifdef	HAVE_DUMPING
+	                                 SNDFILE	*dumpFile,
+#endif
 	                                 uint8_t	dabMode,
 	                                 void		*userData,
 	                                 syncsignal_t	set_syncSignal,
@@ -52,6 +65,9 @@
 	                                                       threshold) {
 int32_t	i;
 	this	-> inputDevice		= inputDevice;
+#ifdef	HAVE_DUMPING
+	this	-> dumpFile		= dumpFile;
+#endif
 	this	-> userData		= userData;
 	this	-> set_syncSignal	= set_syncSignal;
 	this	-> show_snr		= set_snrSignal;
@@ -94,7 +110,10 @@ int32_t	i;
 //
 	snrCount                = 0;
         snr                     = 0;
-
+#ifdef	HAVE_DUMPING
+	dumpIndex		= 0;
+	dumpScale		= valueFor (inputDevice -> bitDepth ());
+#endif
 }
 
 	ofdmProcessor::~ofdmProcessor	(void) {
@@ -137,7 +156,17 @@ DSPCOMPLEX temp;
 //	so here, bufferContent > 0, fetch a sample
 	inputDevice -> getSamples (&temp, 1);
 	bufferContent --;
-//
+#ifdef	HAVE_DUMPING
+	if (dumpFile != 0) {
+	   dumpBuffer [2 * dumpIndex    ] = real (temp) * dumpScale;
+	   dumpBuffer [2 * dumpIndex + 1] = imag (temp) * dumpScale;
+	   if ( ++dumpIndex >= DUMPSIZE / 2) {
+	      sf_writef_short (dumpFile, dumpBuffer, dumpIndex);
+	      dumpIndex = 0;
+	   }
+	}
+#endif
+
 //	OK, we have a sample!!
 //	first: adjust frequency. We need Hz accuracy
 	localPhase	-= phase;
@@ -172,6 +201,18 @@ int32_t		i;
 //	so here, bufferContent >= n
 	n	= inputDevice -> getSamples (v, n);
 	bufferContent -= n;
+#ifdef	HAVE_DUMPING
+	if (dumpFile != NULL) {
+	   for (i = 0; i < n; i ++) {
+	      dumpBuffer [2 * dumpIndex    ] = real (v [i]) * dumpScale;
+	      dumpBuffer [2 * dumpIndex + 1] = imag (v [i]) * dumpScale;
+	      if (++dumpIndex >= DUMPSIZE / 2) {
+	         sf_writef_short (dumpFile, dumpBuffer, dumpIndex);
+	         dumpIndex = 0;
+	      }
+	   }
+	}
+#endif
 
 //	OK, we have samples!!
 //	first: adjust frequency. We need Hz accuracy

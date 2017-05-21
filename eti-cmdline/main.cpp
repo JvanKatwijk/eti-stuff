@@ -33,6 +33,9 @@
 #include	"device-handler.h"
 #include	"band-handler.h"
 #include	"eti-class.h"
+#ifdef	HAVE_DUMPING
+#include	"sndfile.h"
+#endif
 
 using std::cerr;
 using std::endl;
@@ -45,6 +48,8 @@ using std::endl;
 #include	"airspy-handler.h"
 #elif	HAVE_RAWFILES
 #include	"rawfile-handler.h"
+#elif	HAVE_WAVFILES
+#include	"wavfile-handler.h"
 #endif
 //
 //	Be aware that the callbacks may arrive from different threads,
@@ -149,11 +154,13 @@ deviceHandler	*inputDevice;
 bandHandler	the_bandHandler;
 int32_t		tunedFrequency	= 220000000;	// just a setting
 int16_t		timeOut;
+#ifdef	HAVE_DUMPING
+SNDFILE		*dumpFile	= NULL;
+#endif
 int	opt;
 struct sigaction sigact;
-#ifdef	HAVE_RAWFILES
+#if defined(HAVE_RAWFILES) || defined(HAVE_WAVFILES)
 std::string	inputfileName;
-FILE	*inputFile;
 bool	continue_on_eof	= false;
 #endif
 //
@@ -166,10 +173,10 @@ bool	continue_on_eof	= false;
 	run.			store (false);
 //
 //	for file input some command line parameters are meeaningless
-#ifdef	HAVE_RAWFILES
+#if defined (HAVE_RAWFILES) || defined (HAVE_WAVFILES)
 	while ((opt = getopt (argc, argv, "ED:M:O:F:")) != -1) {
 #else
-	while ((opt = getopt (argc, argv, "D:M:B:C:G:O:Q")) != -1) {
+	while ((opt = getopt (argc, argv, "D:M:B:C:G:O:QR:")) != -1) {
 #endif
 	   switch (opt) {
 	      case 'D':
@@ -184,11 +191,29 @@ bool	continue_on_eof	= false;
 	       
 	         etiFile	= fopen (optarg, "w+b");
 	         if (etiFile == NULL) {
-	            fprintf (stderr, "%s cannot be opened\n", optarg);
+	            fprintf (stderr, "eti file %s cannot be opened\n", optarg);
 	            exit (23);
 	         }
 
 	         fprintf (stderr, "outputfile = %s\n", optarg);
+	         break;
+
+	      case 'R': 
+#ifdef	HAVE_DUMPING
+	         {  SF_INFO *sf_info  = (SF_INFO *)alloca (sizeof (SF_INFO));
+	            sf_info -> samplerate   = INPUT_RATE;
+	            sf_info -> channels     = 2;
+	            sf_info -> format       = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
+	            dumpFile	= sf_open (optarg, SFM_WRITE, sf_info);
+	            if (dumpFile == NULL) {
+	               fprintf (stderr,
+	                        "dumpfile %s cannot be opened\n", optarg);
+	               exit (24);
+	            }
+	         }
+#else
+	         fprintf (stderr, "Option only effective for dump in config\n");
+#endif
 	         break;
 
 	      case 'M':
@@ -198,6 +223,15 @@ bool	continue_on_eof	= false;
 	         break;
 
 #ifdef	HAVE_RAWFILES
+	      case 'F':
+	         inputfileName	= std::string (optarg);
+	         break;
+
+	      case 'E':
+	         continue_on_eof	= true;
+	         fprintf (stderr, "continue_on_eof is now set\n");
+	         break;
+#elif	HAVE_WAVFILES
 	      case 'F':
 	         inputfileName	= std::string (optarg);
 	         break;
@@ -231,14 +265,8 @@ bool	continue_on_eof	= false;
 	   }
 	}
 
-#ifdef	HAVE_RAWFILES
+#if defined(HAVE_RAWFILES) || defined(HAVE_WAVFILES)
 //	check on name ??
-	inputFile	= fopen (inputfileName. c_str (), "r+b");
-	if (inputFile == NULL) {
-	   fprintf (stderr,
-	            "Cannot open specified file %s\n", inputfileName. c_str ());
-	   exit (5);
-	}
 #else
 	tunedFrequency	=  the_bandHandler. Frequency (theBand, theChannel);
 	if (tunedFrequency == -1) {
@@ -261,7 +289,9 @@ bool	continue_on_eof	= false;
 	   inputDevice	= new airspyHandler (tunedFrequency,
 	                                        deviceGain, autoGain);
 #elif	HAVE_RAWFILES
-	   inputDevice	= new rawfileHandler (inputFile, continue_on_eof);
+	   inputDevice	= new rawfileHandler (inputfileName, continue_on_eof);
+#elif	HAVE_WAVFILES
+	   inputDevice	= new wavfileHandler (inputfileName, continue_on_eof);
 #endif
 	}
 	catch (int e) {
@@ -276,6 +306,9 @@ bool	continue_on_eof	= false;
 //
 	etiClass theWorker (theMode,
 	                    inputDevice,
+#ifdef	HAVE_DUMPING
+	                    dumpFile,
+#endif
 	                    &syncsignalHandler,
 	                    &snrsignalHandler,
 	                    &ensemblenameHandler,
@@ -331,8 +364,15 @@ bool	continue_on_eof	= false;
 //
 //	we started the "worker", so we also stop it here
 	theWorker. stop ();
-#ifdef	RAWFILES
-	fclose (inputFile);
+	fprintf (stderr, "terminating\n");
+	usleep (1000);
+	delete	inputDevice;
+	if (etiFile != NULL)
+	   fclose (etiFile);
+#ifdef	HAVE_DUMPFILE
+	if (dumpFile != NULL)
+	   sf_close (dumpFile);
 #endif
+
 }
 

@@ -35,7 +35,15 @@
 #include	"freq-interleaver.h"
 #include	"dab-params.h"
 #include	"ringbuffer.h"
-//
+#ifdef	HAVE_DUMPING
+#include	"sndfile.h"
+#endif
+
+//      Note:
+//      It was found that enlarging the buffersize to e.g. 8192
+//      cannot be handled properly by the underlying system.
+#define DUMPSIZE                4096
+
 class	common_fft;
 class	deviceHandler;
 class	etiGenerator;
@@ -47,6 +55,9 @@ class	etiGenerator;
 class ofdmProcessor {
 public:
 		ofdmProcessor  	(deviceHandler *,
+#ifdef	HAVE_DUMPING
+	                         SNDFILE       *,
+#endif
 	                         uint8_t,
 	                         void		*,
 	                         syncsignal_t,
@@ -61,6 +72,13 @@ public:
 	void	start			(void);
 	void	syncReached		(void);
 private:
+	deviceHandler	*inputDevice;
+#ifdef	HAVE_DUMPING
+	SNDFILE		*dumpFile;
+	int16_t		dumpIndex;
+	int16_t		dumpScale;
+	int16_t		dumpBuffer [DUMPSIZE];
+#endif
 	void		*userData;
 	etiGenerator	*my_etiGenerator;
 	syncsignal_t	set_syncSignal;
@@ -70,7 +88,6 @@ private:
 	std::thread	threadHandle;
 	int32_t		syncBufferIndex;
 	std::atomic<bool>	running;
-	deviceHandler	*inputDevice;
 	dabParams	params;
 	interLeaver	myMapper;
 	phaseReference	phaseSynchronizer;

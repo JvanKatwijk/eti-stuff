@@ -18,18 +18,14 @@
  *    You should have received a copy of the GNU General Public License
  *    along with eti-cmdline; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * 	File reader:
- *	For the files with 8 bit raw data from the dabsticks 
  */
-#include	"rawfile-handler.h"
 #include	<stdio.h>
 #include	<unistd.h>
 #include	<stdlib.h>
 #include	<fcntl.h>
-//
 #include	<sys/time.h>
 #include	<time.h>
+#include	"wavfile-handler.h"
 
 static inline
 int64_t		getMyTime	(void) {
@@ -39,89 +35,93 @@ struct timeval	tv;
 	return ((int64_t)tv. tv_sec * 1000000 + (int64_t)tv. tv_usec);
 }
 
-#define	INPUT_FRAMEBUFFERSIZE	8 * 32768
-//
-//
-	rawfileHandler::rawfileHandler (std::string filename,
-	                                bool  continue_on_eof) {
-	filePointer	= fopen (filename. c_str (), "r+b");
-	if (filePointer == NULL) {
-	   fprintf (stderr, "could not open %s\n", filename. c_str ());
-	   throw (21);
-	}
-	_I_Buffer	= new RingBuffer<uint8_t>(INPUT_FRAMEBUFFERSIZE);
-	this	-> continue_on_eof	= continue_on_eof;
+#define	__BUFFERSIZE	8 * 32768
+
+	wavfileHandler::wavfileHandler (std::string filename,
+	                                bool continue_on_eof) {
+SF_INFO *sf_info;
+
+	sf_info         = (SF_INFO *)alloca (sizeof (SF_INFO));
+        sf_info -> format       = 0;
+        filePointer     = sf_open (filename.c_str (), SFM_READ, sf_info);
+        if (filePointer == NULL) {
+           fprintf (stderr, "file %s no legitimate sound file\n",
+                                        filename. c_str ());
+           throw (24);
+        }
+        if ((sf_info -> samplerate != 2048000) ||
+            (sf_info -> channels != 2)) {
+           fprintf (stderr,
+	            "%s is not a recorded dab file, sorry\n",
+	                         filename. c_str ());
+           sf_close (filePointer);
+           throw (25);
+        }
+
+	_I_Buffer	= new RingBuffer<std::complex<float>>(__BUFFERSIZE);
 	readerOK	= true;
 	readerPausing	= true;
 	currPos		= 0;
 	start	();
 }
 
-	rawfileHandler::~rawfileHandler (void) {
+	wavfileHandler::~wavfileHandler (void) {
 	if (run. load ()) {
 	   run. store (false);
 	   threadHandle. join ();
 	}
-
-	fclose (filePointer);
 	delete _I_Buffer;
+	sf_close (filePointer);
 }
 
-bool	rawfileHandler::restartReader	(void) {
+bool	wavfileHandler::restartReader	(void) {
 	if (readerOK)
 	   readerPausing = false;
 	return readerOK;
 }
 
-void	rawfileHandler::stopReader	(void) {
+void	wavfileHandler::stopReader	(void) {
 	if (readerOK)
 	   readerPausing = true;
 }
-
-//	size is in I/Q pairs, file contains 8 bits values
-int32_t	rawfileHandler::getSamples	(DSPCOMPLEX *V, int32_t size) {
-int32_t	amount, i;
-uint8_t	*temp = (uint8_t *)alloca (2 * size * sizeof (uint8_t));
-
+//
+//	size is in I/Q pairs
+int32_t	wavfileHandler::getSamples	(std::complex<float> *V,
+	                                 int32_t size) {
+int32_t	amount;
 	if (filePointer == NULL)
 	   return 0;
 
-	while ((int32_t)(_I_Buffer -> GetRingBufferReadAvailable ()) < 2 * size)
+	while (_I_Buffer -> GetRingBufferReadAvailable () < size)
 	   if (readerPausing)
 	      usleep (100000);
 	   else
-	      usleep (1000);
+	      usleep (100);
 
-	amount = _I_Buffer	-> getDataFromBuffer (temp, 2 * size);
-	for (i = 0; i < amount / 2; i ++)
-	   V [i] = DSPCOMPLEX (float (temp [2 * i] - 128) / 128.0,
-	                       float (temp [2 * i + 1] - 128) / 128.0);
-	return amount / 2;
+	amount = _I_Buffer	-> getDataFromBuffer (V, size);
+	return amount;
 }
 
-int32_t	rawfileHandler::Samples (void) {
-	return _I_Buffer -> GetRingBufferReadAvailable () / 2;
+int32_t	wavfileHandler::Samples (void) {
+	return _I_Buffer -> GetRingBufferReadAvailable ();
 }
 
-void	rawfileHandler::start	(void) {
-	threadHandle	= std::thread (&rawfileHandler::runRead, this);
+void    wavfileHandler::start   (void) {
+        threadHandle    = std::thread (&wavfileHandler::runRead, this);
 }
 
-void	rawfileHandler::runRead (void) {
+void	wavfileHandler::runRead (void) {
 int32_t	t, i;
-uint8_t	*bi;
+std::complex<float> bi [bufferSize];
 int32_t	bufferSize	= 32768;
 int64_t	period;
 int64_t	nextStop;
 
 	if (!readerOK)
 	   return;
-
 	run. store (true);
-
-	period		= (32768 * 1000) / (2 * 2048);	// full IQś read
+	period		= (32768 * 1000) / 2048;	// full IQś read
 	fprintf (stderr, "Period = %ld\n", period);
-	bi		= new uint8_t [bufferSize];
 	nextStop	= getMyTime ();
 	while (run. load ()) {
 	   if (readerPausing) {
@@ -129,8 +129,7 @@ int64_t	nextStop;
 	      nextStop = getMyTime ();
 	      continue;
 	   }
-
-	   while (_I_Buffer -> WriteSpace () < bufferSize + 10) {
+	   while (_I_Buffer -> WriteSpace () < bufferSize) {
 	      if (!run. load ())
 	         break;
 	      usleep (100);
@@ -138,33 +137,36 @@ int64_t	nextStop;
 
 	   nextStop += period;
 	   t = readBuffer (bi, bufferSize);
-	   if (t <= 0) {
-	      for (i = 0; i < bufferSize; i ++)
+	   if (t < 0)
+	      break;
+	   if (t < bufferSize) {
+	      for (i = t; i < bufferSize; i ++)
 	          bi [i] = 0;
 	      t = bufferSize;
 	   }
-	   _I_Buffer -> putDataIntoBuffer (bi, t);
+
+	   _I_Buffer -> putDataIntoBuffer (bi, bufferSize);
 	   if (nextStop - getMyTime () > 0)
 	      usleep (nextStop - getMyTime ());
 	}
-
+	run. store (false);
 	fprintf (stderr, "taak voor replay eindigt hier\n");
 }
 /*
  *	length is number of uints that we read.
  */
-int32_t	rawfileHandler::readBuffer (uint8_t *data, int32_t length) {
-int32_t	n;
+int32_t	wavfileHandler::readBuffer (std::complex<float> *data, int32_t length) {
+int32_t	i, n;
+float	temp [2 * length];
 
-	if (!continue_on_eof && feof (filePointer))
-	   return 0;
-
-	n = fread (data, sizeof (uint8_t), length, filePointer);
-	currPos		+= n;
-	if ((n < length) && feof (filePointer) && continue_on_eof) {
-	   fseek (filePointer, 0, SEEK_SET);
+	n = sf_readf_float (filePointer, temp, length);
+	if ((n < length) && continue_on_eof) {
+	   sf_seek (filePointer, 0, SEEK_SET);
 	   fprintf (stderr, "End of file, restarting\n");
 	}
+
+	for (i = 0; i < n; i ++)
+	   data [i] = std::complex<float> (temp [2 * i], temp [2 * i + 1]);
 	return	n & ~01;
 }
 

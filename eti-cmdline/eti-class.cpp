@@ -29,7 +29,10 @@
 //	interpreting the data and generating output
 
 	etiClass::etiClass	(uint8_t	theMode,
-	                         deviceHandler   *inputDevice,
+	                         deviceHandler	*inputDevice,
+#ifdef	HAVE_DUMPING
+	                         SNDFILE	*dumpFile,
+#endif
 //      The callbacks
 	                         syncsignal_t    syncsignalHandler,
 	                         snrsignal_t     snrsignalHandler,
@@ -46,6 +49,9 @@
 	                                            fibqualityHandler,
 	                                            etiwriterHandler),
 	                           my_ofdmProcessor (inputDevice,
+#ifdef	HAVE_DUMPING
+	                                             dumpFile,
+#endif
 	                                             theMode,
 	                                             userData,
 	                                             syncsignalHandler,

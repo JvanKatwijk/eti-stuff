@@ -19,40 +19,39 @@
  *    along with eti-cmdline; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-#ifndef	__RAWFILE_HANDLER__
-#define	__RAWFILE_HANDLER__
+#ifndef	__WAVFILE_HANDLER__
+#define	__WAVFILE_HANDLER__
 
-#include	<string>
-#include	"dab-constants.h"
-#include	"device-handler.h"
-#include	"ringbuffer.h"
-#include	<atomic>
-#include	<thread>
-/*
- */
-class	rawfileHandler: public deviceHandler {
+#include        <string>
+#include        "dab-constants.h"
+#include        "device-handler.h"
+#include	"sndfile.h"
+#include        "ringbuffer.h"
+#include        <atomic>
+#include        <thread>
+
+class	wavfileHandler: public deviceHandler {
 public:
-			rawfileHandler	(std::string, bool);
-	       		~rawfileHandler	(void);
-	int32_t		getSamples	(DSPCOMPLEX *, int32_t);
+			wavfileHandler	(std::string, bool);
+	       		~wavfileHandler	(void);
+	int32_t		getSamples	(std::complex<float> *, int32_t);
 	int32_t		Samples		(void);
 	bool		restartReader	(void);
 	void		stopReader	(void);
 private:
-	std::string	fileName;
-	bool		continue_on_eof;
-	void		start		(void);
-	void		runRead		(void);
-	std::thread	threadHandle;
-	std::atomic<bool> run;
-	int32_t		readBuffer	(uint8_t *, int32_t);
-	RingBuffer<uint8_t>	*_I_Buffer;
-	int32_t		bufferSize;
-	FILE		*filePointer;
-	bool		readerOK;
-	bool		readerPausing;
-	bool		ThreadFinished;
-	int64_t		currPos;
+	SNDFILE		*filePointer;
+        bool            continue_on_eof;
+        void            start           (void);
+        void            runRead         (void);
+        std::thread     threadHandle;
+        std::atomic<bool> run;
+        int32_t         readBuffer      (std::complex<float> *, int32_t);
+        RingBuffer<std::complex<float>>	*_I_Buffer;
+        int32_t         bufferSize;
+        bool            readerOK;
+        bool            readerPausing;
+        bool            ThreadFinished;
+        int64_t         currPos;
 };
 
 #endif
