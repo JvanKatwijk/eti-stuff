@@ -43,18 +43,18 @@ struct timeval	tv;
 //
 //
 	rawfileHandler::rawfileHandler (std::string filename,
-	                                bool  continue_on_eof) {
+	                                bool  continue_on_eof,
+	                                inputstopped_t inputStopped) {
 	filePointer	= fopen (filename. c_str (), "r+b");
 	if (filePointer == NULL) {
 	   fprintf (stderr, "could not open %s\n", filename. c_str ());
 	   throw (21);
 	}
-	_I_Buffer	= new RingBuffer<uint8_t>(INPUT_FRAMEBUFFERSIZE);
 	this	-> continue_on_eof	= continue_on_eof;
-	readerOK	= true;
-	readerPausing	= true;
+	this	-> inputStopped		= inputStopped;
+	_I_Buffer	= new RingBuffer<uint8_t>(INPUT_FRAMEBUFFERSIZE);
 	currPos		= 0;
-	start	();
+	eof		= false;
 }
 
 	rawfileHandler::~rawfileHandler (void) {
@@ -68,14 +68,18 @@ struct timeval	tv;
 }
 
 bool	rawfileHandler::restartReader	(void) {
-	if (readerOK)
-	   readerPausing = false;
-	return readerOK;
+	if (run. load ())
+	   return true;
+	run. store (true);
+	threadHandle	= std::thread (&rawfileHandler::runRead, this);
+	return true;
 }
 
 void	rawfileHandler::stopReader	(void) {
-	if (readerOK)
-	   readerPausing = true;
+	if (run. load ()) {
+	   run. store (false);
+	   threadHandle. join ();
+	}
 }
 
 //	size is in I/Q pairs, file contains 8 bits values
@@ -87,10 +91,7 @@ uint8_t	*temp = (uint8_t *)alloca (2 * size * sizeof (uint8_t));
 	   return 0;
 
 	while ((int32_t)(_I_Buffer -> GetRingBufferReadAvailable ()) < 2 * size)
-	   if (readerPausing)
-	      usleep (100000);
-	   else
-	      usleep (1000);
+	   usleep (1000);
 
 	amount = _I_Buffer	-> getDataFromBuffer (temp, 2 * size);
 	for (i = 0; i < amount / 2; i ++)
@@ -103,19 +104,12 @@ int32_t	rawfileHandler::Samples (void) {
 	return _I_Buffer -> GetRingBufferReadAvailable () / 2;
 }
 
-void	rawfileHandler::start	(void) {
-	threadHandle	= std::thread (&rawfileHandler::runRead, this);
-}
-
 void	rawfileHandler::runRead (void) {
 int32_t	t, i;
 uint8_t	*bi;
 int32_t	bufferSize	= 32768;
 int64_t	period;
 int64_t	nextStop;
-
-	if (!readerOK)
-	   return;
 
 	run. store (true);
 
@@ -124,11 +118,6 @@ int64_t	nextStop;
 	bi		= new uint8_t [bufferSize];
 	nextStop	= getMyTime ();
 	while (run. load ()) {
-	   if (readerPausing) {
-	      usleep (1000);
-	      nextStop = getMyTime ();
-	      continue;
-	   }
 
 	   while (_I_Buffer -> WriteSpace () < bufferSize + 10) {
 	      if (!run. load ())
@@ -156,8 +145,13 @@ int64_t	nextStop;
 int32_t	rawfileHandler::readBuffer (uint8_t *data, int32_t length) {
 int32_t	n;
 
-	if (!continue_on_eof && feof (filePointer))
+	if (!continue_on_eof && feof (filePointer)) {
+	   if (eof)
+	      return 0;
+	   eof	= true;
+	   inputStopped ();
 	   return 0;
+	}
 
 	n = fread (data, sizeof (uint8_t), length, filePointer);
 	currPos		+= n;

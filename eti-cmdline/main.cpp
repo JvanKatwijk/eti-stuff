@@ -73,7 +73,7 @@ std::string	theName;
 std::mutex	mainLocker;
 
 static void sighandler (int signum) {
-        fprintf (stderr, "Signal caught, terminating!\n");
+        fprintf (stderr, "\n\nSignal %d caught, terminating!\n", signum);
 	run. store (false);
 }
 //
@@ -109,7 +109,7 @@ int	programCounter	= 1;
 void	programnameHandler (std::string name, int SId, void *ctx) {
 	(void)ctx;
 	mainLocker. lock ();
-	fprintf (stderr, "program\ (%2d)t %s\t \%lX is in the list\n",
+	fprintf (stderr, "program\ (%2d)\t %s\t \%lX is in the list\n",
 	                               programCounter ++, name. c_str (), SId);
 	mainLocker. unlock ();
 }
@@ -139,6 +139,10 @@ void	etiwriterHandler (uint8_t *buffer, int32_t amount, void *ctx) {
 	(void)ctx;
 	fwrite (buffer, 1, amount, etiFile);
 	fprintf (stderr, "%d\r", ++cnt);
+}
+
+void	inputStopped	(void) {
+	run. store (false);
 }
 	
 //
@@ -289,9 +293,13 @@ bool	continue_on_eof	= false;
 	   inputDevice	= new airspyHandler (tunedFrequency,
 	                                        deviceGain, autoGain);
 #elif	HAVE_RAWFILES
-	   inputDevice	= new rawfileHandler (inputfileName, continue_on_eof);
+	   inputDevice	= new rawfileHandler (inputfileName,
+	                                      continue_on_eof, 
+	                                      inputStopped);
 #elif	HAVE_WAVFILES
-	   inputDevice	= new wavfileHandler (inputfileName, continue_on_eof);
+	   inputDevice	= new wavfileHandler (inputfileName,
+	                                      continue_on_eof,
+	                                      inputStopped);
 #endif
 	}
 	catch (int e) {
@@ -303,6 +311,10 @@ bool	continue_on_eof	= false;
 	sigact.sa_handler = sighandler;
 	sigemptyset(&sigact.sa_mask);
 	sigact.sa_flags = 0;
+	sigaction(SIGINT, &sigact, NULL);
+//	sigaction(SIGTERM, &sigact, NULL);
+//	sigaction(SIGQUIT, &sigact, NULL);
+
 //
 	etiClass theWorker (theMode,
 	                    inputDevice,
@@ -356,16 +368,18 @@ bool	continue_on_eof	= false;
 	                    "until you quit" << endl;
 	   run. store (true);
 	   while (run. load ()) {
-	     fprintf (stderr, "\t\testimated snr: %2d, fibquality %3d\r",
+	      fprintf (stderr, "\t\testimated snr: %2d, fibquality %3d\r",
 	                         signalnoise. load (), ficSuccess. load ());
 	      sleep (1);
 	   }
 	}
-//
+
 //	we started the "worker", so we also stop it here
 	theWorker. stop ();
-	fprintf (stderr, "terminating\n");
+	fprintf (stderr, "\n\nterminating\n");
 	usleep (1000);
+
+	inputDevice	-> stopReader ();
 	delete	inputDevice;
 	if (etiFile != NULL)
 	   fclose (etiFile);
@@ -373,6 +387,6 @@ bool	continue_on_eof	= false;
 	if (dumpFile != NULL)
 	   sf_close (dumpFile);
 #endif
-
+	exit (1);
 }
 

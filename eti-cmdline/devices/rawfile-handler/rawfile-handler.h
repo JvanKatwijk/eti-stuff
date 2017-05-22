@@ -23,16 +23,17 @@
 #define	__RAWFILE_HANDLER__
 
 #include	<string>
+#include	<atomic>
+#include	<thread>
 #include	"dab-constants.h"
 #include	"device-handler.h"
 #include	"ringbuffer.h"
-#include	<atomic>
-#include	<thread>
+#include	"callback-types.h"
 /*
  */
 class	rawfileHandler: public deviceHandler {
 public:
-			rawfileHandler	(std::string, bool);
+			rawfileHandler	(std::string, bool, inputstopped_t);
 	       		~rawfileHandler	(void);
 	int32_t		getSamples	(DSPCOMPLEX *, int32_t);
 	int32_t		Samples		(void);
@@ -41,7 +42,7 @@ public:
 private:
 	std::string	fileName;
 	bool		continue_on_eof;
-	void		start		(void);
+	inputstopped_t	inputStopped;
 	void		runRead		(void);
 	std::thread	threadHandle;
 	std::atomic<bool> run;
@@ -49,10 +50,9 @@ private:
 	RingBuffer<uint8_t>	*_I_Buffer;
 	int32_t		bufferSize;
 	FILE		*filePointer;
-	bool		readerOK;
-	bool		readerPausing;
 	bool		ThreadFinished;
 	int64_t		currPos;
+	bool		eof;
 };
 
 #endif

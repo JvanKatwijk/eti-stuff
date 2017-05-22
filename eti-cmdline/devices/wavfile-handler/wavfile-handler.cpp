@@ -38,7 +38,8 @@ struct timeval	tv;
 #define	__BUFFERSIZE	8 * 32768
 
 	wavfileHandler::wavfileHandler (std::string filename,
-	                                bool continue_on_eof) {
+	                                bool continue_on_eof,
+	                                inputstopped_t inputStopped) {
 SF_INFO *sf_info;
 
 	sf_info         = (SF_INFO *)alloca (sizeof (SF_INFO));
@@ -57,12 +58,12 @@ SF_INFO *sf_info;
            sf_close (filePointer);
            throw (25);
         }
-
+	this	-> continue_on_eof	= continue_on_eof;
+	this	-> inputStopped		= inputStopped;
 	_I_Buffer	= new RingBuffer<std::complex<float>>(__BUFFERSIZE);
-	readerOK	= true;
-	readerPausing	= true;
 	currPos		= 0;
-	start	();
+	eof		= false;
+	run. store (false);
 }
 
 	wavfileHandler::~wavfileHandler (void) {
@@ -75,14 +76,18 @@ SF_INFO *sf_info;
 }
 
 bool	wavfileHandler::restartReader	(void) {
-	if (readerOK)
-	   readerPausing = false;
-	return readerOK;
+	if (run. load ())
+	   return true;
+	run. store (true);
+        threadHandle    = std::thread (&wavfileHandler::runRead, this);
+	return true;
 }
 
 void	wavfileHandler::stopReader	(void) {
-	if (readerOK)
-	   readerPausing = true;
+	if (run. load ()) {
+	   run. store (false);
+	   threadHandle. join ();
+	}
 }
 //
 //	size is in I/Q pairs
@@ -93,10 +98,7 @@ int32_t	amount;
 	   return 0;
 
 	while (_I_Buffer -> GetRingBufferReadAvailable () < size)
-	   if (readerPausing)
-	      usleep (100000);
-	   else
-	      usleep (100);
+	   usleep (100);
 
 	amount = _I_Buffer	-> getDataFromBuffer (V, size);
 	return amount;
@@ -106,29 +108,18 @@ int32_t	wavfileHandler::Samples (void) {
 	return _I_Buffer -> GetRingBufferReadAvailable ();
 }
 
-void    wavfileHandler::start   (void) {
-        threadHandle    = std::thread (&wavfileHandler::runRead, this);
-}
-
 void	wavfileHandler::runRead (void) {
 int32_t	t, i;
-std::complex<float> bi [bufferSize];
 int32_t	bufferSize	= 32768;
+std::complex<float> bi [bufferSize];
 int64_t	period;
 int64_t	nextStop;
 
-	if (!readerOK)
-	   return;
-	run. store (true);
 	period		= (32768 * 1000) / 2048;	// full IQś read
 	fprintf (stderr, "Period = %ld\n", period);
 	nextStop	= getMyTime ();
 	while (run. load ()) {
-	   if (readerPausing) {
-	      usleep (1000);
-	      nextStop = getMyTime ();
-	      continue;
-	   }
+
 	   while (_I_Buffer -> WriteSpace () < bufferSize) {
 	      if (!run. load ())
 	         break;
@@ -137,11 +128,9 @@ int64_t	nextStop;
 
 	   nextStop += period;
 	   t = readBuffer (bi, bufferSize);
-	   if (t < 0)
-	      break;
 	   if (t < bufferSize) {
 	      for (i = t; i < bufferSize; i ++)
-	          bi [i] = 0;
+	          bi [i] = std::complex<float> (0, 0);
 	      t = bufferSize;
 	   }
 
@@ -149,24 +138,31 @@ int64_t	nextStop;
 	   if (nextStop - getMyTime () > 0)
 	      usleep (nextStop - getMyTime ());
 	}
-	run. store (false);
 	fprintf (stderr, "taak voor replay eindigt hier\n");
 }
 /*
  *	length is number of uints that we read.
  */
-int32_t	wavfileHandler::readBuffer (std::complex<float> *data, int32_t length) {
+int32_t	wavfileHandler::readBuffer (std::complex<float> *data,
+	                            int32_t length) {
 int32_t	i, n;
 float	temp [2 * length];
 
 	n = sf_readf_float (filePointer, temp, length);
-	if ((n < length) && continue_on_eof) {
+	if (n < length) {
+	   if (!continue_on_eof) {
+	      if (eof)
+	         return 0;
+	      eof = true;
+	      inputStopped ();
+	      return 0;
+	   }
 	   sf_seek (filePointer, 0, SEEK_SET);
 	   fprintf (stderr, "End of file, restarting\n");
 	}
 
 	for (i = 0; i < n; i ++)
 	   data [i] = std::complex<float> (temp [2 * i], temp [2 * i + 1]);
-	return	n & ~01;
+	return	n;
 }
 

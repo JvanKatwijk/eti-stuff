@@ -102,6 +102,10 @@ public:
 //	set_syncReached is a signal to the ofdmprocessor that 
 //	frequency synchronization is OK
 	void	set_syncReached		(void);
+//
+//	with Working the caller can see whether the ofdmprocessor
+//	is running
+	bool	Working			(void);
 private:
 	ofdmProcessor	my_ofdmProcessor;
 	etiGenerator	my_etiGenerator;

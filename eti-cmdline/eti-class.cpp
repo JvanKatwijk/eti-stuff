@@ -83,7 +83,11 @@ void	etiClass::reset			(void) {
 	my_etiGenerator.  reset ();
 }
 
-void	etiClass::set_syncReached         (void) {
+void	etiClass::set_syncReached	(void) {
 	my_ofdmProcessor. syncReached ();
+}
+
+bool	etiClass::Working		(void) {
+	my_ofdmProcessor. isRunning ();
 }
 

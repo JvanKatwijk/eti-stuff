@@ -23,25 +23,26 @@
 #define	__WAVFILE_HANDLER__
 
 #include        <string>
+#include        <atomic>
+#include        <thread>
 #include        "dab-constants.h"
 #include        "device-handler.h"
 #include	"sndfile.h"
 #include        "ringbuffer.h"
-#include        <atomic>
-#include        <thread>
+#include	"callback-types.h"
 
 class	wavfileHandler: public deviceHandler {
 public:
-			wavfileHandler	(std::string, bool);
+			wavfileHandler	(std::string, bool, inputstopped_t);
 	       		~wavfileHandler	(void);
 	int32_t		getSamples	(std::complex<float> *, int32_t);
 	int32_t		Samples		(void);
 	bool		restartReader	(void);
 	void		stopReader	(void);
 private:
-	SNDFILE		*filePointer;
         bool            continue_on_eof;
-        void            start           (void);
+	SNDFILE		*filePointer;
+	inputstopped_t	inputStopped;
         void            runRead         (void);
         std::thread     threadHandle;
         std::atomic<bool> run;
@@ -52,6 +53,7 @@ private:
         bool            readerPausing;
         bool            ThreadFinished;
         int64_t         currPos;
+	bool		eof;
 };
 
 #endif

@@ -429,7 +429,7 @@ ReadyForNewFrame:
 	catch (int e) {
 	   ;
 	}
-	inputDevice	-> stopReader ();
+//	inputDevice	-> stopReader ();
 	running. store (false);
 	fprintf (stderr, "ofdmProcessor is shutting down\n");
 }
@@ -583,5 +583,9 @@ int16_t	high	= low + carriers;
 	   signal += abs (v [(T_u / 2 + i) % T_u]);
 
 	return get_db (signal / (carriers / 2)) - get_db (noise);
+}
+
+bool	ofdmProcessor::isRunning	(void) {
+	return running. load ();
 }
 

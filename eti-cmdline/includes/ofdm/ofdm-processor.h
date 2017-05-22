@@ -71,6 +71,7 @@ public:
 	void	setOffset		(int32_t);
 	void	start			(void);
 	void	syncReached		(void);
+	bool	isRunning		(void);
 private:
 	deviceHandler	*inputDevice;
 #ifdef	HAVE_DUMPING
