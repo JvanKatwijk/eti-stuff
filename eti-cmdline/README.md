@@ -107,6 +107,12 @@ For use with file input
 
 9. -E, is selected the file will be reread after reaching eof.
 
+For use with rtl_tcp
+
+10. -H hostname, the hostname of the server to connect to, default 127.0.0.1
+
+11. -I port, the port to listen to, default 1234
+
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
 

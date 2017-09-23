@@ -57,6 +57,11 @@ if(DEFINED WAVFILES)
    set (objectName eti-cmdline-wavfiles)
 endif ()
 
+if(DEFINED RTL_TCP)
+   set(RTL_TCP true)
+   set (objectName eti-cmdline-rtl_tcp)
+endif ()
+
 if(DEFINED DUMPING)
    set(DUMPING true)
 endif ()
@@ -243,6 +248,24 @@ endif ()
 
 	   add_definitions (-DHAVE_RAWFILES)
 	endif (RAWFILES)
+
+	if (RTL_TCP)
+	   include_directories (
+	      ./devices/rtl_tcp
+	   )
+
+	   set ($(objectName)_HDRS
+	        ${${objectName}_HDRS}
+	        ./devices/rtl_tcp/rtl_tcp-client.h
+	   )
+
+	   set (${objectName}_SRCS
+	        ${${objectName}_SRCS}
+	        ./devices/rtl_tcp/rtl_tcp-client.cpp
+	   )
+
+	   add_definitions (-DHAVE_RTL_TCP)
+	endif (RTL_TCP)
 
 	if (WAVFILES)
 	   include_directories (

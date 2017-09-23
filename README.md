@@ -2,7 +2,9 @@
 
 "Eti-stuff" consists of three programs and is an attempt to understand the eti structure as defined in ETS 300 799.
 
-eti-frontend and eti-backend are based on the Qt-DAB software, with code included from dabtools to actually generate the eti frames. eti-cmdline is based on the dab-cmdline software.
+eti-frontend and eti-backend are based on the Qt-DAB software, with code included from dabtools to actually generate the eti frames.
+eti-cmdline is based on the dab-cmdline software and is - as the name suggests -
+the command line version.
 
 The eti-frontend and eti-cmdline programs take as input a sample stream and create an eti file, while eti-backend is interpreting the eti file.
 
@@ -14,12 +16,14 @@ The set consists (currently) of three programs (all under continuous development
 
 ## eti-frontend
 
+THE ETI-FRONTEND IS NOT SUPPORTED, JUST FORGET ABOUT IT
+
 which is a stripped Qt-DAB version that generates eti-frames as output.
 
 The GUI is - obviously - based on Qt-DAB. There is an additional command line option `-O -`, that will cause the ETI files to be sent to stdout.
 
 The "normal" way of working is to have an input device selected, select a channel, press the start button, and as soon as an ensemble is identified, and the GUI shows the names of the programs, to press the button "eti is waiting", after which it will send the eti frames to the selected output device.
-   
+
 ## eti-backend
 
 which is a stripped Qt-DAB version that takes eti-frames as input. A command line option (`-s`) can be used to specify an input file or stdinput. If none is specified, the program will show a widget for selecting an input file.

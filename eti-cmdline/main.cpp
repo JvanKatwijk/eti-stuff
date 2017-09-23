@@ -50,6 +50,8 @@ using std::endl;
 #include	"rawfile-handler.h"
 #elif	HAVE_WAVFILES
 #include	"wavfile-handler.h"
+#elif	HAVE_RTL_TCP
+#include	"rtl_tcp-client.h"
 #endif
 //
 //	Be aware that the callbacks may arrive from different threads,
@@ -152,8 +154,9 @@ int16_t		waitingTime	= 10;
 uint8_t		theMode		= 1;
 std::string	theChannel	= "11C";
 uint8_t		theBand		= BAND_III;
-int		deviceGain	= 80;	// scale = 0 .. 100
+int16_t		deviceGain	= 80;	// scale = 0 .. 100
 bool		autoGain	= false;
+int16_t		ppmCorrection	= 0;
 deviceHandler	*inputDevice;
 bandHandler	the_bandHandler;
 int32_t		tunedFrequency	= 220000000;	// just a setting
@@ -166,6 +169,9 @@ struct sigaction sigact;
 #if defined(HAVE_RAWFILES) || defined(HAVE_WAVFILES)
 std::string	inputfileName;
 bool	continue_on_eof	= false;
+#elif defined (HAVE_RTL_TCP)
+std::string	hostname = "127.0.0.1";
+int32_t		basePort = 1234;
 #endif
 //
 //	default
@@ -179,8 +185,10 @@ bool	continue_on_eof	= false;
 //	for file input some command line parameters are meeaningless
 #if defined (HAVE_RAWFILES) || defined (HAVE_WAVFILES)
 	while ((opt = getopt (argc, argv, "ED:M:O:F:")) != -1) {
+#elif defined (HAVE_RTL_TCP)
+	while ((opt = getopt (argc, argv, "D:M:B:C:G:O:P:H:I:QR:")) != -1) {
 #else
-	while ((opt = getopt (argc, argv, "D:M:B:C:G:O:QR:")) != -1) {
+	while ((opt = getopt (argc, argv, "D:M:B:C:G:O:P:QR:")) != -1) {
 #endif
 	   switch (opt) {
 	      case 'D':
@@ -226,16 +234,7 @@ bool	continue_on_eof	= false;
 	            theMode = 1; 
 	         break;
 
-#ifdef	HAVE_RAWFILES
-	      case 'F':
-	         inputfileName	= std::string (optarg);
-	         break;
-
-	      case 'E':
-	         continue_on_eof	= true;
-	         fprintf (stderr, "continue_on_eof is now set\n");
-	         break;
-#elif	HAVE_WAVFILES
+#if	defined (HAVE_RAWFILES) || defined (HAVE_WAVFILES)
 	      case 'F':
 	         inputfileName	= std::string (optarg);
 	         break;
@@ -245,6 +244,15 @@ bool	continue_on_eof	= false;
 	         fprintf (stderr, "continue_on_eof is now set\n");
 	         break;
 #else
+#ifdef	HAVE_RTL_TCP
+	      case 'H':
+	         hostname	= std::string (optarg);
+	         break;
+
+	      case 'I':
+	         basePort	= atoi (optarg);
+	         break;
+#endif
 	      case 'B':
 	         theBand = std::string (optarg) == std::string ("L_BAND") ?
 	                                     L_BAND : BAND_III;
@@ -256,14 +264,16 @@ bool	continue_on_eof	= false;
 
 	      case 'G':
 	         deviceGain	= atoi (optarg);
-	         fprintf (stderr, "deviceGain set to %d\n", deviceGain);
 	         break;
 
 	      case 'Q':
 	         autoGain	= true;
 	         break;
-#endif
 
+	      case 'P':
+	         ppmCorrection	= atoi (optarg);
+	         break;
+#endif
 	      default:
 	         break;
 	   }
@@ -300,6 +310,13 @@ bool	continue_on_eof	= false;
 	   inputDevice	= new wavfileHandler (inputfileName,
 	                                      continue_on_eof,
 	                                      inputStopped);
+#elif	HAVE_RTL_TCP
+	   inputDevice = new rtl_tcp_client (hostname,
+	                                     basePort,
+	                                     tunedFrequency,
+	                                     deviceGain,
+	                                     autoGain,
+	                                     ppmCorrection);
 #endif
 	}
 	catch (int e) {
