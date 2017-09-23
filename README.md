@@ -1,6 +1,6 @@
 # eti stuff
 
-"Eti-stuff" consists of three programs and is an attempt to understand the eti structure as defined in ETS 300 799.
+"Eti-stuff" is an attempt to understand the eti structure as defined in ETS 300 799.
 
 eti-frontend and eti-backend are based on the Qt-DAB software, with code included from dabtools to actually generate the eti frames.
 eti-cmdline is based on the dab-cmdline software and is - as the name suggests -
@@ -38,15 +38,13 @@ which is derived from the dab-cmdline program and shares the relevant commnd lin
 
 # Syntax
 
-So, if you want to emulate a full dab-receiver, then just do
+If you want to emulate a full dab-receiver, then just do
 
-    eti-frontend -O - | eti-backend -s -
-
-or
-
-    eti-cmdline -C 11C -G 80 | eti-backend -s -
-
-Since the software is derived from the Qt-DAB and the dab-cmdline software, it supports - if so configured - the same devices, i.e. rtlsdr based dabsticks, airspy and sdrplay (and the GUI based et-frontend program supports prerecorded files).
+      eti-cmdline -C 11C -G 80 | eti-backend -s -
+      
+## etc-backend
+eti-backend is a stripped version of qt-dab, taking as input a file encoded in the eti format.
+While the program does work, it was merely a hack to validate the output of the eti-frontend (not supported anymore) and the eti-cmdline programs.
 
 # Disclaimer
 
@@ -65,6 +63,6 @@ This software uses parts of dabtools. Excerpt from the README of dabtools reads
 
 "dabtools is written by Dave Chapman <dave@dchapman.com>
    
-Large Parts of the code in both eti-frontend and eti-backend are copied verbatim (or with trivial modifications) from David Crawley's OpenDAB and hence retain his copyright."
+Parts of the code in eti-backend are copied verbatim (or with trivial modifications) from David Crawley's OpenDAB and hence retain his copyright."
 
 Obviously, the copyrights for the parts copied (or directly derived) from the dabtools remain with Dave Chapman.
