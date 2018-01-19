@@ -29,35 +29,47 @@
   *	The class inherits from the phaseTable.
   */
 	phaseReference::phaseReference (dabParams	*p,
-	                                int16_t		threshold):
+	                                int16_t		threshold,
+	                                int16_t		diff_length):
 	                                     phaseTable (p -> get_dabMode ()) {
 int32_t	i;
-DSPFLOAT	Phi_k;
+float	Phi_k;
 
-	this	-> Tu		= p -> get_T_u ();
+	this	-> T_u		= p -> get_T_u ();
 	this	-> threshold	= threshold;
-
+	this	-> diff_length	= diff_length;
 	Max			= 0.0;
-	refTable		= new DSPCOMPLEX 	[Tu];	//
-	fft_processor		= new common_fft 	(Tu);
+	refTable		= new std::complex<float> 	[T_u];	//
+	fft_processor		= new common_fft 	(T_u);
 	fft_buffer		= fft_processor		-> getVector ();
-	res_processor		= new common_ifft 	(Tu);
+	res_processor		= new common_ifft 	(T_u);
 	res_buffer		= res_processor		-> getVector ();
+	phasedifferences	= new std::complex<float>	[diff_length];
 	fft_counter		= 0;
 
-	memset (refTable, 0, sizeof (DSPCOMPLEX) * Tu);
+	memset (refTable, 0, sizeof (std::complex<float>) * T_u);
 
 	for (i = 1; i <= p -> get_carriers () / 2; i ++) {
 	   Phi_k =  get_Phi (i);
-	   refTable [i] = DSPCOMPLEX (cos (Phi_k), sin (Phi_k));
+	   refTable [i] = std::complex<float> (cos (Phi_k), sin (Phi_k));
 	   Phi_k = get_Phi (-i);
-	   refTable [Tu - i] = DSPCOMPLEX (cos (Phi_k), sin (Phi_k));
+	   refTable [T_u - i] = std::complex<float> (cos (Phi_k), sin (Phi_k));
 	}
+//
+//      prepare a table for the coarse frequency synchronization
+        for (i = 1; i <= diff_length; i ++)
+           phasedifferences [i - 1] = refTable [(T_u + i) % T_u] *
+                                      conj (refTable [(T_u + i + 1) % T_u]);
+
+//      for (i = 0; i < DIFF_LENGTH; i ++)
+//         fprintf (stderr, "%f ", abs (arg (phasedifferences [i])));
+//      fprintf (stderr, "\n");
 }
 
 	phaseReference::~phaseReference (void) {
-	delete	refTable;
-	delete	fft_processor;
+	delete		fft_processor;
+	delete []	refTable;
+	delete []	phasedifferences;
 }
 
 /**
@@ -69,28 +81,27 @@ DSPFLOAT	Phi_k;
   *	we believe that that indicates the first sample we were
   *	looking for.
   */
-int32_t	phaseReference::findIndex (DSPCOMPLEX *v) {
+int32_t	phaseReference::findIndex (std::complex<float> *v) {
 int32_t	i;
 int32_t	maxIndex	= -1;
 float	sum		= 0;
 
 	Max	= 1.0;
-	memcpy (fft_buffer, v, Tu * sizeof (DSPCOMPLEX));
-
+	memcpy (fft_buffer, v, T_u * sizeof (std::complex<float>));
 	fft_processor -> do_FFT ();
 //
 //	back into the frequency domain, now correlate
-	for (i = 0; i < Tu; i ++) 
+	for (i = 0; i < T_u; i ++) 
 	   res_buffer [i] = fft_buffer [i] * conj (refTable [i]);
 //	and, again, back into the time domain
 	res_processor	-> do_IFFT ();
 /**
-  *	We compute the average signal value ...
+  *	We compute the average signal value and the max
   */
-	for (i = 0; i < Tu; i ++)
+	for (i = 0; i < T_u; i ++)
 	   sum	+= abs (res_buffer [i]);
 	Max	= -10000;
-	for (i = 0; i < Tu; i ++)
+	for (i = 0; i < T_u; i ++)
 	   if (abs (res_buffer [i]) > Max) {
 	      maxIndex = i;
 	      Max = abs (res_buffer [i]);
@@ -98,10 +109,41 @@ float	sum		= 0;
 /**
   *	that gives us a basis for defining the threshold
   */
-	if (Max < threshold * sum / Tu) {
-	   return  - abs (Max * Tu / sum) - 1;
+	if (Max < threshold * sum / T_u) {
+	   return  - abs (Max * T_u / sum) - 1;
 	}
 	else
 	   return maxIndex;	
 }
 //
+#define	SEARCH_RANGE	(2 * 35)
+int16_t	phaseReference::estimateOffset (std::complex<float> *v) {
+int16_t	i, j, index = 100;
+
+	memcpy (fft_buffer, v, T_u * sizeof (std::complex<float>));
+	fft_processor	-> do_FFT ();
+
+//	We investigate a sequence of phasedifferences that should
+//	are known around carrier 0. In previous versions we looked
+//	at the "weight" of the positive and negative carriers in the
+//	fft, but that did not work too well.
+//	Note that due to phases being in a modulo system,
+//	plain correlation does not work well, so we just compute
+//	the difference.
+	int Mmin	= 1000;
+	for (i = T_u - SEARCH_RANGE / 2; i < T_u + SEARCH_RANGE / 2; i ++) {
+	   float diff = 0;
+	   for (j = 0; j < DIFF_LENGTH; j ++) {
+	      int16_t ind1 = (i + j + 1) % T_u;
+	      int16_t ind2 = (i + j + 2) % T_u;
+	      float pd = fft_buffer [ind1] * conj (fft_buffer [ind2]);
+	      diff += abs (arg (pd * conj (phasedifferences [j])));
+	   }
+	   if (diff < Mmin) {
+	      Mmin = diff;
+	      index = i;
+	   }
+	}
+	return index - T_u;
+}
+

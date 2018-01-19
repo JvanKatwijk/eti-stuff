@@ -114,8 +114,6 @@ private:
 	uint32_t	ofdmBufferIndex;
 	uint32_t	ofdmSymbolCount;
 
-	float		correlationVector [CORRELATION_LENGTH + SEARCH_RANGE];
-	float		refArg [CORRELATION_LENGTH];
 	int32_t		sampleCnt;
 	int32_t		inputSize;
 	int32_t		inputPointer;
@@ -124,7 +122,7 @@ private:
 virtual	void		run		(void);
 	int32_t		bufferContent;
 	bool		isReset;
-	int16_t		processBlock_0	(DSPCOMPLEX *, bool);
+	int16_t		processBlock_0	(DSPCOMPLEX *);
 	void		processBlock	(DSPCOMPLEX*, int16_t*);
 	int16_t		get_snr		(DSPCOMPLEX *);
 

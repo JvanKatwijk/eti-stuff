@@ -33,20 +33,22 @@
 
 class phaseReference : public phaseTable {
 public:
-		phaseReference (dabParams *, int16_t);
+		phaseReference (dabParams *, int16_t, int16_t);
 		~phaseReference	(void);
-	int32_t	findIndex	(DSPCOMPLEX *);
-	DSPCOMPLEX	*refTable;
+	int32_t	findIndex	(std::complex<float> *);
+	int16_t	estimateOffset	(std::complex<float> *);
+	std::complex<float>	*refTable;
 private:
-	int32_t		Tu;
+	int32_t		T_u;
 	int16_t		threshold;
+	int16_t		diff_length;
 
 	common_fft	*fft_processor;
-	DSPCOMPLEX	*fft_buffer;
+	std::complex<float>	*fft_buffer;
 	common_ifft	*res_processor;
-	DSPCOMPLEX	*res_buffer;
+	std::complex<float>	*res_buffer;
+	std::complex<float>	*phasedifferences;
 	int32_t		fft_counter;
-	DSPFLOAT	Max;
 };
 #endif
 

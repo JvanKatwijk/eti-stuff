@@ -399,7 +399,7 @@ channel_data data;
 
 	CIFCount_lo += minor;
 	if (CIFCount_lo >= 250) {
-	   CIFCount_lo = 0;
+	   CIFCount_lo = CIFCount_lo % 250;
 	   CIFCount_hi ++;
 	}
 	if (CIFCount_hi >= 20)

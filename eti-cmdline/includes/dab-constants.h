@@ -76,6 +76,7 @@ using namespace std;
 #define		LONG_LOW	03
 #define		UNSYNCED	04
 
+#define		DIFF_LENGTH	42
 static inline
 bool	isIndeterminate (DSPFLOAT x) {
 	return x != x;

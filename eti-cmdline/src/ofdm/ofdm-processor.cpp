@@ -101,13 +101,6 @@ int32_t	i;
 
 	bufferContent	= 0;
 //
-//	and for the correlation 
-	for (i = 0; i < CORRELATION_LENGTH; i ++)  {
-	   refArg [i] = arg (phaseSynchronizer. refTable [(T_u + i) % T_u] *
-	              conj (phaseSynchronizer. refTable [(T_u + i + 1) % T_u]));
-	}
-//
-//
 	snrCount                = 0;
         snr                     = 0;
 #ifdef	HAVE_DUMPING
@@ -362,9 +355,9 @@ Block_0:
 	   getSamples (&ofdmBuffer [ofdmBufferIndex],
 	               T_u - ofdmBufferIndex,
 	               coarseCorrector + fineCorrector);
-	   int correction	=
-	           processBlock_0 (ofdmBuffer, f2Correction);
+	   processBlock_0 (ofdmBuffer);
 	   if (f2Correction) {
+	      int correction = phaseSynchronizer. estimateOffset (ofdmBuffer);
               if (correction != 100) {
                  coarseCorrector        += correction * carrierDiff;
                  if (abs (coarseCorrector) > Khz (35))
@@ -460,7 +453,7 @@ int16_t		i;
 
 ////////////////////////////////////////////////////////////////////////////
 
-int16_t	ofdmProcessor::processBlock_0 (DSPCOMPLEX *vi, bool flag) {
+int16_t	ofdmProcessor::processBlock_0 (DSPCOMPLEX *vi) {
 int16_t	i, j, index_1 = 100;
 
 	memcpy (fft_buffer, vi, T_u * sizeof (DSPCOMPLEX));
@@ -476,67 +469,6 @@ int16_t	i, j, index_1 = 100;
   */
 
 	memcpy (referenceFase, fft_buffer, T_u * sizeof (DSPCOMPLEX));
-
-	if (!flag)		// no need to synchronize further
-	   return 0;
-//	as a side effect we "compute" an estimate for the
-//	coarse offset
-
-	if (freqSyncMethod == 1) {
-//	The phase differences were computed once
-	   for (i = 0; i < SEARCH_RANGE + CORRELATION_LENGTH; i ++) {
-	      int16_t baseIndex = T_u - SEARCH_RANGE / 2 + i;
-	      correlationVector [i] =
-	                      arg (fft_buffer [baseIndex % T_u] *
-	                      conj (fft_buffer [(baseIndex + 1) % T_u]));
-	   }
-	   float	MMax	= 0;
-	   for (i = 0; i < SEARCH_RANGE; i ++) {
-	      float sum	= 0;
-	      for (j = 1; j < CORRELATION_LENGTH; j ++) 
-	         sum += abs (refArg [j] * correlationVector [i + j]);
-	      if (sum > MMax) {
-	         MMax = sum;
-	         index_1 = i;
-	      }
-	   }
-//
-//	Now map the index back to the right carrier
-//	   return T_u - SEARCH_RANGE / 2 + index_1 - T_u;
-	}
-//
-//	An alternative way is to look at a special pattern consisting
-//	of zeros in the row of args between successive carriers.
-	float Mmin	= 1000;
-	float OMmin	= 1000;
-	index_1		= 100;
-	for (i = T_u - SEARCH_RANGE / 2; i < T_u + SEARCH_RANGE / 2; i ++) {
-              float a1  =  abs (abs (arg (fft_buffer [(i + 1) % T_u] *
-                                conj (fft_buffer [(i + 2) % T_u])) / M_PI) - 1);
-              float a2  =  abs (abs (arg (fft_buffer [(i + 2) % T_u] *
-                                conj (fft_buffer [(i + 3) % T_u])) / M_PI) - 1);
-	      float a3	= abs (arg (fft_buffer [(i + 3) % T_u] *
-	      	                    conj (fft_buffer [(i + 4) % T_u])));
-	      float a4	= abs (arg (fft_buffer [(i + 4) % T_u] *
-	      	                    conj (fft_buffer [(i + 5) % T_u])));
-	      float a5	= abs (arg (fft_buffer [(i + 5) % T_u] *
-	      	                    conj (fft_buffer [(i + 6) % T_u])));
-	      float b1	= abs (abs (arg (fft_buffer [(i + 16 + 1) % T_u] *
-	      	                    conj (fft_buffer [(i + 16 + 3) % T_u])) / M_PI) - 1);
-	      float b2	= abs (arg (fft_buffer [(i + 16 + 3) % T_u] *
-	      	                    conj (fft_buffer [(i + 16 + 4) % T_u])));
-	      float b3	= abs (arg (fft_buffer [(i + 16 + 4) % T_u] *
-	      	                    conj (fft_buffer [(i + 16 + 5) % T_u])));
-	      float b4	= abs (arg (fft_buffer [(i + 16 + 5) % T_u] *
-	      	                    conj (fft_buffer [(i + 16 + 6) % T_u])));
-	      float sum = a1 + a2 + a3 + a4 + a5 + b1 + b2 + b3 + b4;
-	      if (sum < Mmin) {
-	        OMmin = Mmin;
-	         Mmin = sum;
-	         index_1 = i;
-	      }
-	}
-	return index_1 - T_u;
 }
 
 //
