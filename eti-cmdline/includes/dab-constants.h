@@ -71,12 +71,12 @@ using namespace std;
 #define		INPUT_RATE	2048000
 #define		BANDWIDTH	1536000
 
+#define		DIFF_LENGTH	50
 #define		SYNCED		01
 #define		LONG_HIGH	02
 #define		LONG_LOW	03
 #define		UNSYNCED	04
 
-#define		DIFF_LENGTH	42
 static inline
 bool	isIndeterminate (DSPFLOAT x) {
 	return x != x;

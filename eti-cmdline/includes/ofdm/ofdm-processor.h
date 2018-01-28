@@ -122,7 +122,7 @@ private:
 virtual	void		run		(void);
 	int32_t		bufferContent;
 	bool		isReset;
-	int16_t		processBlock_0	(DSPCOMPLEX *);
+	void		processBlock_0	(DSPCOMPLEX *);
 	void		processBlock	(DSPCOMPLEX*, int16_t*);
 	int16_t		get_snr		(DSPCOMPLEX *);
 

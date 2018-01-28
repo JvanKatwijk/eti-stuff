@@ -158,6 +158,31 @@ endif ()
 	     ./devices/device-handler.cpp
 	)
 
+#	if (SDRPLAY)
+#	   find_path (SDRPLAYLIB_INCLUDE_DIR
+#                      NAMES mirsdrapi-rsp.h
+#                      PATHS
+#                      /usr/local/include/
+#	   )
+#           include_directories (${SDRPLAYLIB_INCLUDE_DIR})
+#
+#	   include_directories (
+#	     ./devices/sdrplay-handler
+#	   )
+#
+#	   set ($(objectName)_HDRS
+#	        ${${objectName}_HDRS}
+#	        ./devices/sdrplay-handler/sdrplay-handler.h
+#           )
+#
+#	   set (${objectName}_SRCS
+#	        ${${objectName}_SRCS}
+#	        ./devices/sdrplay-handler/sdrplay-handler.cpp
+#	   )
+#
+#	 add_definitions (-DHAVE_SDRPLAY)
+#	endif (SDRPLAY)
+
 	if (SDRPLAY)
 	   find_path (SDRPLAYLIB_INCLUDE_DIR
                       NAMES mirsdrapi-rsp.h
@@ -165,6 +190,13 @@ endif ()
                       /usr/local/include/
 	   )
            include_directories (${SDRPLAYLIB_INCLUDE_DIR})
+
+           find_library (SDRPLAYLIB mirsdrapi-rsp)
+           if(NOT(SDRPLAYLIB))
+              message(FATAL_ERROR "please install -lmirsdrapi-rsp")
+           else(NOT(SDRPLAYLIB))
+              list (APPEND extraLibs ${SDRPLAYLIB})
+           endif(NOT(SDRPLAYLIB))
 
 	   include_directories (
 	     ./devices/sdrplay-handler

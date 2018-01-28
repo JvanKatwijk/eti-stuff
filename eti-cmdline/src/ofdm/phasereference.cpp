@@ -38,7 +38,6 @@ float	Phi_k;
 	this	-> T_u		= p -> get_T_u ();
 	this	-> threshold	= threshold;
 	this	-> diff_length	= diff_length;
-	Max			= 0.0;
 	refTable		= new std::complex<float> 	[T_u];	//
 	fft_processor		= new common_fft 	(T_u);
 	fft_buffer		= fft_processor		-> getVector ();
@@ -85,8 +84,8 @@ int32_t	phaseReference::findIndex (std::complex<float> *v) {
 int32_t	i;
 int32_t	maxIndex	= -1;
 float	sum		= 0;
+float	Max		= 1.0;
 
-	Max	= 1.0;
 	memcpy (fft_buffer, v, T_u * sizeof (std::complex<float>));
 	fft_processor -> do_FFT ();
 //
@@ -136,7 +135,8 @@ int16_t	i, j, index = 100;
 	   for (j = 0; j < DIFF_LENGTH; j ++) {
 	      int16_t ind1 = (i + j + 1) % T_u;
 	      int16_t ind2 = (i + j + 2) % T_u;
-	      float pd = fft_buffer [ind1] * conj (fft_buffer [ind2]);
+	      std::complex<float>  pd =
+	                  fft_buffer [ind1] * conj (fft_buffer [ind2]);
 	      diff += abs (arg (pd * conj (phasedifferences [j])));
 	   }
 	   if (diff < Mmin) {

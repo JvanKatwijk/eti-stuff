@@ -147,6 +147,7 @@ void	inputStopped	(void) {
 	run. store (false);
 }
 	
+void    printOptions (void);
 //
 int	main (int argc, char **argv) {
 // Default values
@@ -275,6 +276,7 @@ int32_t		basePort = 1234;
 	         break;
 #endif
 	      default:
+	         printOptions ();
 	         break;
 	   }
 	}
@@ -297,8 +299,8 @@ int32_t		basePort = 1234;
 	   inputDevice	= new rtlsdrHandler (tunedFrequency,
 	                                        deviceGain, autoGain);
 #elif	HAVE_SDRPLAY
-	   inputDevice	= new sdrplayHandler (tunedFrequency,
-	                                        deviceGain, autoGain);
+	   inputDevice	= new sdrplayHandler (tunedFrequency, ppmCorrection,
+	                                        deviceGain, autoGain, 0, 0);
 #elif	HAVE_AIRSPY
 	   inputDevice	= new airspyHandler (tunedFrequency,
 	                                        deviceGain, autoGain);
@@ -405,5 +407,20 @@ int32_t		basePort = 1234;
 	   sf_close (dumpFile);
 #endif
 	exit (1);
+}
+
+
+void    printOptions (void) {
+        std::cerr << 
+"                          dab-cmdline options are\n\
+                          -W number   amount of time to look for an ensemble\n\
+                          -B Band     Band is either L_BAND or BAND_III (default)\n\
+	                  -P number   ppm correction\n\
+                          -C channel  channel to be used\n\
+                          -G Gain     gain for device (range 1 .. 100)\n\
+                          -Q          if set, set autogain for device true\n\
+	                  -F filename in case the input is from file\n\
+	                  -E          for files: continue after eof\n\
+	                  -O filename put the output into a file rather than to stdout\n";
 }
 

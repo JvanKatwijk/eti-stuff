@@ -62,7 +62,8 @@ int16_t	res	= 1;
 	                                    params (dabMode),
 	                                    myMapper (&params),
 	                                    phaseSynchronizer (&params,
-	                                                       threshold) {
+	                                                       threshold,
+	                                                       DIFF_LENGTH) {
 int32_t	i;
 	this	-> inputDevice		= inputDevice;
 #ifdef	HAVE_DUMPING
@@ -453,7 +454,7 @@ int16_t		i;
 
 ////////////////////////////////////////////////////////////////////////////
 
-int16_t	ofdmProcessor::processBlock_0 (DSPCOMPLEX *vi) {
+void	ofdmProcessor::processBlock_0 (DSPCOMPLEX *vi) {
 int16_t	i, j, index_1 = 100;
 
 	memcpy (fft_buffer, vi, T_u * sizeof (DSPCOMPLEX));
@@ -469,6 +470,7 @@ int16_t	i, j, index_1 = 100;
   */
 
 	memcpy (referenceFase, fft_buffer, T_u * sizeof (DSPCOMPLEX));
+	
 }
 
 //
