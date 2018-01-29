@@ -71,6 +71,9 @@ std::atomic<int16_t> ficSuccess;
 static
 std::atomic<bool>ensembleRecognized;
 
+static
+bool	isSilent	= false;
+
 std::string	theName;
 std::mutex	mainLocker;
 
@@ -140,13 +143,15 @@ int	cnt	= 0;
 void	etiwriterHandler (uint8_t *buffer, int32_t amount, void *ctx) {
 	(void)ctx;
 	fwrite (buffer, 1, amount, etiFile);
-	fprintf (stderr, "%d\r", ++cnt);
+	if (!isSilent)
+	   fprintf (stderr, "%d\r", ++cnt);
 }
 
 void	inputStopped	(void) {
 	run. store (false);
 }
-	
+
+
 void    printOptions (void);
 //
 int	main (int argc, char **argv) {
@@ -185,11 +190,11 @@ int32_t		basePort = 1234;
 //
 //	for file input some command line parameters are meeaningless
 #if defined (HAVE_RAWFILES) || defined (HAVE_WAVFILES)
-	while ((opt = getopt (argc, argv, "ED:M:O:F:")) != -1) {
+	while ((opt = getopt (argc, argv, "ED:M:O:F:S")) != -1) {
 #elif defined (HAVE_RTL_TCP)
-	while ((opt = getopt (argc, argv, "D:M:B:C:G:O:P:H:I:QR:")) != -1) {
+	while ((opt = getopt (argc, argv, "D:M:B:C:G:O:P:H:I:QR:S")) != -1) {
 #else
-	while ((opt = getopt (argc, argv, "D:M:B:C:G:O:P:QR:")) != -1) {
+	while ((opt = getopt (argc, argv, "D:M:B:C:G:O:P:QR:S")) != -1) {
 #endif
 	   switch (opt) {
 	      case 'D':
@@ -269,6 +274,10 @@ int32_t		basePort = 1234;
 
 	      case 'Q':
 	         autoGain	= true;
+	         break;
+
+	      case 'S':
+	         isSilent	= true;
 	         break;
 
 	      case 'P':
@@ -387,8 +396,9 @@ int32_t		basePort = 1234;
 	                    "until you quit" << endl;
 	   run. store (true);
 	   while (run. load ()) {
-	      fprintf (stderr, "\t\testimated snr: %2d, fibquality %3d\r",
-	                         signalnoise. load (), ficSuccess. load ());
+	      if (!isSilent)
+	         fprintf (stderr, "\t\testimated snr: %2d, fibquality %3d\r",
+	                            signalnoise. load (), ficSuccess. load ());
 	      sleep (1);
 	   }
 	}
@@ -421,6 +431,7 @@ void    printOptions (void) {
                           -Q          if set, set autogain for device true\n\
 	                  -F filename in case the input is from file\n\
 	                  -E          for files: continue after eof\n\
-	                  -O filename put the output into a file rather than to stdout\n";
+	                  -O filename put the output into a file rather than to stdout\n\
+	                  -S          do not diplay messages on quality when running\n";
 }
 
