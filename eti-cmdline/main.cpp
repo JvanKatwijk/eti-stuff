@@ -190,11 +190,11 @@ int32_t		basePort = 1234;
 //
 //	for file input some command line parameters are meeaningless
 #if defined (HAVE_RAWFILES) || defined (HAVE_WAVFILES)
-	while ((opt = getopt (argc, argv, "ED:M:O:F:S")) != -1) {
+	while ((opt = getopt (argc, argv, "ED:M:O:F:Sh")) != -1) {
 #elif defined (HAVE_RTL_TCP)
-	while ((opt = getopt (argc, argv, "D:M:B:C:G:O:P:H:I:QR:S")) != -1) {
+	while ((opt = getopt (argc, argv, "D:M:B:C:G:O:P:H:I:QR:Sh")) != -1) {
 #else
-	while ((opt = getopt (argc, argv, "D:M:B:C:G:O:P:QR:S")) != -1) {
+	while ((opt = getopt (argc, argv, "D:M:B:C:G:O:P:QR:Sh")) != -1) {
 #endif
 	   switch (opt) {
 	      case 'D':
@@ -280,13 +280,17 @@ int32_t		basePort = 1234;
 	         isSilent	= true;
 	         break;
 
+	      case 'h':
+	         printOptions ();
+	         exit (2);
+
 	      case 'P':
 	         ppmCorrection	= atoi (optarg);
 	         break;
 #endif
 	      default:
 	         printOptions ();
-	         break;
+	         exit (1);
 	   }
 	}
 
@@ -419,11 +423,10 @@ int32_t		basePort = 1234;
 	exit (1);
 }
 
-
 void    printOptions (void) {
         std::cerr << 
 "                          dab-cmdline options are\n\
-                          -W number   amount of time to look for an ensemble\n\
+                          -D number   amount of time to look for an ensemble\n\
                           -B Band     Band is either L_BAND or BAND_III (default)\n\
 	                  -P number   ppm correction\n\
                           -C channel  channel to be used\n\
@@ -432,6 +435,9 @@ void    printOptions (void) {
 	                  -F filename in case the input is from file\n\
 	                  -E          for files: continue after eof\n\
 	                  -O filename put the output into a file rather than to stdout\n\
-	                  -S          do not diplay messages on quality when running\n";
+	                  -S          do not diplay messages on quality when running\n\
+	                  -h          print the options and quit\n\
+	                  -R filename dump input (if configured) to the file with the given filename\n"; 
+	     
 }
 
