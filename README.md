@@ -1,12 +1,12 @@
-# eti stuff
+# eti-stuff
 
-"Eti-stuff" is an attempt to understand the eti structure as defined in ETS 300 799.
+"eti-stuff" is an attempt to understand the eti structure as defined in ETS 300 799.
 
-eti-frontend and eti-backend are based on the Qt-DAB software, with code included from dabtools to actually generate the eti frames.
-eti-cmdline is based on the dab-cmdline software and is - as the name suggests -
-the command line version.
+[eti-frontend](#eti-frontend) and [eti-backend](#eti-backend) are based on [Qt-DAB](https://github.com/JvanKatwijk/qt-dab), with code included from [dabtools](https://github.com/Opendigitalradio/dabtools) to actually generate the eti frames.
 
-The eti-frontend and eti-cmdline programs take as input a sample stream and create an eti file, while eti-backend is interpreting the eti file.
+[eti-cmdline](#eti-cmdline) is based on the dab-cmdline software and is - as the name suggests - the command line version.
+
+The eti-frontend and eti-cmdline programs take a sample stream as input and create an eti file, while eti-backend is interpreting the eti file.
 
 By piping the output from either eti-frontend of eti-cmdline into eti-backend, a more or less complete DAB receiver exists.
 
@@ -14,11 +14,15 @@ By piping the output from either eti-frontend of eti-cmdline into eti-backend, a
 
 The set consists (currently) of three programs (all under continuous development)
 
+* [eti-frontend](#eti-frontend)
+* [eti-backend](#eti-backend)
+* [eti-cmdline](#eti-cmdline)
+
 ## eti-frontend
 
-THE ETI-FRONTEND IS NOT SUPPORTED, JUST FORGET ABOUT IT
+THE ETI-FRONTEND IS NO MORE SUPPORTED, JUST FORGET IT
 
-which is a stripped Qt-DAB version that generates eti-frames as output.
+which was a stripped Qt-DAB version that generates eti-frames as output.
 
 The GUI is - obviously - based on Qt-DAB. There is an additional command line option `-O -`, that will cause the ETI files to be sent to stdout.
 
@@ -34,17 +38,22 @@ It will start reading after pressing the start button.
 
 ## eti-cmdline
 
-which is derived from the dab-cmdline program and shares the relevant commnd line parameters.
+which is derived from the dab-cmdline program and shares the relevant command line parameters.
 
-# Syntax
+For more information please read the `README.md` in the subdirectory `eti-cmdline`.
 
-If you want to emulate a full dab-receiver, then just do
+### Syntax
 
-      eti-cmdline -C 11C -G 80 | eti-backend -s -
+If you want to emulate a full DAB receiver, then run
+
+      eti-cmdline-xxx -C 11C -G 80 | eti-backend -s -
       
-## etc-backend
-eti-backend is a stripped version of qt-dab, taking as input a file encoded in the eti format.
-While the program does work, it was merely a hack to validate the output of the eti-frontend (not supported anymore) and the eti-cmdline programs.
+Or you can use dablin or dablin_gtk from https://github.com/Opendigitalradio/dablin by running
+      
+      eti-cmdline-xxx -C 11C -G 80 | dablin_gtk
+      
+where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay`, `airspy`, `rawfiles`, `wavfiles`).
+      
 
 # Disclaimer
 
