@@ -1,6 +1,6 @@
 #
 /*
- *    Copyright (C) 2016, 2017
+ *    Copyright (C) 2016, 2017, 2018
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
@@ -425,7 +425,7 @@ int32_t		basePort = 1234;
 
 void    printOptions (void) {
         std::cerr << 
-"                          dab-cmdline options are\n\
+"                          eti-cmdline options are\n\
                           -D number   amount of time to look for an ensemble\n\
                           -B Band     Band is either L_BAND or BAND_III (default)\n\
 	                  -P number   ppm correction\n\
@@ -433,9 +433,9 @@ void    printOptions (void) {
                           -G Gain     gain for device (range 1 .. 100)\n\
                           -Q          if set, set autogain for device true\n\
 	                  -F filename in case the input is from file\n\
-	                  -E          for files: continue after eof\n\
-	                  -O filename put the output into a file rather than to stdout\n\
-	                  -S          do not diplay messages on quality when running\n\
+	                  -E          for files: continue after EOF\n\
+	                  -O filename put the output into a file instead of stdout\n\
+	                  -S          do not display messages on quality when running\n\
 	                  -h          print the options and quit\n\
 	                  -R filename dump input (if configured) to the file with the given filename\n"; 
 	     
