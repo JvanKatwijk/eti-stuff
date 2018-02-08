@@ -426,18 +426,20 @@ int32_t		basePort = 1234;
 void    printOptions (void) {
         std::cerr << 
 " eti-cmdline-xxx options are\n\
-   -D number   time (in seconds) to look for an ensemble\n\
-   -B Band     Band is either L_BAND or BAND_III (default)\n\
+\n\
+   -D number   time (in seconds) to look for a DAB ensemble\n\
+   -B Band     select DAB Band (default: BAND_III, or L_BAND)\n\
    -P number   PPM correction\n\
-   -C channel  channel to be used (5A ... 13F resp. LA ... LW)\n\
+   -C channel  DAB channel to be used (5A ... 13F resp. LA ... LP)\n\
    -G Gain     gain for device (range 1 .. 100)\n\
-   -Q          if set, set autogain for device true\n\
+   -Q          autogain for device (not all tuners support it!)\n\
    -F filename load samples from file\n\
-   -E          only for files: continue after EOF\n\
-   -O filename write the output into a file instead of stdout\n\
-   -S          do not display messages on quality while running\n\
+   -E          only for files: continue after EOF (replay file)\n\
+   -O filename write output into a file (instead of stdout)\n\
+   -S          do not display quality messages while running\n\
    -R filename (if configured) dump to an *.sdr file\n\
-   -h          show these options and quit\n"; 
+   \n\
+   -h          show options and quit\n"; 
 	   
 }
 
