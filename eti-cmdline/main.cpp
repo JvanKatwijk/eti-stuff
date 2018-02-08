@@ -426,10 +426,11 @@ int32_t		basePort = 1234;
 void    printOptions (void) {
         std::cerr << 
 " eti-cmdline-xxx options are\n\
+\n\
    -D number   time (in seconds) to look for an ensemble\n\
    -B Band     Band is either L_BAND or BAND_III (default)\n\
    -P number   PPM correction\n\
-   -C channel  channel to be used (5A ... 13F resp. LA ... LW)\n\
+   -C channel  channel to be used (5A ... 13F resp. LA ... LP)\n\
    -G Gain     gain for device (range 1 .. 100)\n\
    -Q          if set, set autogain for device true\n\
    -F filename load samples from file\n\
@@ -437,7 +438,8 @@ void    printOptions (void) {
    -O filename write the output into a file instead of stdout\n\
    -S          do not display messages on quality while running\n\
    -R filename (if configured) dump to an *.sdr file\n\
-   -h          show these options and quit\n"; 
+   \n\
+   -h          show options and quit\n"; 
 	   
 }
 
