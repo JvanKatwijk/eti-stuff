@@ -142,10 +142,10 @@ private:
 	                                         int16_t, uint8_t);
 	int16_t		HandleFIG0Extension22	(uint8_t *, int16_t);
 	int32_t		dateTime	[8];
-	channelMap	ficList [64];
-	serviceComponent	components [64];
-	serviceId	*listofServices;
-	bool	dateFlag;
+	channelMap	subChannels	[64];
+	serviceComponent serviceComps	[64];
+	serviceId	listofServices	[64];
+	bool		dateFlag;
         bool            firstTime;
         bool            isSynced;
 //

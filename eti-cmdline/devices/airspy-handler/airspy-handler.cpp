@@ -96,8 +96,8 @@ uint32_t samplerate_count;
 
 	selectedRate	= 0;
 	for (i = 0; i < (int)samplerate_count; i ++) {
-	   if (abs (myBuffer [i] - 2048000) < distance) {
-	      distance	= abs (myBuffer [i] - 2048000);
+	   if (abs ((int)(myBuffer [i]) - 2048000) < distance) {
+	      distance	= abs ((int)(myBuffer [i]) - 2048000);
 	      selectedRate = myBuffer [i];
 	   }
 	}

@@ -100,7 +100,6 @@
 	this	-> userData	= userData;
 	this	-> ensembleName	= ensembleName;
 	this	-> programName	= programName;
-	listofServices	= new serviceId [64];
 	memset (dateTime, 0, 8);
 	dateFlag	= false;
 	selectedService		= -1;
@@ -110,7 +109,6 @@
 }
 	
 	fib_processor::~fib_processor (void) {
-	delete[] listofServices;
 }
 //
 //	FIB's are segments of 256 bits. When here, we already
@@ -278,53 +276,53 @@ int16_t start_cu	= getBits (d, bitOffset + 6, 10);
 int16_t uep_index;
 int16_t	option, protLevel, subChanSize;
 	(void)pd;		// not used right now, maybe later
-	ficList [SubChId]. id		= SubChId;
-	ficList [SubChId]. start_cu	= start_cu;
-	ficList [SubChId]. uepFlag	= getBits_1 (d, bitOffset + 16) == 0;
-	if (ficList [SubChId]. uepFlag) {	// short form
-	   ficList [SubChId]. uep_index  = getBits_6 (d, bitOffset + 18);
-	   uep_index = ficList [SubChId]. uep_index;
-	   ficList [SubChId]. size  	= ProtLevel [uep_index][0];
-	   ficList [SubChId]. protlev	= ProtLevel [uep_index][1];
-	   ficList [SubChId]. bitrate	= ProtLevel [uep_index][2];
+	subChannels [SubChId]. id		= SubChId;
+	subChannels [SubChId]. start_cu	= start_cu;
+	subChannels [SubChId]. uepFlag	= getBits_1 (d, bitOffset + 16) == 0;
+	if (subChannels [SubChId]. uepFlag) {	// short form
+	   subChannels [SubChId]. uep_index  = getBits_6 (d, bitOffset + 18);
+	   uep_index = subChannels [SubChId]. uep_index;
+	   subChannels [SubChId]. size  	= ProtLevel [uep_index][0];
+	   subChannels [SubChId]. protlev	= ProtLevel [uep_index][1];
+	   subChannels [SubChId]. bitrate	= ProtLevel [uep_index][2];
 	   bitOffset += 24;
-	   ficList [SubChId]. inUse	= true;
+	   subChannels [SubChId]. inUse	= true;
 	}
 	else { 	// EEP long form
 	   option = getBits_3 (d, bitOffset + 17);
 	   if (option == 0) { 		// A Level protection
 	      protLevel = getBits (d, bitOffset + 20, 2);
 //
-	      ficList [SubChId]. protlev = protLevel;
+	      subChannels [SubChId]. protlev = protLevel;
 	      subChanSize = getBits (d, bitOffset + 22, 10);
-	      ficList [SubChId]. size	= subChanSize;
+	      subChannels [SubChId]. size	= subChanSize;
 	      
 	      if (protLevel == 0)
-	         ficList [SubChId]. bitrate	= subChanSize / 12 * 8;
+	         subChannels [SubChId]. bitrate	= subChanSize / 12 * 8;
 	      if (protLevel == 1)
-	         ficList [SubChId]. bitrate	= subChanSize / 8 * 8;
+	         subChannels [SubChId]. bitrate	= subChanSize / 8 * 8;
 	      if (protLevel == 2)
-	         ficList [SubChId]. bitrate	= subChanSize / 6 * 8;
+	         subChannels [SubChId]. bitrate	= subChanSize / 6 * 8;
 	      if (protLevel == 3)
-	         ficList [SubChId]. bitrate	= subChanSize / 4 * 8;
+	         subChannels [SubChId]. bitrate	= subChanSize / 4 * 8;
 	   }
 	   else			// option should be 001
 	   if (option == 001) {		// B Level protection
 	      protLevel = getBits_2 (d, bitOffset + 20);
 //
-	      ficList [SubChId]. protlev = protLevel + (1 << 2);
+	      subChannels [SubChId]. protlev = protLevel + (1 << 2);
 	      subChanSize = getBits (d, bitOffset + 22, 10);
-	      ficList [SubChId]. size = subChanSize;
+	      subChannels [SubChId]. size = subChanSize;
 	      if (protLevel == 0)
-	         ficList [SubChId]. bitrate	= subChanSize / 27 * 32;
+	         subChannels [SubChId]. bitrate	= subChanSize / 27 * 32;
 	      if (protLevel == 1)
-	         ficList [SubChId]. bitrate	= subChanSize / 21 * 32;
+	         subChannels [SubChId]. bitrate	= subChanSize / 21 * 32;
 	      if (protLevel == 2)
-	         ficList [SubChId]. bitrate	= subChanSize / 18 * 32;
+	         subChannels [SubChId]. bitrate	= subChanSize / 18 * 32;
 	      if (protLevel == 3)
-	         ficList [SubChId]. bitrate	= subChanSize / 15 * 32;
+	         subChannels [SubChId]. bitrate	= subChanSize / 15 * 32;
 	   }
-	   ficList [SubChId]. inUse	= true;
+	   subChannels [SubChId]. inUse	= true;
 	   bitOffset += 32;
 	}
 	return bitOffset / 8;	// we return bytes
@@ -940,12 +938,12 @@ serviceComponent *fib_processor::find_packetComponent (int16_t SCId) {
 int16_t i;
 
         for (i = 0; i < 64; i ++) {
-           if (!components [i]. inUse)
+           if (!serviceComps [i]. inUse)
               continue;
-           if (components [i]. TMid != 03)
+           if (serviceComps [i]. TMid != 03)
               continue;
-           if (components [i]. SCId == SCId)
-              return &components [i];
+           if (serviceComps [i]. SCId == SCId)
+              return &serviceComps [i];
         }
         return NULL;
 }
@@ -963,22 +961,22 @@ int16_t	i;
 int16_t	firstFree	= -1;
 
 	for (i = 0; i < 64; i ++) {
-           if (!components [i]. inUse) {
+           if (!serviceComps [i]. inUse) {
               if (firstFree == -1)
                  firstFree = i;
               continue;
            }
-           if ((components [i]. service == s) &&
-               (components [i]. componentNr == compnr))
+           if ((serviceComps [i]. service == s) &&
+               (serviceComps [i]. componentNr == compnr))
               return;
         }
-        components [firstFree]. inUse = true;
-        components [firstFree]. TMid    = TMid;
-        components [firstFree]. componentNr = compnr;
-        components [firstFree]. service = s;
-        components [firstFree]. subchannelId = subChId;
-        components [firstFree]. PS_flag = ps_flag;
-        components [firstFree]. ASCTy = ASCTy;
+        serviceComps [firstFree]. inUse = true;
+        serviceComps [firstFree]. TMid    = TMid;
+        serviceComps [firstFree]. componentNr = compnr;
+        serviceComps [firstFree]. service = s;
+        serviceComps [firstFree]. subchannelId = subChId;
+        serviceComps [firstFree]. PS_flag = ps_flag;
+        serviceComps [firstFree]. ASCTy = ASCTy;
 //	addtoEnsemble (s -> serviceLabel. label , SId);
 //	fprintf (stderr, "service %8x (comp %d) is audio\n", subChId, firstFree);
 }
@@ -998,22 +996,22 @@ int16_t i;
 int16_t	firstFree	= -1;
 
        for (i = 0; i < 64; i ++) {
-	   if (!components [i]. inUse) {
+	   if (!serviceComps [i]. inUse) {
 	      if (firstFree == -1)
 	         firstFree = i;
 	      continue;
 	   }
-	   if ((components [i]. service == s) && 
-	       (components [i]. componentNr == compnr))
+	   if ((serviceComps [i]. service == s) && 
+	       (serviceComps [i]. componentNr == compnr))
 	      return;
 	}
-	components [firstFree]. inUse  = true;
-	components [firstFree]. TMid   = TMid;
-	components [firstFree]. service = s;
-	components [firstFree]. componentNr = compnr;
-	components [firstFree]. SCId   = SId;
-	components [firstFree]. PS_flag = ps_flag;
-	components [firstFree]. CAflag = CAflag;
+	serviceComps [firstFree]. inUse  = true;
+	serviceComps [firstFree]. TMid   = TMid;
+	serviceComps [firstFree]. service = s;
+	serviceComps [firstFree]. componentNr = compnr;
+	serviceComps [firstFree]. SCId   = SId;
+	serviceComps [firstFree]. PS_flag = ps_flag;
+	serviceComps [firstFree]. CAflag = CAflag;
 //	fprintf (stderr, "service %8x (comp %d) is packet\n", SId, compnr);
 }
 
@@ -1021,26 +1019,26 @@ int16_t	firstFree	= -1;
 //	bind_audioService is the main processor for - what the name suggests -
 void	fib_processor::clearEnsemble (void) {
 int16_t i;
-	memset (components, 0, sizeof (components));
-	memset (ficList, 0, sizeof (ficList));
+	memset (serviceComps, 0, sizeof (serviceComps));
+	memset (subChannels, 0, sizeof (subChannels));
 	for (i = 0; i < 64; i ++) {
 	   listofServices [i]. inUse = false;
 	   listofServices [i]. serviceId = -1;
 	   listofServices [i]. serviceLabel. label = std::string ();
-	   components [i]. inUse = false;
-	   ficList	[i]. inUse	= false;
+	   serviceComps [i]. inUse = false;
+	   subChannels	[i]. inUse	= false;
 	}
 	selectedService	= -1;
 }
 
 void	fib_processor::get_channelInfo (channel_data *d, int n) {
-	d	-> in_use	= ficList [n]. inUse;
-	d	-> id		= ficList [n]. id;
-	d	-> start_cu	= ficList [n]. start_cu;
-	d	-> protlev	= ficList [n]. protlev;
-	d	-> size		= ficList [n]. size;
-	d	-> bitrate	= ficList [n]. bitrate;
-	d	-> uepFlag	= ficList [n]. uepFlag;
+	d	-> in_use	= subChannels [n]. inUse;
+	d	-> id		= subChannels [n]. id;
+	d	-> start_cu	= subChannels [n]. start_cu;
+	d	-> protlev	= subChannels [n]. protlev;
+	d	-> size		= subChannels [n]. size;
+	d	-> bitrate	= subChannels [n]. bitrate;
+	d	-> uepFlag	= subChannels [n]. uepFlag;
 }
 
 void	fib_processor::get_CIFCount	(int16_t *high, int16_t *lo) {

@@ -276,6 +276,10 @@ int32_t		basePort = 1234;
 	         autoGain	= true;
 	         break;
 
+	      case 'P':
+	         ppmCorrection	= atoi (optarg);
+	         break;
+#endif
 	      case 'S':
 	         isSilent	= true;
 	         break;
@@ -284,10 +288,6 @@ int32_t		basePort = 1234;
 	         printOptions ();
 	         exit (2);
 
-	      case 'P':
-	         ppmCorrection	= atoi (optarg);
-	         break;
-#endif
 	      default:
 	         printOptions ();
 	         exit (1);
