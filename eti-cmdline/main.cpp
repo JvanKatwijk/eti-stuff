@@ -88,7 +88,7 @@ static void sighandler (int signum) {
 //	These variables are read in other parts of the program
 void	syncsignalHandler (bool b, void *ctx) {
 	(void)ctx;
-	timesyncSet. store (true);
+	timesyncSet. store (true);	// not needed actually
 	timeSynced. store (b);
 }
 //
@@ -156,7 +156,8 @@ void    printOptions (void);
 //
 int	main (int argc, char **argv) {
 // Default values
-int16_t		waitingTime	= 10;
+int16_t		timeSyncTime	= 5;
+int16_t		freqSyncTime	= 10;
 uint8_t		theMode		= 1;
 std::string	theChannel	= "11C";
 uint8_t		theBand		= BAND_III;
@@ -166,7 +167,6 @@ int16_t		ppmCorrection	= 0;
 deviceHandler	*inputDevice;
 bandHandler	the_bandHandler;
 int32_t		tunedFrequency	= 220000000;	// just a setting
-int16_t		timeOut;
 #ifdef	HAVE_DUMPING
 SNDFILE		*dumpFile	= NULL;
 #endif
@@ -190,15 +190,19 @@ int32_t		basePort = 1234;
 //
 //	for file input some command line parameters are meeaningless
 #if defined (HAVE_RAWFILES) || defined (HAVE_WAVFILES)
-	while ((opt = getopt (argc, argv, "ED:M:O:F:Sh")) != -1) {
+	while ((opt = getopt (argc, argv, "ED:d:M:O:F:Sh")) != -1) {
 #elif defined (HAVE_RTL_TCP)
-	while ((opt = getopt (argc, argv, "D:M:B:C:G:O:P:H:I:QR:Sh")) != -1) {
+	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:O:P:H:I:QR:Sh")) != -1) {
 #else
-	while ((opt = getopt (argc, argv, "D:M:B:C:G:O:P:QR:Sh")) != -1) {
+	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:O:P:QR:Sh")) != -1) {
 #endif
 	   switch (opt) {
 	      case 'D':
-	         waitingTime	= atoi (optarg);
+	         freqSyncTime	= atoi (optarg);
+	         break;
+
+	      case 'd':
+	         timeSyncTime	= atoi (optarg);
 	         break;
 
 	      case 'O':
@@ -364,8 +368,8 @@ int32_t		basePort = 1234;
 	timesyncSet. store (false);
 	theWorker. start_ofdmProcessing ();
 
-	timeOut	= 0;
-	while (!timesyncSet. load () && (++timeOut < 5)) 
+	while (!timeSynced. load () && (--timeSyncTime >= 0)) 
+//	while (!timesyncSet. load () && (--timeSyncTime >= 0)) 
 	   sleep (1);
 
 	if (!timeSynced. load ()) {
@@ -375,18 +379,17 @@ int32_t		basePort = 1234;
 	else
 	   cerr << "there might be a DAB signal here" << endl;
 
-	timeOut	= waitingTime;
 //	give time to collect data on the ensemble and the programs
 //
-	while (timeOut > 0) {
-	   cerr << "still at most " << timeOut <<  "seconds to wait\r";
+	while (--freqSyncTime > 0) {
+	   cerr << "still at most " << freqSyncTime <<  "seconds to wait\r";
 	   sleep (1);
 	   if (ensembleRecognized. load ()) {
 	      theWorker. set_syncReached ();
 	      break;
 	   }
-	   timeOut --;
 	}
+
 	cerr << endl;
 
 	if (!ensembleRecognized. load ()) {

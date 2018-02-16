@@ -66,39 +66,42 @@ General parameters are
    
    Note that as soon as the software detects a DAB like signal, a message
    is printed (which can arrive as fast as in 1 or 2 seconds).
-
-2. `-O filename`, for specifying the file onto which the ETI frames are written,
+2. `-d number`, where number indicates the number of seconds used to wait for
+    time synchronization. If time synchronization cannot be achieved within
+    the specified time (default 5 seconds) it is pretty unlikely that a
+   DAB signal is in the selected channel.
+3. `-O filename`, for specifying the file onto which the ETI frames are written,
    "-O -" indicates that the output is to be written to stdout. Note that
    not specifying the "-O" option also causes the output to be written
    to stdout.
 
 For use with one of the physical devices, one may set the following parameters
 
-3. `-B ("L_BAND"| "BAND III")` for selecting the band. Default BAND III is chosen.
+4. `-B ("L_BAND"| "BAND III")` for selecting the band. Default BAND III is chosen.
 
-4. `-C channel`,  for selecting the channel to be set, e.g. 11C, default 11C
+5. `-C channel`,  for selecting the channel to be set, e.g. 11C, default 11C
    is chosen
 
-5. `-G number`, for setting the gain with the device, a number between 0 .. 100,
+6. `-G number`, for setting the gain with the device, a number between 0 .. 100,
    where 100 is the highest gain.
 
-6. `-Q`, for setting the autogain with the device (assuming the device supports
+7. `-Q`, for setting the autogain with the device (assuming the device supports
    autogain setting)
 
-7. `-R filename`, for dumping the input to a file as mentioned above. This
+8. `-R filename`, for dumping the input to a file as mentioned above. This
    option only makes sense when dmping is configures.
 
 For use with file input 
 
-8. `-F filename`, the full pathname for the input file
+9. `-F filename`, the full pathname for the input file
 
-9. `-E`, is selected the file will be reread after reaching eof.
+10. `-E`, is selected the file will be reread after reaching eof.
 
 For use with rtl_tcp
 
-10. `-H hostname`, the hostname of the server to connect to, default 127.0.0.1
+11. `-H hostname`, the hostname of the server to connect to, default 127.0.0.1
 
-11. `-I port`, the port to listen to, default 1234
+12. `-I port`, the port to listen to, default 1234
 
 
 ### Writing to eti files

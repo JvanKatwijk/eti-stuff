@@ -283,6 +283,7 @@ SyncOnNull:
 	      counter ++;
 	      if ((counter > T_F) && (++attempts >= 5)) { // hopeless
 	         set_syncSignal (false, userData);
+	         attempts	= 0;
 	         goto notSynced;
 	      }
 	   }
