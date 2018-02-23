@@ -45,7 +45,7 @@ struct timeval	tv;
 	rawfileHandler::rawfileHandler (std::string filename,
 	                                bool  continue_on_eof,
 	                                inputstopped_t inputStopped) {
-	filePointer	= fopen (filename. c_str (), "r+b");
+	filePointer	= fopen (filename. c_str (), "rb");
 	if (filePointer == NULL) {
 	   fprintf (stderr, "could not open %s\n", filename. c_str ());
 	   throw (21);
