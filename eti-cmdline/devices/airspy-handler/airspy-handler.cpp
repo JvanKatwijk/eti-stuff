@@ -88,6 +88,7 @@ uint32_t samplerate_count;
 	   if (Handle != NULL)
 	      dlclose (Handle);
 #endif
+	   throw (25);
 	}
 
 	(void) my_airspy_set_sample_type (device, AIRSPY_SAMPLE_INT16_IQ);
@@ -111,7 +112,7 @@ uint32_t samplerate_count;
 	   if (Handle != NULL)
 	      dlclose (Handle);
 #endif
-	   throw (25);
+	   throw (26);
 	}
 	else
 	   fprintf (stderr, "selected samplerate = %d\n", selectedRate);
@@ -127,7 +128,7 @@ uint32_t samplerate_count;
 	   if (Handle != NULL)
 	      dlclose (Handle);
 #endif
-	   throw (26);
+	   throw (27);
 	}
 
 //	The sizes of the mapTable and the convTable are

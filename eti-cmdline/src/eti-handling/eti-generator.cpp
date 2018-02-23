@@ -122,7 +122,7 @@ bool	fibValid  [16];
 	this	-> userData	= userData;
 	this	-> etiWriter	= etiWriter;
 	
-	fibInput		= new int16_t [3 * 2 * params. get_carriers ()];
+	fibInput		.resize (3 * 2 * params. get_carriers ());
 	dataBuffer		= new RingBuffer<bufferElement> (512);
 	index_Out		= 0;
 	BitsperBlock		= 2 * params. get_carriers ();
@@ -141,7 +141,6 @@ bool	fibValid  [16];
 	   running. store (false);
 	   threadHandle. join ();
 	}
-	delete[]	fibInput;
 	delete		dataBuffer;
 }
 
@@ -221,7 +220,8 @@ const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 	      if (b. blkno == 4) {
 	         bool	valid [4];
 	         uint8_t fibs_bytes [4 * 768];
-	         my_ficHandler. process_ficBlock (fibInput, fibs_bytes, valid);
+	         my_ficHandler. process_ficBlock (fibInput. data (),
+	                                             fibs_bytes, valid);
 	         for (i = 0; i < 4; i ++) {
 	            fibValid [index_Out + i] = valid [i];
 //	            fprintf (stderr, "fib [%d] = %d\n", i, valid [i]);

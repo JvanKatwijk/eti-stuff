@@ -23,10 +23,19 @@
  */
 #include	"protection.h"
 
-	protection::protection 	(void) {}
-	protection::~protection	(void) {}
-bool	protection::deconvolve	(int16_t *a, int32_t b, uint8_t *c) {
-	   (void)a; (void)b; (void)c;
-	   return false;
+   protection::protection  (int16_t bitRate, int16_t protLevel):
+                                        viterbi_768 (24 * bitRate),
+	                                indexTable   (24 * bitRate * 4 + 24),
+	                                viterbiBlock (24 * bitRate * 4 + 24){
+	this    -> bitRate      = bitRate;
+	this    -> outSize      = 24 * bitRate;
+}
+
+        protection::~protection (void) {
+}
+
+bool    protection::deconvolve  (int16_t *a, int32_t b, uint8_t *c) {
+           (void)a; (void)b; (void)c;
+           return false;
 }
 

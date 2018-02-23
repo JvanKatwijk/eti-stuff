@@ -42,6 +42,7 @@
 #include	<stdint.h>
 #include	<stdio.h>
 #include	<thread>
+#include	<vector>
 #include	<atomic>
 #include	"callback-types.h"
 #include	"dab-constants.h"
@@ -81,7 +82,7 @@ private:
 	dabParams	params;
 	RingBuffer<bufferElement> *dataBuffer;
 	FILE		*outputFile;
-	int16_t		*fibInput;
+	std::vector<int16_t> fibInput;
 	int16_t		index_Out;
 	int16_t		CIFCount_hi;
 	int16_t		CIFCount_lo;

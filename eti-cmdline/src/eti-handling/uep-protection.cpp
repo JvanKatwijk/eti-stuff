@@ -49,6 +49,13 @@ struct protectionProfile {
 	{48,	2,	3, 4, 26, 3,	24, 14, 8, 15},
 	{48,	1,	3, 5, 25, 3,	24, 18, 13, 18},
 
+//      Thanks to Pr2 who discovered that the tables for 56 were missing
+        {56,    5,      6, 10, 23, 3,   5, 4, 2, 3},
+        {56,    4,      6, 10, 23, 3,   9, 6, 4, 5},
+        {56,    3,      6, 12, 21, 3,   16, 7, 6, 9},
+        {56,    2,      6, 10, 23, 3,   23, 13, 8, 13},
+
+//      edinsam discovered that one row was wrong
 	{64,	5,	6, 9, 31, 2,	5, 3, 2, 3},
 	{64,	4,	6, 9, 33, 0,	11, 6, 5, -1},
 	{64,	3,	6, 12, 27, 3,	16, 8, 6, 9},
@@ -135,8 +142,18 @@ int16_t	i;
   */
 	uep_protection::uep_protection (int16_t bitRate,
 	                                int16_t protLevel):
-	                                      viterbi_768 (24 * bitRate) {
-int16_t	index;
+	                                   protection (bitRate, protLevel) {
+int16_t	index, i, j;
+int16_t viterbiCounter  = 0;
+int16_t         L1;
+int16_t         L2;
+int16_t         L3;
+int16_t         L4;
+int8_t          *PI1;
+int8_t          *PI2;
+int8_t          *PI3;
+int8_t          *PI4;
+int8_t          *PI_X;
 
 	this	-> bitRate		= bitRate;
 	index	= findIndex (bitRate, protLevel);
@@ -145,7 +162,7 @@ int16_t	index;
 	   index = 1;
 	}
 	outSize		= 24 * bitRate;
-	viterbiBlock	= new int16_t [outSize * 4 + 24];
+	viterbiBlock. resize (outSize * 4 + 24);
 	L1	= profileTable [index]. L1;
 	L2	= profileTable [index]. L2;
 	L3	= profileTable [index]. L3;
@@ -158,71 +175,76 @@ int16_t	index;
 	   PI4	= get_PCodes (profileTable [index]. PI4 -1);
 	else
 	   PI4	= NULL;
+
+	PI_X	= get_PCodes (8 - 1);
+
+	memset (indexTable. data (), 0,
+	                  (24 * bitRate * 4 + 24) * sizeof (uint8_t));
+//      We prepare a mapping table with the given punctures
+        for (i = 0; i < L1; i ++) {
+           for (j = 0; j < 128; j ++) {
+              if (PI1 [j % 32] != 0)
+                 indexTable [viterbiCounter] = true;
+              viterbiCounter ++;
+           }
+        }
+
+        for (i = 0; i < L2; i ++) {
+           for (j = 0; j < 128; j ++) {
+              if (PI2 [j % 32] != 0)
+                 indexTable [viterbiCounter] = true;
+              viterbiCounter ++;
+           }
+        }
+
+        for (i = 0; i < L3; i ++) {
+           for (j = 0; j < 128; j ++) {
+              if (PI3 [j % 32] != 0)
+                 indexTable [viterbiCounter] = true;
+              viterbiCounter ++;
+	   }
+	}
+
+	if (PI4 != NULL) {
+           for (i = 0; i < L4; i ++) {
+              for (j = 0; j < 128; j ++) {
+                 if (PI4 [j % 32] != 0)
+                    indexTable [viterbiCounter] = true;
+                 viterbiCounter ++;
+              }
+           }
+	}
+/**
+  *     we have a final block of 24 bits  with puncturing according to PI_X
+  *     This block constitues the 6 * 4 bits of the register itself.
+  */
+        for (i = 0; i < 24; i ++) {
+           if (PI_X [i] != 0)
+              indexTable [viterbiCounter] = true;
+           viterbiCounter ++;
+        }
 }
 
 	uep_protection::~uep_protection (void) {
-	delete[]	viterbiBlock;
 }
 
-bool	uep_protection::deconvolve (int16_t *v,
-	                            int32_t size, uint8_t *outBuffer) {
-int16_t	i, j;
+bool    uep_protection::deconvolve (int16_t *v,
+                                    int32_t size, uint8_t *outBuffer) {
+int16_t i;
 int16_t	inputCounter	= 0;
-int32_t	viterbiCounter	= 0;
-	(void)size;			// currently unused
 
-//	according to the standard we process the logical frame
-//	with a pair of tuples
-//	(L1, PI1), (L2, PI2), (L3, PI3), (L4, PI4)
+        (void)size;                     // currently unused
 
-///	clear the bits in the viterbiBlock,
-///	only the non-punctured ones are set
-	memset (viterbiBlock, 0, (outSize * 4 + 24) * sizeof (int16_t)); 
+        memset (viterbiBlock. data (), 0,
+                                (outSize * 4 + 24) * sizeof (int16_t));
 
-	for (i = 0; i < L1; i ++) {
-	   for (j = 0; j < 128; j ++) {
-	      if (PI1 [j % 32] != 0) 
-	         viterbiBlock [viterbiCounter] = v [inputCounter ++];
-	      viterbiCounter ++;
-	   }
-	}
+///     The actual deconvolution is done by the viterbi decoder
 
-	for (i = 0; i < L2; i ++) {
-	   for (j = 0; j < 128; j ++) {
-	      if (PI2 [j % 32] != 0) 
-	         viterbiBlock [viterbiCounter] = v [inputCounter ++];
-	      viterbiCounter ++;
-	   }
-	}
+        for (i = 0; i < outSize * 4 + 24; i ++)
+           if (indexTable [i])
+              viterbiBlock [i] = v [inputCounter++];
 
-	for (i = 0; i < L3; i ++) {
-	   for (j = 0; j < 128; j ++) {
-	      if (PI3 [j % 32] != 0) 
-	         viterbiBlock [viterbiCounter] = v [inputCounter ++];
-	      viterbiCounter ++;	
-	   }
-	}
-
-	for (i = 0; i < L4; i ++) {
-	   for (j = 0; j < 128; j ++) {
-	      if (PI4 [j % 32] != 0) 
-	         viterbiBlock [viterbiCounter] = v [inputCounter ++];
-	      viterbiCounter ++;	
-	   }
-	}
-
-/**
-  *	we have a final block of 24 bits  with puncturing according to PI_X
-  *	This block constitues the 6 * 4 bits of the register itself.
-  */
-	for (i = 0; i < 24; i ++) {
-	   if (PI_X [i] != 0)  
-	      viterbiBlock [viterbiCounter] = v [inputCounter ++];
-	   viterbiCounter ++;
-	}
-//
-///	The actual deconvolution is done by the viterbi decoder
-
-	viterbi_768::deconvolve (viterbiBlock, outBuffer);
-	return true;
+        viterbi_768::deconvolve (viterbiBlock. data (), outBuffer);
+        return true;
 }
+

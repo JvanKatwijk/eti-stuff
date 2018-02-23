@@ -20,21 +20,27 @@
  *    along with eticmdline; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *
  *	Simple base class for combining uep and eep deconvolvers
  */
 #ifndef	__PROTECTION__
 #define	__PROTECTION__
 
-#include	<stdint.h>
 
-extern uint8_t	PI_X [];
+#include        <stdint.h>
+#include        <vector>
+#include        "viterbi-768.h"
 
-class	protection {
+class   protection: public viterbi_768 {
 public:
-		protection  	(void);
-virtual		~protection	(void);
-virtual	bool	deconvolve	(int16_t *, int32_t, uint8_t *);
+                protection      (int16_t, int16_t);
+virtual         ~protection     (void);
+virtual bool    deconvolve      (int16_t *, int32_t, uint8_t *);
+protected:
+        int16_t         bitRate;
+        int32_t         outSize;
+        std::vector<int16_t> viterbiBlock;
+        std::vector<uint8_t> indexTable;
 };
 #endif
+
 

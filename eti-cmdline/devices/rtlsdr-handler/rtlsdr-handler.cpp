@@ -135,7 +135,7 @@ int16_t	deviceIndex;
         rtlsdr_set_tuner_gain_mode (device, autogain);
 	rtlsdr_set_tuner_gain (device,gains [theGain * gainsCount / 100]);
 
-	_I_Buffer		= new RingBuffer<uint8_t>(1024 * 1024);
+	_I_Buffer	= new RingBuffer<uint8_t>(1024 * 1024);
 	return;
 
 err:
@@ -148,6 +148,7 @@ err:
 #endif
 	libraryLoaded	= false;
 	open		= false;
+	throw (33);
 }
 
 	rtlsdrHandler::~rtlsdrHandler	(void) {
