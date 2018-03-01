@@ -2,31 +2,16 @@
 
 "eti-stuff" is an attempt to understand the eti structure as defined in ETS 300 799.
 
-[eti-frontend](#eti-frontend) and [eti-backend](#eti-backend) are based on [Qt-DAB](https://github.com/JvanKatwijk/qt-dab), with code included from [dabtools](https://github.com/Opendigitalradio/dabtools) to actually generate the eti frames.
+[eti-backend](#eti-backend) is based on [Qt-DAB](https://github.com/JvanKatwijk/qt-dab), with code included from [dabtools](https://github.com/Opendigitalradio/dabtools) to actually decode the eti frames.
 
-[eti-cmdline](#eti-cmdline) is based on the dab-cmdline software and is - as the name suggests - the command line version.
+[eti-cmdline](#eti-cmdline) is based on the dab-cmdline software  with code
+included from [dabtools](https://github.com/Opendigitalradio/dabtools) to actually decode the eti frames.
+It is - as the name suggests - a command line version.
 
-The eti-frontend and eti-cmdline programs take a sample stream as input and create an eti file, while eti-backend is interpreting the eti file.
+When constructing, select the input device of choice in the CMake command
+(current supported are SDRplay, AIRspy, DABsticks, ".sdr" and ".iq" files)
 
-By piping the output from either eti-frontend of eti-cmdline into eti-backend, a more or less complete DAB receiver exists.
-
-# Contents
-
-The set consists (currently) of three programs (all under continuous development)
-
-* [eti-frontend](#eti-frontend)
-* [eti-backend](#eti-backend)
-* [eti-cmdline](#eti-cmdline)
-
-## eti-frontend
-
-THE ETI-FRONTEND IS NO MORE SUPPORTED, JUST FORGET IT
-
-which was a stripped Qt-DAB version that generates eti-frames as output.
-
-The GUI is - obviously - based on Qt-DAB. There is an additional command line option `-O -`, that will cause the ETI files to be sent to stdout.
-
-The "normal" way of working is to have an input device selected, select a channel, press the start button, and as soon as an ensemble is identified, and the GUI shows the names of the programs, to press the button "eti is waiting", after which it will send the eti frames to the selected output device.
+By piping the output from eti-cmdline into eti-backend, a more or less complete DAB receiver exists.
 
 ## eti-backend
 
@@ -36,11 +21,11 @@ The GUI is simple, it will show the name of the ensemble and the names of progra
 
 It will start reading after pressing the start button.
 
-## eti-cmdline
+Build eti-backend using the qmake/make commands
 
-which is derived from the dab-cmdline program and shares the relevant command line parameters.
-
-For more information please read the `README.md` in the subdirectory `eti-cmdline`.
+### eti-cmdline-exp  is a version being experimented with (the name suggests this).
+It will try to insert missing frames as null frames, starting with an error
+code 0 (i.e. non repairable).
 
 ### Syntax
 
@@ -65,6 +50,7 @@ eti-stuff is distributed in the hope that it will be useful, but WITHOUT ANY WAR
 # Copyright
 
 Copyright Jan van Katwijk <J.vanKatwijk@gmail.com>.
+Lazy Chair Computing
 
 This software is part of the Qt-DAB, Qt-DAB is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version, taking into account the licensing conditions of the parts of the software that are derived from wotk of others.
 

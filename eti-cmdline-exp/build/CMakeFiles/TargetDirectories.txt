@@ -1,0 +1,8 @@
+/usr/shared/sdr-j-development/systems/eti-stuff/eti-cmdline/build/CMakeFiles/install/strip.dir
+/usr/shared/sdr-j-development/systems/eti-stuff/eti-cmdline/build/CMakeFiles/install/local.dir
+/usr/shared/sdr-j-development/systems/eti-stuff/eti-cmdline/build/CMakeFiles/uninstall.dir
+/usr/shared/sdr-j-development/systems/eti-stuff/eti-cmdline/build/CMakeFiles/eti-cmdline-wavfiles.dir
+/usr/shared/sdr-j-development/systems/eti-stuff/eti-cmdline/build/CMakeFiles/list_install_components.dir
+/usr/shared/sdr-j-development/systems/eti-stuff/eti-cmdline/build/CMakeFiles/edit_cache.dir
+/usr/shared/sdr-j-development/systems/eti-stuff/eti-cmdline/build/CMakeFiles/rebuild_cache.dir
+/usr/shared/sdr-j-development/systems/eti-stuff/eti-cmdline/build/CMakeFiles/install.dir
