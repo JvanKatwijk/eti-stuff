@@ -84,12 +84,10 @@ private:
 	RingBuffer<bufferElement> *dataBuffer;
 	FILE		*outputFile;
 	std::vector<int16_t> fibInput;
-	int16_t		index_Out;
-	int16_t		CIFCount_hi;
-	int16_t		CIFCount_lo;
+	int16_t		index_In;
 	int32_t		currentCIF;
 	int32_t		lastGenerated;
-	std::atomic <int16_t>	amount;
+	int16_t		deinterleaverFilled;
 	int16_t		BitsperBlock;
 	int16_t		numberofblocksperCIF;
 	ficHandler	my_ficHandler;
@@ -97,7 +95,7 @@ private:
 	int16_t		expected_block;
 	int32_t		init_eti		(uint8_t *,
 	                                         int16_t, int16_t);
-	void		process_CIF		(int, int, bool);
+	void		process_CIF		(int, int);
 	int32_t		process_CIF_data	(int16_t *,
 	                                         uint8_t *, int32_t);
 	void		generate_error_Frame	(uint8_t *, int32_t);

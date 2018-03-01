@@ -134,7 +134,7 @@ int	counter		= 0;
 	      }
 	   }
 	   counter ++;
-	   fprintf (stderr, "\t%d\r", counter);
+//	   fprintf (stderr, "\t%d\r", counter);
 //	   if (!processingData)
 #ifdef	__MINGW32__
 	      usleep (24000);
@@ -150,6 +150,7 @@ int	counter		= 0;
 	      fe. fibno = buffer [4] & 0x03;
 	      my_fibProcessor -> process_FIC (fe. fibdata, fe. fibno);
 	   }
+
 //	if there was a request for a service, we have to recompute
 //	the data_offset where to find it
 	   if (channelSearch) {

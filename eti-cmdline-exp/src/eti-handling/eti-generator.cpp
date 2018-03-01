@@ -17,8 +17,10 @@
  *    Copyright (C) 2016
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
-
- *	partly rewritten
+ *
+ *	partly rewritten and somewhat altered to allow integration
+ *	with the already existing parts, taken from dab-cmdline
+ *
  *    This file is part of the eti library
  *    eti library is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -127,15 +129,13 @@ bool	fibValid  [4];
 	
 	fibInput		.resize (3 * 2 * params. get_carriers ());
 	dataBuffer		= new RingBuffer<bufferElement> (512);
-	index_Out		= 0;
+	index_In		= 0;
 	BitsperBlock		= 2 * params. get_carriers ();
 	numberofblocksperCIF	= 18;	// mode I
 	running. store (false);
-	amount.  store (0);
+	deinterleaverFilled	= 0;
 	processing. store (false);
 	expected_block		= 2;
-	CIFCount_hi		= -1;
-	CIFCount_lo		= -1;
 	currentCIF		= 0;
 	lastGenerated		= -1;
 	start ();
@@ -161,11 +161,11 @@ void	etiGenerator::reset	(void) {
 	   threadHandle. join ();
 	}
 	running. store (false);
-	amount.  store (0);
+	deinterleaverFilled	= 0;
 	processing. store (false);
 	expected_block		= 2;
-	CIFCount_hi		= -1;
-	CIFCount_lo		= -1;
+	currentCIF		= 0;
+	lastGenerated		= -1;
 	start ();
 }
 
@@ -188,7 +188,7 @@ void	etiGenerator::run		(void) {
 int	i, j, k;
 bufferElement b;
 int16_t	CIF_index;
-bool	skipping	= false;
+int CIFCount_hi, CIFCount_lo;
 
 	running. store (true);
 	while (running. load ()) {
@@ -202,8 +202,8 @@ bool	skipping	= false;
 	   if (b. blkno != expected_block) {
 	      fprintf (stderr, "got %d, expected %d\n", b.blkno, expected_block);
 	      expected_block = 2;
-	      index_Out	= 0;
-	      amount. store (0);
+	      index_In	= 0;
+	      deinterleaverFilled	= 0;
 	      continue;
 	   }
 //
@@ -225,6 +225,8 @@ bool	skipping	= false;
 	         memcpy (&(fibInput [(b. blkno - 2) * BitsperBlock]),
 	                 b. data, 
 	                 BitsperBlock * sizeof (int16_t));
+//	we have the 3 blocks with FIC data in,
+//	let us decode the 4 FIC blocks
 	         bool	valid [4];
 	         uint8_t fibs_bytes [4 * 768];
 	         my_ficHandler. process_ficBlock (fibInput. data (),
@@ -233,10 +235,10 @@ bool	skipping	= false;
 	            fibValid [i] = valid [i];
 //	            fprintf (stderr, "fib [%d] = %d\n", i, valid [i]);
 	            for (j = 0; j < 96; j ++) {
-	               fibVector [(index_Out + i) & 017][j] = 0;
+	               fibVector [(index_In + i) & 017][j] = 0;
 	                  for (k = 0; k < 8; k ++) {
-	                     fibVector [(index_Out + i) & 017][j] <<= 1;
-	                     fibVector [(index_Out + i) & 017][j] |=
+	                     fibVector [(index_In + i) & 017][j] <<= 1;
+	                     fibVector [(index_In + i) & 017][j] |=
 	                                (fibs_bytes [i * 768 + 8 * j + k] & 01);
 	               }
 	            }
@@ -264,7 +266,7 @@ bool	skipping	= false;
 	                 b. data,
 	                 BitsperBlock * sizeof (int16_t));
 
-	         process_CIF (currentCIF, 0, skipping);
+	         process_CIF (currentCIF, 0);
 	         break;
 
 	      case 23: case 24: case 25: case 26: case 27: case 28:
@@ -283,7 +285,7 @@ bool	skipping	= false;
 	                 b. data,
 	                 BitsperBlock * sizeof (int16_t));
 
-	         process_CIF (currentCIF, 1, skipping);
+	         process_CIF (currentCIF, 1);
 	         break;
 
 	      case 41: case 42: case 43: case 44: case 45: case 46:
@@ -302,7 +304,7 @@ bool	skipping	= false;
 	                 b. data,
 	                 BitsperBlock * sizeof (int16_t));
 
-	         process_CIF (currentCIF, 2, skipping);
+	         process_CIF (currentCIF, 2);
 	         break;
 
 	      case 59: case 60: case 61: case 62: case 63: case 64:
@@ -321,21 +323,21 @@ bool	skipping	= false;
 	                 b. data,
 	                 BitsperBlock * sizeof (int16_t));
 
-	         process_CIF (currentCIF, 3, skipping);
+	         process_CIF (currentCIF, 3);
 	         break;
 	   }
 	}
 }
 
-const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
-
-void	etiGenerator::process_CIF (int currentCIF,
-	                           int minor, bool skipping) {
+//
+//	The 
+void	etiGenerator::process_CIF (int currentCIF, int minor) {
 int32_t	i;
+const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 uint8_t theVector [6144];
 
-	if (skipping || (currentCIF < 0)) {	// some error
-	   index_Out = (index_Out + 1) & 0xF;
+	if (currentCIF < 0) {	// some error
+	   index_In = (index_In + 1) & 0xF;
 	   return;
 	}
 
@@ -343,26 +345,27 @@ uint8_t theVector [6144];
 //	always handle the de-interleaving
 	for (i = 0; i < 3072 * 18; i++) {
 	   int index = interleaveMap [i & 017];
-	   raw_CIF [i] = cifVector [(index_Out + index) & 017] [i];
-	   cifVector [index_Out & 0xF] [i] = cif_In [i];
+	   raw_CIF [i] = cifVector [(index_In + index) & 017] [i];
+	   cifVector [index_In & 0xF] [i] = cif_In [i];
 	}
+
 //	we have to wait until the interleave matrix is filled
-	if (amount. load () < 15) {
-	   amount. store (amount. load () + 1);
-	   index_Out	= (index_Out + 1) & 017;
+	if (deinterleaverFilled < 15) {
+	   deinterleaverFilled ++;
+	   index_In	= (index_In + 1) & 017;
 	   return;
 	}
 //
 //	oef, here we go for handling the CIF
 	if (!processing. load ()) {
-	   index_Out	= (index_Out + 1) % 0xF;
+	   index_In	= (index_In + 1) % 0xF;
 	   return;
 	}
 //
 //	we assume we have a sufficient amount of correct data
-//	in the FIB handler
+//	in the FIB handlers, so this might be a little superfluous
 //	if (!fibValid [minor]) {
-//	   index_Out	= (index_Out + 1) & 017;
+//	   index_In	= (index_In + 1) & 017;
 //	   return;
 //	}
 
@@ -370,7 +373,7 @@ uint8_t theVector [6144];
 	   lastGenerated = (currentCIF + minor) % 5000;
 	else	// a consequence of erroneous fibs might be:
 	if ((currentCIF + minor) % 5000 < (lastGenerated + 1) % 5000) {
-	   index_Out = (index_Out + 1) % 5000;
+	   index_In = (index_In + 1) % 5000;
 	   return;
 	}
 	else {
@@ -392,17 +395,18 @@ uint8_t theVector [6144];
 	postProcess (theVector, 6144);
 //
 //	and prepare for the next one from the deinterleaving matrix
-	index_Out	= (index_Out + 1) & 0xF;
+	index_In	= (index_In + 1) & 0xF;
 }
-
+//
+//	The ETI frame we are generating is "minor" out of 4,
 void	etiGenerator::generate_ETI_Frame (uint8_t *theVector,
 	                                  int32_t  currentCIF,
 	                                  int32_t  minor) {
 	int offset	= init_eti (theVector, currentCIF, minor);
-	int base	= offset;
+	int base	= offset;	// for use later on
 //
 //	first copy the fib vector
-	memcpy (&theVector [offset], fibVector [index_Out], 96);
+	memcpy (&theVector [offset], fibVector [(index_In + minor) & 0xF], 96);
 	offset += 96;
 //
 

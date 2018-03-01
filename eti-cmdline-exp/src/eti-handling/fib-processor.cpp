@@ -102,7 +102,6 @@
 	this	-> programName	= programName;
 	memset (dateTime, 0, 8);
 	dateFlag	= false;
-	selectedService		= -1;
 	clearEnsemble	();
 	CIFCount_hi	= -1;
 	CIFCount_lo	= -1;
@@ -278,6 +277,7 @@ int16_t	option, protLevel, subChanSize;
 
 	(void)pd;		// not used right now, maybe later
 	subChannels [SubChId]. id		= SubChId;
+	subChannels [SubChId]. inUse		= true;
 	subChannels [SubChId]. start_cu	= start_cu;
 	subChannels [SubChId]. uepFlag	= getBits_1 (d, bitOffset + 16) == 0;
 	if (subChannels [SubChId]. uepFlag) {	// short form
@@ -287,7 +287,6 @@ int16_t	option, protLevel, subChanSize;
 	   subChannels [SubChId]. protlev	= ProtLevel [uep_index][1];
 	   subChannels [SubChId]. bitrate	= ProtLevel [uep_index][2];
 	   bitOffset += 24;
-	   subChannels [SubChId]. inUse	= true;
 	}
 	else { 	// EEP long form
 	   option = getBits_3 (d, bitOffset + 17);
@@ -323,7 +322,6 @@ int16_t	option, protLevel, subChanSize;
 	         subChannels [SubChId]. bitrate	= subChanSize / 15 * 32;
 	      
 	   }
-	   subChannels [SubChId]. inUse	= true;
 	   bitOffset += 32;
 	}
 	return bitOffset / 8;	// we return bytes
@@ -1037,7 +1035,6 @@ int16_t i;
 	   serviceComps [i]. inUse	= false;
 	   subChannels	[i]. inUse	= false;
 	}
-	selectedService	= -1;
 }
 
 void	fib_processor::get_channelInfo (channel_data *d, int n) {
