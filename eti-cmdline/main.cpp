@@ -419,7 +419,7 @@ int32_t		basePort = 1234;
 	delete	inputDevice;
 	if (etiFile != NULL)
 	   fclose (etiFile);
-#ifdef	HAVE_DUMPFILE
+#ifdef	HAVE_DUMPING
 	if (dumpFile != NULL)
 	   sf_close (dumpFile);
 #endif
@@ -449,8 +449,11 @@ void    printOptions (void) {
    -Q          autogain for device (not all tuners support it!)\n\
    -R filename (if configured) dump to an *.sdr file\n"
 #endif
+#ifdef HAVE_DUMPING
 << "\
-   -O filename write output into a file (instead of stdout)\n\
+   -O filename write output into a file (instead of stdout)\n"
+#endif
+<< "\
    -S          do not display quality messages while running\n\
 \n\
    -h          show options and quit\n";
