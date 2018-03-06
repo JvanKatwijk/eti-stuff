@@ -47,7 +47,6 @@
 
 //	Fill in server IP address
 	struct sockaddr_in server;
-	int serverAddrLen;
 	bzero (&server, sizeof (server));
 
 	struct hostent *host = gethostbyname (hostname. c_str ());
@@ -155,10 +154,61 @@ uint8_t theCommand [5];
 	write (theSocket, &theCommand, 5);
 }
 
+void	rtl_tcp_client::setVFOFrequency	(int32_t newFrequency) {
+	vfoFrequency = newFrequency;
+	fprintf (stderr, "setting the frequency to %d\n", vfoFrequency);
+	sendCommand (0x01, vfoFrequency);
+}
+
+int32_t	rtl_tcp_client::getVFOFrequency	(void) {
+	return vfoFrequency;
+}
+
+bool	rtl_tcp_client::restartReader	(void) {
+
+	if (running)  // The socket is active
+	   return true;
+
+	// Re-Connect to the remote server
+        int res = connect (theSocket,
+                              (struct sockaddr*) &server, sizeof (server));
+        if (res < 0) {
+           std::cerr << "Error: " << strerror (errno) << std::endl;
+           throw (23);
+        }
+
+	// Re-Set the parameters
+        fprintf (stderr, "setting the rate to %d\n", theRate);
+        sendCommand (0x02, theRate);
+        fprintf (stderr, "setting the frequency to %d\n", vfoFrequency);
+        sendCommand (0x01, vfoFrequency);
+        sendCommand (0x03, autogain);
+        fprintf (stderr, "setting the gain to %d\n", gain);
+        sendCommand (0x04, 10 * gain);
+        sendCommand (0x05, ppm);
+
+	// Re-Start the listening thread
+        running. store (false);
+        threadHandle    = std::thread (&rtl_tcp_client::run, this);
+
+	return true;
+}
+
+void	rtl_tcp_client::resetBuffer (void) {
+	theBuffer -> FlushRingBuffer ();
+}
+
+void	rtl_tcp_client::setGain	(int32_t g) {
+	gain	= (int16_t)g;
+        fprintf (stderr, "setting the gain to %d\n", gain);
+        sendCommand (0x04, 10 * gain);
+}
+
 void	rtl_tcp_client::stopReader (void) {
 	if (running) {
 	   running. store (false);
 	   threadHandle. join ();
 	}
 }
+
 

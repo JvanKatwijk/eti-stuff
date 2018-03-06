@@ -51,7 +51,7 @@ using std::endl;
 #elif	HAVE_WAVFILES
 #include	"wavfile-handler.h"
 #elif	HAVE_RTL_TCP
-#include	"rtl_tcp-client.h"
+#include	"rtl_tcp-handler.h"
 #endif
 //
 //	Be aware that the callbacks may arrive from different threads,

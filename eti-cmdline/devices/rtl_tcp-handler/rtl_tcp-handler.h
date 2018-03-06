@@ -58,10 +58,15 @@ public:
 		                        int16_t		ppm);
 
 			~rtl_tcp_client	(void);
-	void		stopReader	(void);
-	int32_t		getSamples	(std::complex<float> *V, int32_t size);
-	int32_t		Samples		(void);
-	int16_t		bitDepth	(void);
+	void		setVFOFrequency		(int32_t nf);	// new
+	int32_t		getVFOFrequency		(void);		// new
+	bool		restartReader		(void);		// new
+	void		stopReader		(void);
+	int32_t		getSamples		(std::complex<float> *V, int32_t size);
+	int32_t		Samples			(void);
+	void		resetBuffer		(void);		// new
+	int16_t		bitDepth		(void);
+	void		setGain			(int32_t);	// new
 private:
 virtual	void		run		(void);
 	std::string	hostname;
