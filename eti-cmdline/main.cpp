@@ -446,14 +446,14 @@ void    printOptions (void) {
    -C channel  DAB channel to be used (5A ... 13F resp. LA ... LP)\n\
    -G Gain     gain for device (range 1 .. 100)\n\
    -P number   PPM correction\n\
-   -Q          autogain for device (not all tuners support it!)\n\
-   -R filename (if configured) dump to an *.sdr file\n"
+   -Q          autogain for device (not all tuners support it!)\n"
 #endif
 #ifdef HAVE_DUMPING
 << "\
-   -O filename write output into a file (instead of stdout)\n"
+   -R filename dump to an *.sdr file\n"
 #endif
 << "\
+   -O filename write output into a file (instead of stdout)\n\
    -S          do not display quality messages while running\n\
 \n\
    -h          show options and quit\n";
