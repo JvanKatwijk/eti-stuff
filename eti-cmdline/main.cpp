@@ -419,7 +419,7 @@ int32_t		basePort = 1234;
 	delete	inputDevice;
 	if (etiFile != NULL)
 	   fclose (etiFile);
-#ifdef	HAVE_DUMPFILE
+#ifdef	HAVE_DUMPING
 	if (dumpFile != NULL)
 	   sf_close (dumpFile);
 #endif
@@ -431,18 +431,32 @@ void    printOptions (void) {
 " eti-cmdline-xxx options are\n\
 \n\
    -D number   time (in seconds) to look for a DAB ensemble\n\
-   -B Band     select DAB Band (default: BAND_III, or L_BAND)\n\
-   -P number   PPM correction\n\
+   -B Band     select DAB Band (default: BAND_III, or L_BAND)\n"
+#if defined (HAVE_RAWFILES) || defined (HAVE_WAVFILES)
+<< "\
+   -F filename load samples from file\n\
+   -E          only for files: continue after EOF (replay file)\n"
+#else
+#if defined (HAVE_RTL_TCP)
+<< "\
+   -H hostname address of the RTL_TCP server\n\
+   -I port     TCP listening port of the server\n"
+#endif
+<< "\
    -C channel  DAB channel to be used (5A ... 13F resp. LA ... LP)\n\
    -G Gain     gain for device (range 1 .. 100)\n\
-   -Q          autogain for device (not all tuners support it!)\n\
-   -F filename load samples from file\n\
-   -E          only for files: continue after EOF (replay file)\n\
+   -P number   PPM correction\n\
+   -Q          autogain for device (not all tuners support it!)\n"
+#endif
+#ifdef HAVE_DUMPING
+<< "\
+   -R filename dump to an *.sdr file\n"
+#endif
+<< "\
    -O filename write output into a file (instead of stdout)\n\
    -S          do not display quality messages while running\n\
-   -R filename (if configured) dump to an *.sdr file\n\
-   \n\
-   -h          show options and quit\n"; 
-	   
+\n\
+   -h          show options and quit\n";
+
 }
 

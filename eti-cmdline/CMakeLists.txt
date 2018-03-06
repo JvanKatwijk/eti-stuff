@@ -43,10 +43,6 @@ if(DEFINED RTLSDR)
    set (objectName eti-cmdline-rtlsdr)
 endif ()
 
-#if(DEFINED RTLTCP)
-#  set(RTLTCP true)
-#endif ()
-
 if(DEFINED RAWFILES)
    set(RAWFILES true)
    set (objectName eti-cmdline-rawfiles)
