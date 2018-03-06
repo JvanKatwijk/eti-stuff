@@ -22,8 +22,8 @@
  *
  */
 
-#ifndef	__RTL_TCP_CLIENT
-#define	__RTL_TCP_CLIENT
+#ifndef	__RTL_TCP_HANDLER__
+#define	__RTL_TCP_HANDLER__
 #include	<iostream>
 #include	<sstream>
 #include	<errno.h>
