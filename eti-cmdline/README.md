@@ -17,10 +17,11 @@ from a selected DAB input channel. The program is fully command line driven.
 The supported input devices are:
 
 1. Dabsticks (rtlsdr) that are supported by the osmocom driver software
-2. SDRplay devices (RSP1 and RSP2)
-3. AIRSpy devices
-4. prerecorded RAW input files (in format u8, \*.raw)
-5. prerecorded wave files (in format s16le, \*.sdr)
+2. RTL-TCP IQ server
+3. SDRplay devices (RSP1 and RSP2)
+4. AIRSpy devices
+5. prerecorded RAW input files (in format u8, \*.raw)
+6. prerecorded wave files (in format s16le, \*.sdr)
 
 ## Installation
 
@@ -42,7 +43,7 @@ The "normal" way for configuring and installing is
    	make
 
 where XXX refers to the input device being supported, one of 
-(RTLSDR, SDRPLAY, AIRSPY, RAWFILES, WAVFILES)
+(RTLSDR, RTL_TCP, SDRPLAY, AIRSPY, RAWFILES, WAVFILES)
 
 If `-DDUMPING=ON` is added, the possibility for dumping the input to a ".sdr" 
 file (note that an sdr file is a ".wav" file, with a samplerate of 2048000 
