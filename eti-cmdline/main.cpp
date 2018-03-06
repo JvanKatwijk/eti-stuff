@@ -330,7 +330,7 @@ int32_t		basePort = 1234;
 	                                      continue_on_eof,
 	                                      inputStopped);
 #elif	HAVE_RTL_TCP
-	   inputDevice = new rtl_tcp_client (hostname,
+	   inputDevice = new rtl_tcpHandler (hostname,
 	                                     basePort,
 	                                     tunedFrequency,
 	                                     deviceGain,

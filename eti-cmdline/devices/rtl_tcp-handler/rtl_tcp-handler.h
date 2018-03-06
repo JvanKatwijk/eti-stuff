@@ -48,16 +48,16 @@ struct command {
 	unsigned int param;
 }__attribute__((packed));
 
-class	rtl_tcp_client: public deviceHandler {
+class	rtl_tcpHandler: public deviceHandler {
 public:
-			rtl_tcp_client (std::string	hostname,
+			rtl_tcpHandler (std::string	hostname,
 	                                int32_t		port,
 	                                int32_t		frequency,
 	                                int16_t		gain,
 	                                bool		autogain,
 		                        int16_t		ppm);
 
-			~rtl_tcp_client	(void);
+			~rtl_tcpHandler	(void);
 	void		setVFOFrequency		(int32_t nf);	// new
 	int32_t		getVFOFrequency		(void);		// new
 	bool		restartReader		(void);		// new
