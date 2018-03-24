@@ -168,6 +168,7 @@ typedef struct {
 } packetdata;
 
 typedef	struct {
+	bool	defined;
 	int16_t	subchId;
 	int16_t	startAddr;
 	bool	shortForm;

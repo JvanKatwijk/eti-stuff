@@ -188,7 +188,7 @@ void	etiGenerator::run		(void) {
 int	i, j, k;
 bufferElement b;
 int16_t	CIF_index;
-int CIFCount_hi, CIFCount_lo;
+int16_t CIFCount_hi, CIFCount_lo;
 
 	running. store (true);
 	while (running. load ()) {
@@ -340,7 +340,6 @@ uint8_t theVector [6144];
 	   index_In = (index_In + 1) & 0xF;
 	   return;
 	}
-
 //
 //	always handle the de-interleaving
 	for (i = 0; i < 3072 * 18; i++) {
@@ -505,7 +504,6 @@ void	etiGenerator::postProcess (uint8_t *theVector, int32_t size){
 void	etiGenerator::startProcessing	(void) {
 	processing. store (true);
 	fprintf (stderr, "yes, here we go\n");
-	amount. store (0);
 }
 
 void	etiGenerator::stop	(void) {

@@ -25,12 +25,22 @@
 #include	<unistd.h>
 #endif
 #include	<QFileDialog>
+#include        <sys/time.h>
+#include        <time.h>
 #include	"eti-controller.h"
 #include	"radio.h"
 #include	"fib-processor.h"
 #include	"mp2processor.h"
 #include	"mp4processor.h"
 #include	"data-processor.h"
+
+static inline
+int64_t         getCurrentTime       (void) {
+struct timeval  tv;
+
+        gettimeofday (&tv, NULL);
+        return ((int64_t)tv. tv_sec * 1000000 + (int64_t)tv. tv_usec);
+}
 
 	etiController::etiController (RadioInterface *mr,
 	                              DabParams      *dp,
@@ -42,16 +52,16 @@
 	input			= f;
 	my_fibProcessor		= fb;
 	audioBuffer		= ab;
-	running			= false;
-	newAudio		= false;
-	newData			= false;
+	running. store (false);
+	newAudio. store (false);
+	newData. store (false);
 }
 
 	etiController::~etiController	(void) {
 }
 
 void	etiController::stop		(void) {
-	running		= false;
+	running. store (false);
 #ifdef	__MINGW32__
 	usleep (100000);
 #else
@@ -71,23 +81,24 @@ int16_t	data_offset;
 int16_t	data_length	= -1;
 int	n;
 int16_t	NST, FICF;
-bool	channelSearch	= false;
 bool	processingData	= false;
 int	counter		= 0;
+int64_t	startTime;
 
-	the_Processor	= NULL;
-	running	= true;
+	the_Processor	= NULL;		// will be set, hopefully
+	running. store (true);
 
-	while (running) {
+	while (running. load ()) {
 	   int16_t	bitRate;
 //	If there is a request for a service, setup
 //	the appropriate handler
-	   if (newAudio) {
-	      channelSearch	= true;
+	   if (newAudio. load ()) {
 	      if (the_Processor != NULL)
 	         delete the_Processor;
 	      the_Processor		= NULL;
 	      subChannelId		= audioDescription. subchId;
+	      if (!audioDescription. defined)
+	         continue;
 	      if (audioDescription. ASCTy == 077)	// 
 	         the_Processor	= new mp4Processor (myRadioInterface,
 	                                            audioDescription. bitRate,
@@ -101,8 +112,7 @@ int	counter		= 0;
 	      bitRate		= audioDescription. bitRate;
 	   }	
 	   else
-	   if (newData) {
-	      channelSearch = true;
+	   if (newData. load ()) {
 	      if (the_Processor != NULL)
 	         delete the_Processor;
 
@@ -113,7 +123,7 @@ int	counter		= 0;
 	                                          packetDescription. DGflag,
 	                                          packetDescription. FEC_scheme,
 	                                          false);
-	      subChannelId		= packetDescription. subchId;
+	      subChannelId	= packetDescription. subchId;
 	      data_length	= -1;
 	      bitRate		= packetDescription. bitRate;
 	   }
@@ -121,6 +131,7 @@ int	counter		= 0;
 //	OK, ready to read a frame
 //	However, we need some kind of clock. We know that we have 
 //	for 24 msec audio in each frame
+	   startTime	= getCurrentTime ();
 	   for (n_frame = 0; n_frame < 6144; n_frame += n) {
 	      n = fread ((void *)(&buffer[n_frame]), 1, 6144 - n_frame, input);
 	      if (n == 0) {
@@ -135,13 +146,11 @@ int	counter		= 0;
 	   }
 	   counter ++;
 //	   fprintf (stderr, "\t%d\r", counter);
-//	   if (!processingData)
-#ifdef	__MINGW32__
-	      usleep (24000);
-#else
-	      msleep (24);
-#endif
-//	extract the relevant data
+//	extract the relevant data for handling the FIC
+	   fprintf (stderr, "			%d\r", buffer [4] & 0xFF);
+	   if (buffer [0] == 0)		// error frame
+	      continue;
+
 	   FICF			= (buffer [5] & 0x80) >> 7;
 	   NST			=  buffer [5] & 0x7F;
 	   int16_t fibBase	= 12 + 4 * NST;
@@ -153,7 +162,7 @@ int	counter		= 0;
 
 //	if there was a request for a service, we have to recompute
 //	the data_offset where to find it
-	   if (channelSearch) {
+	   if (newAudio. load () || newData. load ()) {
 	      data_offset	= 0;
 	      for (int i = 0; i < NST; i++) {
                  int16_t SCID	= (buffer [8 + 4 * i] & 0xfc) >> 2;
@@ -172,9 +181,8 @@ int	counter		= 0;
                  }
               }
 
-	      newAudio		= false;
-	      newData		= false;
-	      channelSearch	= false;
+	      newAudio. store (false);
+	      newData.  store (false);
 	      processingData	= true;
 //
 //	However:
@@ -199,6 +207,11 @@ int	counter		= 0;
 	            dataVector [8 * i + j] = (buffer [index + i] >> (7 - j)) & 01;
               the_Processor -> addtoFrame (dataVector);
 	   }
+//
+//	we will "ensure" that we deal with one CIF every 24 msec
+	   uint64_t cTime = getCurrentTime ();
+	   if (cTime < startTime + 24000)
+	      usleep (startTime + 24000 - cTime);
 	}
 #ifdef	__MINGW32__
 	usleep (10000000);

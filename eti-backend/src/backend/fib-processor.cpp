@@ -867,7 +867,6 @@ char		label [17];
 	                        (const char *) label,
 	                           (CharacterSet) charSet));
 //	         fprintf (stderr, "FIG1/1: SId = %4x\t%s\n", SId, label);
-	         addtoEnsemble (myIndex -> serviceLabel. label);
 	         myIndex -> serviceLabel. hasName = true;
 	      }
 	      break;
@@ -1003,6 +1002,12 @@ serviceId *s	= findServiceId	(SId);
 int16_t	i;
 int16_t firstFree       = -1;
 
+        if (!s -> serviceLabel. hasName)
+           return;
+
+        if (!ficList [subChId]. inUse)
+           return;
+
         for (i = 0; i < 64; i ++) {
            if (!components [i]. inUse) {
               if (firstFree == -1)
@@ -1013,6 +1018,10 @@ int16_t firstFree       = -1;
                (components [i]. componentNr == compnr))
               return;
         }
+
+	QString dataName = s -> serviceLabel. label;
+        addtoEnsemble (dataName);
+
         components [firstFree]. inUse = true;
         components [firstFree]. TMid    = TMid;
         components [firstFree]. componentNr = compnr;
@@ -1160,6 +1169,7 @@ int32_t	selectedService;
 void	fib_processor::dataforAudioService (QString &s, audiodata *d) {
 int16_t	i, j;
 
+	d -> defined	= false;
 //	first we locate the serviceId
 	for (i = 0; i < 64; i ++) {
 	   if (!listofServices [i]. inUse)
@@ -1199,6 +1209,7 @@ int16_t	i, j;
 	      else
 	         d -> language	= 0;
 	      d	-> programType	= listofServices [i]. programType;
+	      d	-> defined 	= true;
 	      return;
 	   }
 	}

@@ -352,6 +352,7 @@ int32_t		basePort = 1234;
 //	sigaction(SIGQUIT, &sigact, NULL);
 
 //
+//	do_process (channel);
 	etiClass theWorker (theMode,
 	                    inputDevice,
 #ifdef	HAVE_DUMPING
@@ -364,12 +365,11 @@ int32_t		basePort = 1234;
 	                    &fibqualityHandler,
 	                    &etiwriterHandler,
 	                    NULL);
+
 	inputDevice	-> restartReader ();
 	timesyncSet. store (false);
 	theWorker. start_ofdmProcessing ();
-
 	while (!timeSynced. load () && (--timeSyncTime >= 0)) 
-//	while (!timesyncSet. load () && (--timeSyncTime >= 0)) 
 	   sleep (1);
 
 	if (!timeSynced. load ()) {
@@ -443,6 +443,5 @@ void    printOptions (void) {
    -R filename (if configured) dump to an *.sdr file\n\
    \n\
    -h          show options and quit\n"; 
-	   
 }
 

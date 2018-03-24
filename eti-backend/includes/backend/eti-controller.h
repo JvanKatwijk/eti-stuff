@@ -18,7 +18,6 @@
  *    You should have received a copy of the GNU General Public License
  *    along with SDR-J; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
  */
 #
 #ifndef	__ETI_CONTROLLER
@@ -28,6 +27,7 @@
  */
 #include	<QThread>
 #include	<QObject>
+#include	<atomic>
 #include	"stdint.h"
 #include	"dab-constants.h"
 #include	"ringbuffer.h"
@@ -55,11 +55,11 @@ private:
 	FILE		*input;
 	RingBuffer<fibElement> *the_fibBuffer;
 	RingBuffer<int16_t>    *audioBuffer;
-	bool		running;
 	fib_processor	*my_fibProcessor;
 	dabProcessor	*the_Processor;
-	bool		newAudio;
-	bool		newData;
+	std::atomic<bool>	running;
+	std::atomic<bool>	newAudio;
+	std::atomic<bool>	newData;
 	audiodata	audioDescription;
 	packetdata	packetDescription;
 protected:	

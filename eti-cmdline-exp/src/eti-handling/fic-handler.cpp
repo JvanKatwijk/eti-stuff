@@ -209,7 +209,7 @@ int16_t	viterbiBlock [3072 + 24];
 	if (ficErrors + ficSuccess > 100) {
 	   set_fibQuality (ficSuccess * 100 / (ficErrors + ficSuccess),
 	                   userData);
-	   fprintf (stderr, "success %d\n", ficSuccess);
+//	   fprintf (stderr, "success %d\n", ficSuccess);
 	   ficErrors = ficSuccess = 0;
 	}
 //

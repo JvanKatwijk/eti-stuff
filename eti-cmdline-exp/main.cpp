@@ -403,9 +403,9 @@ int32_t		basePort = 1234;
 	                    "until you quit" << endl;
 	   run. store (true);
 	   while (run. load ()) {
-	      if (!isSilent)
-	         fprintf (stderr, "\t\testimated snr: %2d, fibquality %3d\r",
-	                            signalnoise. load (), ficSuccess. load ());
+//	      if (!isSilent)
+//	         fprintf (stderr, "\t\testimated snr: %2d, fibquality %3d\r",
+//	                            signalnoise. load (), ficSuccess. load ());
 	      sleep (1);
 	   }
 	}

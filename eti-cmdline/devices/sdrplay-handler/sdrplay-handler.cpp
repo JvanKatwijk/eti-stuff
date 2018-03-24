@@ -37,7 +37,7 @@ mir_sdr_DeviceT devDesc [4];
 
 	this	-> inputRate		= 2048000;
         this    -> frequency            = frequency;
-        this    -> ppmCorrection        = ppmCorrection;
+        this    -> ppmCorrection        = ppm;
         this    -> theGain              = gain;
         this    -> deviceIndex          = deviceIndex;
         this    -> agcMode		= autoGain ?
