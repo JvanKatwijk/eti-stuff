@@ -135,15 +135,17 @@ int16_t	deviceIndex;
 	gainsCount	= rtlsdr_get_tuner_gains (device, gains);
         rtlsdr_set_tuner_gain_mode (device, autogain);
 	rtlsdr_set_tuner_gain (device,gains [theGain * (gainsCount - 1) / 100]);
-        
-	r		= rtlsdr_set_freq_correction (device, ppmCorrection);
 
-        if (r == 0) {
-	   r = rtlsdr_get_freq_correction(device);
-	   fprintf (stderr, "Frequency correction set to: %d ppm\n", r);
-	}
-	else {
-	   fprintf (stderr, "Setting frequency correction failed\n");
+	if (ppmCorrection > 0) {
+	   r		= rtlsdr_set_freq_correction (device, ppmCorrection);
+
+           if (r == 0) {
+	      r = rtlsdr_get_freq_correction(device);
+	      fprintf (stderr, "Frequency correction set to: %d ppm\n", r);
+	   }
+	   else {
+	      fprintf (stderr, "Setting frequency correction failed\n");
+	   }
 	}
 
 	_I_Buffer	= new RingBuffer<uint8_t>(1024 * 1024);
