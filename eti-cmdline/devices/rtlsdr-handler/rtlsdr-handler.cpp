@@ -64,15 +64,16 @@ void	controlThread (rtlsdrHandler *theStick) {
 }
 //
 //	Our wrapper is a simple classs
-	rtlsdrHandler::rtlsdrHandler (int frequency,
+	rtlsdrHandler::rtlsdrHandler (int frequency, int16_t ppm,
 	                              int16_t gain, bool autogain) {
 int16_t	deviceCount;
 int32_t	r;
 int16_t	deviceIndex;
 
-	this	-> frequency	= frequency;
-	this	-> theGain	= gain;
-	this	-> autogain	= autogain;
+	this	-> frequency     = frequency;
+	this	-> ppmCorrection = ppm;
+	this	-> theGain       = gain;
+	this	-> autogain      = autogain;
 
 	inputRate		= 2048000;
 	libraryLoaded		= false;
@@ -129,11 +130,21 @@ int16_t	deviceIndex;
 	rtlsdr_set_tuner_gain_mode (device, 0);
 
 	gainsCount	= rtlsdr_get_tuner_gains (device, NULL);
-	fprintf (stderr, "Supported gain values (%d): ", gainsCount);
+	fprintf (stderr, "Supported gain values: %d\n", gainsCount);
 	gains		= new int [gainsCount];
 	gainsCount	= rtlsdr_get_tuner_gains (device, gains);
         rtlsdr_set_tuner_gain_mode (device, autogain);
 	rtlsdr_set_tuner_gain (device,gains [theGain * gainsCount / 100]);
+        
+	r		= rtlsdr_set_freq_correction (device, ppmCorrection);
+
+        if (r == 0) {
+	   r = rtlsdr_get_freq_correction(device);
+	   fprintf (stderr, "Frequency correction set to: %d ppm\n", r);
+	}
+	else {
+	   fprintf (stderr, "Setting frequency correction failed\n");
+	}
 
 	_I_Buffer	= new RingBuffer<uint8_t>(1024 * 1024);
 	return;
@@ -355,6 +366,13 @@ bool	rtlsdrHandler::load_rtlFunctions (void) {
 	   return false;
 	}
 	
+        rtlsdr_get_freq_correction = (pfnrtlsdr_get_freq_correction)
+	                  GETPROCADDRESS (Handle, "rtlsdr_get_freq_correction");
+	if (rtlsdr_get_freq_correction == NULL) {
+	   fprintf (stderr, "Could not find rtlsdr_get_freq_correction\n");
+	   return false;
+	}
+
 	rtlsdr_get_device_name = (pfnrtlsdr_get_device_name)
 	                  GETPROCADDRESS (Handle, "rtlsdr_get_device_name");
 	if (rtlsdr_get_device_name == NULL) {

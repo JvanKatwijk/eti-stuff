@@ -313,7 +313,7 @@ int32_t		basePort = 1234;
 
 	try {
 #ifdef	HAVE_RTLSDR
-	   inputDevice	= new rtlsdrHandler (tunedFrequency,
+	   inputDevice	= new rtlsdrHandler (tunedFrequency, ppmCorrection,
 	                                        deviceGain, autoGain);
 #elif	HAVE_SDRPLAY
 	   inputDevice	= new sdrplayHandler (tunedFrequency, ppmCorrection,
