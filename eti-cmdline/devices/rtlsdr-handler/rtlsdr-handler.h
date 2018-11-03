@@ -52,6 +52,7 @@ typedef int (*  pfnrtlsdr_cancel_async) (rtlsdr_dev_t *);
 typedef int (*  pfnrtlsdr_set_direct_sampling) (rtlsdr_dev_t *, int);
 typedef uint32_t (*  pfnrtlsdr_get_device_count) (void);
 typedef	int (* pfnrtlsdr_set_freq_correction)(rtlsdr_dev_t *, int);
+typedef	int (* pfnrtlsdr_get_freq_correction)(rtlsdr_dev_t *);
 typedef	char *(* pfnrtlsdr_get_device_name)(int);
 }
 //	This class is a simple wrapper around the
@@ -59,7 +60,7 @@ typedef	char *(* pfnrtlsdr_get_device_name)(int);
 //	It does not do any processing
 class	rtlsdrHandler: public deviceHandler {
 public:
-			rtlsdrHandler	(int32_t, int16_t, bool);
+			rtlsdrHandler	(int32_t, int16_t, int16_t, bool);
 			~rtlsdrHandler	(void);
 	void		setVFOFrequency	(int32_t);
 	int32_t		getVFOFrequency	(void);
@@ -82,6 +83,7 @@ public:
 	int32_t		sampleCounter;
 private:
 	int32_t		lastFrequency;
+	int16_t		ppmCorrection;
 	int16_t		theGain;
 	bool		autogain;
 	
@@ -113,6 +115,7 @@ private:
 	pfnrtlsdr_set_direct_sampling	rtlsdr_set_direct_sampling;
 	pfnrtlsdr_get_device_count rtlsdr_get_device_count;
 	pfnrtlsdr_set_freq_correction rtlsdr_set_freq_correction;
+	pfnrtlsdr_get_freq_correction rtlsdr_get_freq_correction;
 	pfnrtlsdr_get_device_name rtlsdr_get_device_name;
 };
 #endif
