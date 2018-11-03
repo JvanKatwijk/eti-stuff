@@ -134,7 +134,7 @@ int16_t	deviceIndex;
 	gains		= new int [gainsCount];
 	gainsCount	= rtlsdr_get_tuner_gains (device, gains);
         rtlsdr_set_tuner_gain_mode (device, autogain);
-	rtlsdr_set_tuner_gain (device,gains [theGain * gainsCount / 100]);
+	rtlsdr_set_tuner_gain (device,gains [theGain * (gainsCount - 1) / 100]);
         
 	r		= rtlsdr_set_freq_correction (device, ppmCorrection);
 
