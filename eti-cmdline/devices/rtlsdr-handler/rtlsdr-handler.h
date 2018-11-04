@@ -68,7 +68,7 @@ public:
 //	interface to the reader
 	bool		restartReader	(void);
 	void		stopReader	(void);
-	int32_t		getSamples	(DSPCOMPLEX *, int32_t);
+	int32_t		getSamples	(std::complex<float> *, int32_t);
 	int32_t		Samples		(void);
 	int32_t		getSamplesMissed	(void);
 	void		resetBuffer	(void);
