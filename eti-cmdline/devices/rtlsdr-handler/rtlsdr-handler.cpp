@@ -64,15 +64,19 @@ void	controlThread (rtlsdrHandler *theStick) {
 }
 //
 //	Our wrapper is a simple classs
-	rtlsdrHandler::rtlsdrHandler (int frequency,
-	                              int16_t gain, bool autogain) {
+	rtlsdrHandler::rtlsdrHandler (int	frequency,
+	                              int16_t	ppmCorrection,
+	                              int16_t	gain,
+	                              bool	autogain,
+	                              uint16_t	deviceIndex) {
 int16_t	deviceCount;
 int32_t	r;
-int16_t	deviceIndex;
 
 	this	-> frequency	= frequency;
+	this	-> ppmCorrection= ppmCorrection;
 	this	-> theGain	= gain;
 	this	-> autogain	= autogain;
+	this	-> deviceIndex	= deviceIndex;
 
 	inputRate		= 2048000;
 	libraryLoaded		= false;
@@ -106,8 +110,6 @@ int16_t	deviceIndex;
 	   fprintf (stderr, "No devices found\n");
 	   goto err;
 	}
-
-	deviceIndex = 0;	// default
 //
 //	OK, now open the hardware
 	r			= this -> rtlsdr_open (&device, deviceIndex);
@@ -128,12 +130,21 @@ int16_t	deviceIndex;
 	fprintf (stderr, "samplerate set to %d\n", r);
 	rtlsdr_set_tuner_gain_mode (device, 0);
 
-	gainsCount	= rtlsdr_get_tuner_gains (device, NULL);
-	fprintf (stderr, "Supported gain values (%d): ", gainsCount);
-	gains		= new int [gainsCount];
-	gainsCount	= rtlsdr_get_tuner_gains (device, gains);
-        rtlsdr_set_tuner_gain_mode (device, autogain);
-	rtlsdr_set_tuner_gain (device,gains [theGain * gainsCount / 100]);
+	gainsCount      = rtlsdr_get_tuner_gains (device, NULL);
+        fprintf (stderr, "Supported gain values (%d): ", gainsCount);
+        gains           = new int [gainsCount];
+        gainsCount      = rtlsdr_get_tuner_gains (device, gains);
+        for (int i = 0; i < gainsCount; i ++)
+           fprintf (stderr, "%d.%d ", gains [i] / 10, gains [i] % 10);
+        fprintf (stderr, "\n");
+        if (ppmCorrection != 0)
+           rtlsdr_set_freq_correction (device, ppmCorrection);
+        if (autogain)
+           rtlsdr_set_agc_mode (device, 1);
+        fprintf (stderr, "effective gain: gain %d.%d\n",
+	                             gains [theGain * gainsCount / 100] / 10,
+	                             gains [theGain * gainsCount / 100] % 10);
+        rtlsdr_set_tuner_gain (device, gains [theGain * gainsCount / 100]);
 
 	_I_Buffer	= new RingBuffer<uint8_t>(1024 * 1024);
 	return;
@@ -195,8 +206,10 @@ int32_t	r;
 
 	this -> rtlsdr_set_center_freq (device, frequency + vfoOffset);
 	workerHandle = std::thread (controlThread, this);
-	rtlsdr_set_tuner_gain_mode (device, autogain);
 	rtlsdr_set_tuner_gain (device, gains [theGain * gainsCount / 100]);
+        if (autogain)
+           rtlsdr_set_agc_mode (device, 1);
+
 	running	= true;
 	return true;
 }
@@ -218,8 +231,6 @@ void	rtlsdrHandler::setGain	(int32_t g) {
 }
 	
 void	rtlsdrHandler::setAgc		(bool b) {
-	rtlsdr_set_tuner_gain_mode (device, b);
-	rtlsdr_set_tuner_gain (device, gains [theGain * gainsCount / 100]);
 }
 
 //
@@ -292,6 +303,13 @@ bool	rtlsdrHandler::load_rtlFunctions (void) {
 	   fprintf (stderr, "Cound not find rtlsdr_set_tuner_gain\n");
 	   return false;
 	}
+
+	rtlsdr_set_agc_mode     = (pfnrtlsdr_set_agc_mode)
+                             GETPROCADDRESS (Handle, "rtlsdr_set_agc_mode");
+        if (rtlsdr_set_agc_mode == NULL) {
+           fprintf (stderr, "Could not find rtlsdr_set_agc_mode\n");
+           return false;
+        }
 
 	rtlsdr_get_tuner_gain	= (pfnrtlsdr_get_tuner_gain)
 	                     GETPROCADDRESS (Handle, "rtlsdr_get_tuner_gain");

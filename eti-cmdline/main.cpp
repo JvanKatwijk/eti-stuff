@@ -164,6 +164,7 @@ uint8_t		theBand		= BAND_III;
 int16_t		deviceGain	= 80;	// scale = 0 .. 100
 bool		autoGain	= false;
 int16_t		ppmCorrection	= 0;
+uint16_t	deviceIndex	= 0;
 deviceHandler	*inputDevice;
 bandHandler	the_bandHandler;
 int32_t		tunedFrequency	= 220000000;	// just a setting
@@ -194,7 +195,7 @@ int32_t		basePort = 1234;
 #elif defined (HAVE_RTL_TCP)
 	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:O:P:H:I:QR:Sh")) != -1) {
 #else
-	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:O:P:QR:Sh")) != -1) {
+	while ((opt = getopt (argc, argv, "I:D:d:M:B:C:G:O:P:QR:Sh")) != -1) {
 #endif
 	   switch (opt) {
 	      case 'D':
@@ -283,6 +284,10 @@ int32_t		basePort = 1234;
 	      case 'P':
 	         ppmCorrection	= atoi (optarg);
 	         break;
+
+	      case 'I':
+	         deviceIndex	= atoi (optarg);
+	         break;
 #endif
 	      case 'S':
 	         isSilent	= true;
@@ -314,7 +319,10 @@ int32_t		basePort = 1234;
 	try {
 #ifdef	HAVE_RTLSDR
 	   inputDevice	= new rtlsdrHandler (tunedFrequency,
-	                                        deviceGain, autoGain);
+		                             ppmCorrection,
+	                                     deviceGain,
+	                                     autoGain,
+	                                     deviceIndex);
 #elif	HAVE_SDRPLAY
 	   inputDevice	= new sdrplayHandler (tunedFrequency, ppmCorrection,
 	                                        deviceGain, autoGain, 0, 0);
@@ -435,6 +443,7 @@ void    printOptions (void) {
    -P number   PPM correction\n\
    -C channel  DAB channel to be used (5A ... 13F resp. LA ... LP)\n\
    -G Gain     gain for device (range 1 .. 100)\n\
+   -I number	deviceIndex (currently only for rtlsdr devices) \n\
    -Q          autogain for device (not all tuners support it!)\n\
    -F filename load samples from file\n\
    -E          only for files: continue after EOF (replay file)\n\

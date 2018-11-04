@@ -38,6 +38,7 @@ typedef	int (*  pfnrtlsdr_set_center_freq) (rtlsdr_dev_t *, uint32_t);
 typedef uint32_t (*  pfnrtlsdr_get_center_freq) (rtlsdr_dev_t *);
 typedef	int (*  pfnrtlsdr_get_tuner_gains) (rtlsdr_dev_t *, int *);
 typedef	int (*  pfnrtlsdr_set_tuner_gain_mode) (rtlsdr_dev_t *, int);
+typedef int (*  pfnrtlsdr_set_agc_mode) (rtlsdr_dev_t *, int);
 typedef	int (*  pfnrtlsdr_set_sample_rate) (rtlsdr_dev_t *, uint32_t);
 typedef	int (*  pfnrtlsdr_get_sample_rate) (rtlsdr_dev_t *);
 typedef	int (*  pfnrtlsdr_set_tuner_gain) (rtlsdr_dev_t *, int);
@@ -59,7 +60,8 @@ typedef	char *(* pfnrtlsdr_get_device_name)(int);
 //	It does not do any processing
 class	rtlsdrHandler: public deviceHandler {
 public:
-			rtlsdrHandler	(int32_t, int16_t, bool);
+			rtlsdrHandler	(int32_t, int16_t,
+	                                 int16_t, bool, uint16_t);
 			~rtlsdrHandler	(void);
 	void		setVFOFrequency	(int32_t);
 	int32_t		getVFOFrequency	(void);
@@ -82,9 +84,11 @@ public:
 	int32_t		sampleCounter;
 private:
 	int32_t		lastFrequency;
+	int16_t		ppmCorrection;
 	int16_t		theGain;
 	bool		autogain;
-	
+	uint16_t	deviceIndex;
+
 	int32_t		inputRate;
 	int32_t		deviceCount;
 	HINSTANCE	Handle;
@@ -104,6 +108,7 @@ private:
 	pfnrtlsdr_get_center_freq rtlsdr_get_center_freq;
 	pfnrtlsdr_get_tuner_gains rtlsdr_get_tuner_gains;
 	pfnrtlsdr_set_tuner_gain_mode rtlsdr_set_tuner_gain_mode;
+	pfnrtlsdr_set_agc_mode rtlsdr_set_agc_mode;
 	pfnrtlsdr_set_sample_rate rtlsdr_set_sample_rate;
 	pfnrtlsdr_get_sample_rate rtlsdr_get_sample_rate;
 	pfnrtlsdr_set_tuner_gain rtlsdr_set_tuner_gain;
