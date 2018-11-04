@@ -139,7 +139,7 @@ int16_t	deviceIndex;
 	if (ppmCorrection > 0) {
 	   r		= rtlsdr_set_freq_correction (device, ppmCorrection);
 
-           if (r == 0) {
+	   if (r == 0) {
 	      r = rtlsdr_get_freq_correction(device);
 	      fprintf (stderr, "Frequency correction set to: %d ppm\n", r);
 	   }
@@ -209,7 +209,7 @@ int32_t	r;
 	this -> rtlsdr_set_center_freq (device, frequency + vfoOffset);
 	workerHandle = std::thread (controlThread, this);
 	rtlsdr_set_tuner_gain_mode (device, autogain);
-	rtlsdr_set_tuner_gain (device, gains [theGain * gainsCount / 100]);
+	rtlsdr_set_tuner_gain (device, gains [theGain * (gainsCount - 1) / 100]);
 	running	= true;
 	return true;
 }
@@ -227,12 +227,12 @@ void	rtlsdrHandler::stopReader		(void) {
 //	first find the table value
 void	rtlsdrHandler::setGain	(int32_t g) {
 	theGain	= g;
-	rtlsdr_set_tuner_gain (device, gains [theGain * gainsCount / 100]);
+	rtlsdr_set_tuner_gain (device, gains [theGain * (gainsCount - 1) / 100]);
 }
 	
 void	rtlsdrHandler::setAgc		(bool b) {
 	rtlsdr_set_tuner_gain_mode (device, b);
-	rtlsdr_set_tuner_gain (device, gains [theGain * gainsCount / 100]);
+	rtlsdr_set_tuner_gain (device, gains [theGain * (gainsCount - 1) / 100]);
 }
 
 //
