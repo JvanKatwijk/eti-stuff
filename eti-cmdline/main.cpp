@@ -273,7 +273,16 @@ int32_t		basePort = 1234;
 	         break;
 
 	      case 'G':
-	         deviceGain	= atoi (optarg);
+	         {
+	            int deviceGainArg = atoi (optarg);
+
+	            if ((deviceGainArg >= 0) && (deviceGainArg <= 100)) {
+	               deviceGain	= deviceGainArg;
+	            }
+	            else {
+	               fprintf(stderr, "Invalid gain value, using default: %d\n", deviceGain);
+	            }
+	         }
 	         break;
 
 	      case 'Q':
@@ -382,7 +391,7 @@ int32_t		basePort = 1234;
 //	give time to collect data on the ensemble and the programs
 //
 	while (--freqSyncTime > 0) {
-	   cerr << "still at most " << freqSyncTime <<  "seconds to wait\r";
+	   cerr << "\33[2Kstill at most " << freqSyncTime <<  " seconds to wait\r";
 	   sleep (1);
 	   if (ensembleRecognized. load ()) {
 	      theWorker. set_syncReached ();
