@@ -274,10 +274,14 @@ int32_t		basePort = 1234;
 	         break;
 
 	      case 'G':
-	         deviceGain	= atoi (optarg);
-	         if ((deviceGain < 0) || (deviceGain > 99)) {
-	            fprintf (stderr, "erroneous gain value, set to 50\n");
-	            deviceGain = 50;
+	         {
+	            int deviceGainArg = atoi (optarg);
+	            if ((deviceGainArg >= 0) && (deviceGainArg < 100)) {
+	               deviceGain	= deviceGainArg;
+	            }
+	            else {
+	               fprintf(stderr, "Invalid gain value, using default: %d\n", deviceGain);
+	            }
 	         }
 	         break;
 
