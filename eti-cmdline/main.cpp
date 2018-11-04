@@ -161,7 +161,7 @@ int16_t		freqSyncTime	= 10;
 uint8_t		theMode		= 1;
 std::string	theChannel	= "11C";
 uint8_t		theBand		= BAND_III;
-int16_t		deviceGain	= 80;	// scale = 0 .. 100
+int16_t		deviceGain	= 60;	// scale = 0 .. 99
 bool		autoGain	= false;
 int16_t		ppmCorrection	= 0;
 uint16_t	deviceIndex	= 0;
@@ -275,6 +275,10 @@ int32_t		basePort = 1234;
 
 	      case 'G':
 	         deviceGain	= atoi (optarg);
+	         if ((deviceGain < 0) || (deviceGain > 99)) {
+	            fprintf (stderr, "erroneous gain value, set to 50\n");
+	            deviceGain = 50;
+	         }
 	         break;
 
 	      case 'Q':
@@ -442,7 +446,7 @@ void    printOptions (void) {
    -B Band     select DAB Band (default: BAND_III, or L_BAND)\n\
    -P number   PPM correction\n\
    -C channel  DAB channel to be used (5A ... 13F resp. LA ... LP)\n\
-   -G Gain     gain for device (range 1 .. 100)\n\
+   -G Gain     gain for device (range 0 .. 99)\n\
    -I number	deviceIndex (currently only for rtlsdr devices) \n\
    -Q          autogain for device (not all tuners support it!)\n\
    -F filename load samples from file\n\
