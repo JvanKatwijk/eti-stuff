@@ -173,7 +173,9 @@ int16_t		lnaGain		= 30;
 int16_t		vgaGain		= 30;
 #else
 int16_t		deviceGain	= 80;	// scale = 0 .. 100
+int16_t		deviceIndex	= 0;
 #endif
+
 #if defined(HAVE_RAWFILES) || defined(HAVE_WAVFILES)
 std::string	inputfileName;
 bool	continue_on_eof	= false;
@@ -209,7 +211,7 @@ struct sigaction sigact;
 #elif defined (HAVE_HACKRF)
 	while ((opt = getopt (argc, argv, "D:d:M:B:C:L:V:O:P:QR:Sh")) != -1) {
 #else
-	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:O:P:QR:Sh")) != -1) {
+	while ((opt = getopt (argc, argv, "I:D:d:M:B:C:G:O:P:QR:Sh")) != -1) {
 #endif
 	   switch (opt) {
 	      case 'D':
@@ -305,6 +307,11 @@ struct sigaction sigact;
 #else
 	      case 'G':
 	         deviceGain	= atoi (optarg);
+	         break;
+
+	      case 'I':
+	         deviceIndex	= atoi (optarg);
+	         break;
 #endif
 
 	      case 'Q':
@@ -344,8 +351,11 @@ struct sigaction sigact;
 
 	try {
 #ifdef	HAVE_RTLSDR
-	   inputDevice	= new rtlsdrHandler (tunedFrequency, ppmCorrection,
-	                                        deviceGain, autoGain);
+	   inputDevice	= new rtlsdrHandler (tunedFrequency,
+	                                     ppmCorrection,
+	                                     deviceGain,
+	                                     autoGain,
+	                                     deviceIndex);
 #elif	HAVE_SDRPLAY
 	   inputDevice	= new sdrplayHandler (tunedFrequency, ppmCorrection,
 	                                      GRdB, lnaState, autoGain, 0, 0);
@@ -469,7 +479,8 @@ void    printOptions (void) {
    -B Band     select DAB Band (default: BAND_III, or L_BAND)\n\
    -P number   PPM correction\n\
    -C channel  DAB channel to be used (5A ... 13F resp. LA ... LP)\n\
-   -G Gain     gain for device (range 1 .. 100)\n\
+   -G Gain     gain for device (range 0 .. 99)\n\
+   -I number	deviceIndex (currently only for rtlsdr devices) \n\
    -Q          autogain for device (not all tuners support it!)\n\
    -F filename load samples from file\n\
    -E          only for files: continue after EOF (replay file)\n\

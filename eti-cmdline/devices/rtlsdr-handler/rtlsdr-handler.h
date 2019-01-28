@@ -34,11 +34,12 @@ typedef	struct rtlsdr_dev rtlsdr_dev_t;
 //	It does not do any processing
 class	rtlsdrHandler: public deviceHandler {
 public:
-			rtlsdrHandler	(int32_t, int16_t, int16_t, bool);
+			rtlsdrHandler	(int32_t, int16_t,
+	                                 int16_t, bool, int16_t);
 			~rtlsdrHandler	(void);
 	bool		restartReader	(int32_t);
 	void		stopReader	(void);
-	int32_t		getSamples	(DSPCOMPLEX *, int32_t);
+	int32_t		getSamples	(std::complex<float> *, int32_t);
 	int32_t		Samples		(void);
 	void		resetBuffer	(void);
 	int16_t		bitDepth	(void);
@@ -52,16 +53,14 @@ private:
 	int16_t		theGain;
 	bool		autogain;
 	int16_t		ppmOffset;
-
+	uint16_t	deviceIndex;
 	int32_t		inputRate;
 	int32_t		deviceCount;
-	HINSTANCE	Handle;
 	std::thread	workerHandle;
-	bool		libraryLoaded;
-	bool		open;
 	int		*gains;
 	int16_t		gainsCount;
 	bool		running;
+	bool		open;
 	int		frequency;
 };
 #endif
