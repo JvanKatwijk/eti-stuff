@@ -84,7 +84,7 @@ int32_t	i;
 	this	-> ibits		= new int16_t [2 * this -> carriers];
 	this	-> referenceFase	= new DSPCOMPLEX [T_u];
 	this	-> my_etiGenerator	= eti;
-	fft_handler			= new common_fft (T_u);
+	fft_handler			= new fftHandler (T_u);
 	fft_buffer			= fft_handler -> getVector ();
 //
 	ofdmBuffer			= new DSPCOMPLEX [76 * T_s];
@@ -97,8 +97,9 @@ int32_t	i;
 	oscillatorTable		= new DSPCOMPLEX [INPUT_RATE];
 
 	for (i = 0; i < INPUT_RATE; i ++)
-	   oscillatorTable [i] = DSPCOMPLEX (cos (2.0 * M_PI * i / INPUT_RATE),
-	                                     sin (2.0 * M_PI * i / INPUT_RATE));
+	   oscillatorTable [i] = std::complex<float> (
+	                                cos (2.0 * M_PI * i / INPUT_RATE),
+	                                sin (2.0 * M_PI * i / INPUT_RATE));
 
 	bufferContent	= 0;
 //
@@ -130,8 +131,8 @@ void	ofdmProcessor::start	(void) {
 }
 /**
   */
-DSPCOMPLEX ofdmProcessor::getSample (int32_t phase) {
-DSPCOMPLEX temp;
+std::complex<float> ofdmProcessor::getSample (int32_t phase) {
+std::complex<float> temp;
 	
 	if (!running. load ())
 	   throw 21;
@@ -177,7 +178,8 @@ DSPCOMPLEX temp;
 }
 //
 
-void	ofdmProcessor::getSamples (DSPCOMPLEX *v, int16_t n, int32_t phase) {
+void	ofdmProcessor::getSamples (std::complex<float>*v,
+	                                    int16_t n, int32_t phase) {
 int32_t		i;
 
 	if (!running. load ())
@@ -228,7 +230,7 @@ int32_t		i;
 void	ofdmProcessor::run	(void) {
 int32_t		startIndex;
 int32_t		i;
-DSPCOMPLEX	FreqCorr;
+std::complex<float>	FreqCorr;
 int32_t		counter;
 float		currentStrength;
 int32_t		syncBufferSize	= 32768;
@@ -238,7 +240,7 @@ int16_t		attempts	= 0;
 
 	try {
 
-Initing:
+//Initing:
 ///	first, we need samples to get a reasonable sLevel
 	   sLevel	= 0;
 	   for (i = 0; i < T_F / 2; i ++) {
@@ -267,7 +269,7 @@ notSynced:
   *	We now have initial values for currentStrength (i.e. the sum
   *	over the last 50 samples) and sLevel, the long term average.
   */
-SyncOnNull:
+//SyncOnNull:
 /**
   *	here we start looking for the null level, i.e. a dip
   */
@@ -292,7 +294,7 @@ SyncOnNull:
   *	We now start looking for the end of the null period.
   */
 	   counter	= 0;
-SyncOnEndNull:
+//SyncOnEndNull:
 	   while (currentStrength / 50 < 0.75 * sLevel) {
 	      DSPCOMPLEX sample = getSample (coarseCorrector + fineCorrector);
 	      envBuffer [syncBufferIndex] = jan_abs (sample);
@@ -347,7 +349,7 @@ SyncOnPhase:
 	   ofdmBufferIndex	= T_u - startIndex;
 
 	   my_etiGenerator	-> newFrame ();
-Block_0:
+//Block_0:
 /**
   *	Block 0 is special in that it is used for coarse time synchronization
   *	and its content is used as a reference for decoding the
@@ -370,7 +372,7 @@ Block_0:
 /**
   *	after block 0, we will just read in the other (params -> L - 1) blocks
   */
-Data_blocks:
+//Data_blocks:
 /**
   *	The first ones are the FIC blocks. We immediately
   *	start with building up an average of the phase difference
@@ -388,7 +390,7 @@ Data_blocks:
 	      my_etiGenerator -> processBlock (ibits, ofdmSymbolCount);
 	   }
 
-NewOffset:
+//NewOffset:
 ///	we integrate the newly found frequency error with the
 ///	existing frequency error.
 	   fineCorrector += 0.1 * arg (FreqCorr) / M_PI *
@@ -417,7 +419,7 @@ NewOffset:
 	      coarseCorrector -= carrierDiff;
 	      fineCorrector += carrierDiff;
 	   }
-ReadyForNewFrame:
+//ReadyForNewFrame:
 ///	and off we go, up to the next frame
 	   goto SyncOnPhase;
 	}
@@ -456,7 +458,6 @@ int16_t		i;
 ////////////////////////////////////////////////////////////////////////////
 
 void	ofdmProcessor::processBlock_0 (DSPCOMPLEX *vi) {
-int16_t	i, j, index_1 = 100;
 
 	memcpy (fft_buffer, vi, T_u * sizeof (DSPCOMPLEX));
 	fft_handler	-> do_FFT ();

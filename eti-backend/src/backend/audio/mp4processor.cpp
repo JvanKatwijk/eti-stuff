@@ -119,6 +119,7 @@ int16_t	nbits	= 24 * bitRate;
   *	if the firecode is OK, we handle the frame
   *	and adjust the buffer here for the next round
   */
+
 	   if (fc. check (&frameBytes [blockFillIndex * nbits / 8]) &&
 	       (processSuperframe (frameBytes,
 	                           blockFillIndex * nbits / 8))) {
@@ -172,11 +173,12 @@ int32_t		tmp;
 	   ler = my_rsDecoder. dec (rsIn, rsOut, 135);
 	   if (ler < 0) {
 	      rsErrors ++;
-	      return false;
+//	      return false;
 	   }
 	   for (k = 0; k < 110; k ++) 
 	      outVector [j + k * RSDims] = rsOut [k];
 	}
+
 
 //	bits 0 .. 15 is firecode
 //	bit 16 is unused
@@ -224,19 +226,24 @@ int32_t		tmp;
 	      au_start [1] = outVector [3] * 16 + (outVector [4] >> 4);
 	      au_start [2] = (outVector [4] & 0xf) * 256 + outVector [5];
 	      au_start [3] = 110 * (bitRate / 8);
+	      fprintf (stderr, "%d, %d, %d, %d\n",
+	                       au_start [0], au_start [1], au_start [2], au_start [3]);
 	      break;
 	}
+
 /**
   *	OK, the result is N * 110 * 8 bits (still single bit per byte!!!)
   *	extract the AU's, and prepare a buffer,  with the sufficient
   *	lengthy for conversion to PCM samples
   */
+
+	fprintf (stderr, "num_aus = %d\n", num_aus);
 	for (i = 0; i < num_aus; i ++) {
 	   int16_t	aac_frame_length;
 
 ///	sanity check 1
 	   if (au_start [i + 1] < au_start [i]) {
-//	      fprintf (stderr, "%d %d (%d)\n", au_start [i], au_start [i + 1], i);
+	      fprintf (stderr, " fout: %d %d (%d)\n", au_start [i], au_start [i + 1], i);
 //	should not happen, all errors were corrected
 	      return false;
 	   }

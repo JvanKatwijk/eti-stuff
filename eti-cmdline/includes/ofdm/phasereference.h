@@ -43,10 +43,8 @@ private:
 	int16_t		threshold;
 	int16_t		diff_length;
 
-	common_fft	*fft_processor;
+	fftHandler	*fft_processor;
 	std::complex<float>	*fft_buffer;
-	common_ifft	*res_processor;
-	std::complex<float>	*res_buffer;
 	std::complex<float>	*phasedifferences;
 	int32_t		fft_counter;
 };

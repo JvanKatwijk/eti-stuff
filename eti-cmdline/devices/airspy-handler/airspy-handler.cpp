@@ -178,21 +178,7 @@ err:
 	   delete theBuffer;
 }
 
-void	airspyHandler::setVFOFrequency (int32_t nf) {
-int result = my_airspy_set_freq (device, nf);
-
-	frequency	= nf;
-	if (result != AIRSPY_SUCCESS) {
-	   printf ("my_airspy_set_freq() failed: %s (%d)\n",
-	            my_airspy_error_name((airspy_error)result), result);
-	}
-}
-
-int32_t	airspyHandler::getVFOFrequency (void) {
-	return frequency;
-}
-
-bool	airspyHandler::restartReader	(void) {
+bool	airspyHandler::restartReader	(int32_t frequency {
 int	result;
 int32_t	bufSize	= EXTIO_NS * EXTIO_BASE_TYPE_SIZE * 2;
 
@@ -353,19 +339,9 @@ int16_t	airspyHandler::bitDepth (void) {
 	return 13;
 }
 
-int32_t	airspyHandler::getRate (void) {
-	return inputRate;
-}
-
 int32_t	airspyHandler::getSamples (DSPCOMPLEX *v, int32_t size) {
 
 	return theBuffer	-> getDataFromBuffer (v, size);
-}
-
-int32_t	airspyHandler::getSamples	(DSPCOMPLEX  *V,
-	                         int32_t size, uint8_t M) {
-	(void)M;
-	return getSamples (V, size);
 }
 
 int32_t	airspyHandler::Samples	(void) {

@@ -28,13 +28,13 @@
 
 #include	<stdio.h>
 #include	<stdint.h>
-#include	"viterbi-768.h"
+#include	"viterbi-handler.h"
 #include	"callback-types.h"
 #include	"fib-processor.h"
 
 class	dabParams;
 
-class ficHandler:public viterbi_768 {
+class ficHandler:public viterbiHandler {
 public:
 			ficHandler		(dabParams  *,
 	                                         void	    *,

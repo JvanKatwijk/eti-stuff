@@ -43,9 +43,10 @@ if(DEFINED RTLSDR)
    set (objectName eti-cmdline-rtlsdr)
 endif ()
 
-#if(DEFINED RTLTCP)
-#  set(RTLTCP true)
-#endif ()
+if(DEFINED HACKRF)
+   set(HACKRF true)
+   set (objectName eti-cmdline-hackrf)
+endif ()
 
 if(DEFINED RAWFILES)
    set(RAWFILES true)
@@ -104,8 +105,7 @@ endif ()
 	           ./includes
 	           ./includes/ofdm
 	           ./includes/eti-handling
-	           ./includes/eti-handling/viterbi_768
-	           ./includes/various
+	           ./includes/support
 	           ./devices
 	           /usr/include/
 	)
@@ -119,17 +119,16 @@ endif ()
 	     ./includes/ofdm/phasetable.h
 	     ./includes/ofdm/freq-interleaver.h
 	     ./includes/eti-handling/eti-generator.h
-	     ./includes/eti-handling/viterbi.h
-	     ./includes/eti-handling/viterbi_768/viterbi-768.h
+	     ./includes/eti-handling/viterbi-handler.h
 	     ./includes/eti-handling/protection.h
 	     ./includes/eti-handling/uep-protection.h
 	     ./includes/eti-handling/eep-protection.h
 	     ./includes/eti-handling/protTables.h
 	     ./includes/eti-handling/charsets.h
-	     ./includes/various/ringbuffer.h
-	     ./includes/various/fft.h
-	     ./includes/various/band-handler.h
-	     ./includes/various/dab-params.h
+	     ./includes/support/ringbuffer.h
+	     ./includes/support/fft.h
+	     ./includes/support/band-handler.h
+	     ./includes/support/dab-params.h
 	     ./devices/device-handler.h
 	)
 
@@ -142,9 +141,7 @@ endif ()
 	     ./src/ofdm/phasetable.cpp
 	     ./src/ofdm/freq-interleaver.cpp
 	     ./src/eti-handling/eti-generator.cpp
-	     ./src/eti-handling/viterbi.cpp
-	     ./src/eti-handling/viterbi_768/viterbi-768.cpp
-	     ./src/eti-handling/viterbi_768/spiral-no-sse.c
+	     ./src/eti-handling/viterbi-handler.cpp
 	     ./src/eti-handling/fic-handler.cpp
 	     ./src/eti-handling/fib-processor.cpp
 	     ./src/eti-handling/protection.cpp
@@ -152,9 +149,9 @@ endif ()
 	     ./src/eti-handling/uep-protection.cpp
 	     ./src/eti-handling/protTables.cpp
 	     ./src/eti-handling/charsets.cpp
-	     ./src/various/fft.cpp
-	     ./src/various/band-handler.cpp
-	     ./src/various/dab-params.cpp
+	     ./src/support/fft.cpp
+	     ./src/support/band-handler.cpp
+	     ./src/support/dab-params.cpp
 	     ./devices/device-handler.cpp
 	)
 
@@ -214,7 +211,40 @@ endif ()
 
 	 add_definitions (-DHAVE_SDRPLAY)
 	endif (SDRPLAY)
- 
+
+	if (HACKRF)
+           find_path (HACKLIB_INCLUDE_DIR
+                      NAMES hackrf.h
+                      PATHS
+                      ./devices/hackrf-handler/libhackrf/
+                       /usr/local/include/
+           )
+           include_directories (${HACKLIB_INCLUDE_DIR})
+
+           find_library (HACKLIB hackrf)
+           if(NOT(HACKLIB))
+              message (FATAL_ERROR "please install -lhackrf")
+           else(NOT(HACKLIB))
+              list (APPEND extraLibs ${HACKLIB})
+           endif(NOT(HACKLIB))
+
+           include_directories (
+             ./devices/hackrf-handler
+           )
+	   
+	   set ($(objectName)_HDRS
+                ${${objectName}_HDRS}
+                ./devices/hackrf-handler/hackrf-handler.h
+           )
+
+           set (${objectName}_SRCS
+                ${${objectName}_SRCS}
+                ./devices/hackrf-handler/hackrf-handler.cpp
+           )
+
+           add_definitions (-DHAVE_HACKRF)
+        endif (HACKRF)
+
 	if (AIRSPY)
            find_package(LibAIRSPY)
            if (NOT LIBAIRSPY_FOUND)
@@ -244,7 +274,8 @@ endif ()
            if (NOT LIBRTLSDR_FOUND)
                message(FATAL_ERROR "please install librtlsdr")
            endif ()
-	   ###include_directories (${RTLSDR_INCLUDE_DIR})
+	   include_directories (${LIBRTLSDR_INCLUDE_DIR})
+	   list(APPEND extraLibs ${LIBRTLSDR_LIBRARIES})
 
 	   include_directories (
 	      ./devices/rtlsdr-handler/

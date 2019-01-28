@@ -67,7 +67,8 @@ struct timeval	tv;
 	delete _I_Buffer;
 }
 
-bool	rawfileHandler::restartReader	(void) {
+bool	rawfileHandler::restartReader	(int32_t frequency) {
+	(void)frequency;
 	if (run. load ())
 	   return true;
 	run. store (true);

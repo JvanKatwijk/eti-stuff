@@ -107,8 +107,8 @@ public:
 //	is running
 	bool	Working			(void);
 private:
-	ofdmProcessor	my_ofdmProcessor;
 	etiGenerator	my_etiGenerator;
+	ofdmProcessor	my_ofdmProcessor;
 };
 
 #endif

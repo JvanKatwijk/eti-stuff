@@ -42,10 +42,12 @@ using std::endl;
 //
 #ifdef	HAVE_RTLSDR
 #include	"rtlsdr-handler.h"
-#elif HAVE_SDRPLAY
+#elif	HAVE_SDRPLAY
 #include	"sdrplay-handler.h"
-#elif HAVE_AIRSPY
+#elif	HAVE_AIRSPY
 #include	"airspy-handler.h"
+#elif	HAVE_HACKRF
+#include	"hackrf-handler.h"
 #elif	HAVE_RAWFILES
 #include	"rawfile-handler.h"
 #elif	HAVE_WAVFILES
@@ -114,7 +116,7 @@ int	programCounter	= 1;
 void	programnameHandler (std::string name, int SId, void *ctx) {
 	(void)ctx;
 	mainLocker. lock ();
-	fprintf (stderr, "program\ (%2d)\t %s\t \%lX is in the list\n",
+	fprintf (stderr, "program\t (%2d)\t %s\t %X is in the list\n",
 	                               programCounter ++, name. c_str (), SId);
 	mainLocker. unlock ();
 }
@@ -161,9 +163,25 @@ int16_t		freqSyncTime	= 10;
 uint8_t		theMode		= 1;
 std::string	theChannel	= "11C";
 uint8_t		theBand		= BAND_III;
-int16_t		deviceGain	= 80;	// scale = 0 .. 100
 bool		autoGain	= false;
 int16_t		ppmCorrection	= 0;
+#ifdef	HAVE_SDRPLAY
+int16_t		GRdB		= 30;
+int16_t		lnaState	= 2;
+#elif	HAVE_HACKRF
+int16_t		lnaGain		= 30;
+int16_t		vgaGain		= 30;
+#else
+int16_t		deviceGain	= 80;	// scale = 0 .. 100
+#endif
+#if defined(HAVE_RAWFILES) || defined(HAVE_WAVFILES)
+std::string	inputfileName;
+bool	continue_on_eof	= false;
+#elif defined (HAVE_RTL_TCP)
+std::string	hostname = "127.0.0.1";
+int32_t		basePort = 1234;
+#endif
+
 deviceHandler	*inputDevice;
 bandHandler	the_bandHandler;
 int32_t		tunedFrequency	= 220000000;	// just a setting
@@ -172,13 +190,6 @@ SNDFILE		*dumpFile	= NULL;
 #endif
 int	opt;
 struct sigaction sigact;
-#if defined(HAVE_RAWFILES) || defined(HAVE_WAVFILES)
-std::string	inputfileName;
-bool	continue_on_eof	= false;
-#elif defined (HAVE_RTL_TCP)
-std::string	hostname = "127.0.0.1";
-int32_t		basePort = 1234;
-#endif
 //
 //	default
 	etiFile		= stdout;
@@ -193,6 +204,10 @@ int32_t		basePort = 1234;
 	while ((opt = getopt (argc, argv, "ED:d:M:O:F:Sh")) != -1) {
 #elif defined (HAVE_RTL_TCP)
 	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:O:P:H:I:QR:Sh")) != -1) {
+#elif defined (HAVE_SDRPLAY) 
+	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:L::O:P:QR:Sh")) != -1) {
+#elif defined (HAVE_HACKRF)
+	while ((opt = getopt (argc, argv, "D:d:M:B:C:L:V:O:P:QR:Sh")) != -1) {
 #else
 	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:O:P:QR:Sh")) != -1) {
 #endif
@@ -253,8 +268,7 @@ int32_t		basePort = 1234;
 	         continue_on_eof	= true;
 	         fprintf (stderr, "continue_on_eof is now set\n");
 	         break;
-#else
-#ifdef	HAVE_RTL_TCP
+#elif defined (HAVE_RTL_TCP)
 	      case 'H':
 	         hostname	= std::string (optarg);
 	         break;
@@ -272,9 +286,26 @@ int32_t		basePort = 1234;
 	         theChannel	= std::string (optarg);
 	         break;
 
+#if defined (HAVE_SDRPLAY)
+	      case 'G':
+	         GRdB	= atoi (optarg);
+	         break;
+	      case 'L':
+	         lnaState	= atoi (optarg);
+	         break;
+#elif defined (HAVE_HACKRF)
+	      case 'L':
+	         lnaGain	= atoi (optarg);
+	         break;
+
+	      case 'V':
+	         vgaGain	= atoi (optarg);
+	         break;
+
+#else
 	      case 'G':
 	         deviceGain	= atoi (optarg);
-	         break;
+#endif
 
 	      case 'Q':
 	         autoGain	= true;
@@ -283,7 +314,7 @@ int32_t		basePort = 1234;
 	      case 'P':
 	         ppmCorrection	= atoi (optarg);
 	         break;
-#endif
+
 	      case 'S':
 	         isSilent	= true;
 	         break;
@@ -313,11 +344,15 @@ int32_t		basePort = 1234;
 
 	try {
 #ifdef	HAVE_RTLSDR
-	   inputDevice	= new rtlsdrHandler (tunedFrequency,
+	   inputDevice	= new rtlsdrHandler (tunedFrequency, ppmCorrection,
 	                                        deviceGain, autoGain);
 #elif	HAVE_SDRPLAY
 	   inputDevice	= new sdrplayHandler (tunedFrequency, ppmCorrection,
-	                                        deviceGain, autoGain, 0, 0);
+	                                      GRdB, lnaState, autoGain, 0, 0);
+#elif	HAVE_HACKRF
+	   (void)autoGain;
+	   inputDevice	= new hackrfHandler (tunedFrequency, ppmCorrection,
+	                                      lnaGain, vgaGain);
 #elif	HAVE_AIRSPY
 	   inputDevice	= new airspyHandler (tunedFrequency,
 	                                        deviceGain, autoGain);
@@ -366,7 +401,7 @@ int32_t		basePort = 1234;
 	                    &etiwriterHandler,
 	                    NULL);
 
-	inputDevice	-> restartReader ();
+	inputDevice	-> restartReader (tunedFrequency);
 	timesyncSet. store (false);
 	theWorker. start_ofdmProcessing ();
 	while (!timeSynced. load () && (--timeSyncTime >= 0)) 

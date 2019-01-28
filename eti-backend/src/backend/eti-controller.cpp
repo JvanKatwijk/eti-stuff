@@ -97,6 +97,8 @@ int64_t	startTime;
 	         delete the_Processor;
 	      the_Processor		= NULL;
 	      subChannelId		= audioDescription. subchId;
+	      fprintf (stderr, "selecting chId %d (defined %d)\n",
+	                 subChannelId, audioDescription. defined);
 	      if (!audioDescription. defined)
 	         continue;
 	      if (audioDescription. ASCTy == 077)	// 

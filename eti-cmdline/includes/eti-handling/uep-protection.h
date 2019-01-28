@@ -26,11 +26,10 @@
 #include	<stdio.h>
 #include	<stdint.h>
 #include	"protection.h"
-#include	"viterbi-768.h"
 
         class uep_protection: public protection {
 public:
-                uep_protection (int16_t, int16_t);
+                uep_protection	(int16_t, int16_t);
                 ~uep_protection (void);
 bool            deconvolve      (int16_t *, int32_t, uint8_t *);
 };
