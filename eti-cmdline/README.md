@@ -19,8 +19,9 @@ The supported input devices are:
 1. Dabsticks (rtlsdr) that are supported by the osmocom driver software
 2. SDRplay devices (RSP1 and RSP2)
 3. AIRSpy devices
-4. prerecorded RAW input files (in format u8, \*.raw)
-5. prerecorded wave files (in format s16le, \*.sdr)
+4. HACKrf devices
+5. prerecorded RAW input files (in format u8, \*.raw)
+6. prerecorded wave files (in format s16le, \*.sdr)
 
 ## Installation
 
@@ -42,7 +43,7 @@ The "normal" way for configuring and installing is
    	make
 
 where XXX refers to the input device being supported, one of 
-(RTLSDR, SDRPLAY, AIRSPY, RAWFILES, WAVFILES)
+(RTLSDR, SDRPLAY, AIRSPY, HACKrf, RAWFILES, WAVFILES)
 
 If `-DDUMPING=ON` is added, the possibility for dumping the input to a ".sdr" 
 file (note that an sdr file is a ".wav" file, with a samplerate of 2048000 
@@ -75,27 +76,58 @@ General parameters are
    not specifying the "-O" option also causes the output to be written
    to stdout.
 
+4. `-R filename`, for dumping the input to a file as mentioned above. This
+   option only makes sense when dumping is configures.
+
 For use with one of the physical devices, one may set the following parameters
 
-4. `-B ("L_BAND"| "BAND III")` for selecting the band. Default BAND III is chosen.
+5. `-B ("L_BAND"| "BAND III")` for selecting the band. Default BAND III is chosen.
 
-5. `-C channel`,  for selecting the channel to be set, e.g. 11C, default 11C
+6. `-C channel`,  for selecting the channel to be set, e.g. 11C, default 11C
    is chosen
 
-6. `-G number`, for setting the gain with the device, a number between 0 .. 100,
+For use with rtlsdr based devices, one may use
+
+7. `-G number`, for setting the gain with the device, a number between 0 .. 100,
    where 100 is the highest gain.
 
-7. `-Q`, for setting the autogain with the device (assuming the device supports
+8. `-Q`, for setting the autogain with the device (assuming the device supports
    autogain setting)
 
-8. `-R filename`, for dumping the input to a file as mentioned above. This
-   option only makes sense when dmping is configures.
+9. `-P number`, for setting the ppm correction
+
+10. `-I number`, for setting the device index. 
+
+For use with sdrplay devices, one may use
+
+7. `-G number`, for setting the if gain reduction, and
+
+8. `-L number`, for setting the LNA state, and
+
+9. `-Q', for setting the autogain
+
+10. `-P`, for setting the ppm correction
+
+For use with HACKrf devices, one may use
+
+7. `-L number`, for setting the lna gain, and
+
+8. `-V number`, for setting the vga gain
+
+9. `-P number`, for setting the ppm correction.
+
+For use with AIRSPY devices, one may usse
+
+7. `-G number` for setting the gain (combined gain setting, range 0..21)
+
+8. `-P number` for setting the ppm correction.
+
 
 For use with file input 
 
-9. `-F filename`, the full pathname for the input file
+7. `-F filename`, the full pathname for the input file
 
-10. `-E`, is selected the file will be reread after reaching eof.
+8. `-E`, is selected the file will be reread after reaching eof.
 
 For use with rtl_tcp
 

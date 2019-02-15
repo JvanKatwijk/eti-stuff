@@ -209,7 +209,9 @@ struct sigaction sigact;
 #elif defined (HAVE_SDRPLAY) 
 	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:L::O:P:QR:Sh")) != -1) {
 #elif defined (HAVE_HACKRF)
-	while ((opt = getopt (argc, argv, "D:d:M:B:C:L:V:O:P:QR:Sh")) != -1) {
+	while ((opt = getopt (argc, argv, "D:d:M:B:C:L:V:O:P:R:Sh")) != -1) {
+#elif defined (HAVE_AIRSPY)
+	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:O:P:R:Sh")) != -1) {
 #else
 	while ((opt = getopt (argc, argv, "I:D:d:M:B:C:G:O:P:QR:Sh")) != -1) {
 #endif
@@ -278,7 +280,7 @@ struct sigaction sigact;
 	      case 'I':
 	         basePort	= atoi (optarg);
 	         break;
-#endif
+#else
 	      case 'B':
 	         theBand = std::string (optarg) == std::string ("L_BAND") ?
 	                                     L_BAND : BAND_III;
@@ -295,24 +297,6 @@ struct sigaction sigact;
 	      case 'L':
 	         lnaState	= atoi (optarg);
 	         break;
-#elif defined (HAVE_HACKRF)
-	      case 'L':
-	         lnaGain	= atoi (optarg);
-	         break;
-
-	      case 'V':
-	         vgaGain	= atoi (optarg);
-	         break;
-
-#else
-	      case 'G':
-	         deviceGain	= atoi (optarg);
-	         break;
-
-	      case 'I':
-	         deviceIndex	= atoi (optarg);
-	         break;
-#endif
 
 	      case 'Q':
 	         autoGain	= true;
@@ -322,6 +306,45 @@ struct sigaction sigact;
 	         ppmCorrection	= atoi (optarg);
 	         break;
 
+#elif defined (HAVE_HACKRF)
+	      case 'L':
+	         lnaGain	= atoi (optarg);
+	         break;
+
+	      case 'V':
+	         vgaGain	= atoi (optarg);
+	         break;
+
+	      case 'P':
+	         ppmCorrection	= atoi (optarg);
+	         break;
+#elif defined (HAVE_RTLSDR)
+	      case 'G':
+	         deviceGain	= atoi (optarg);
+	         break;
+
+	      case 'Q':
+	         autoGain	= true;
+	         break;
+
+	      case 'P':
+	         ppmCorrection	= atoi (optarg);
+	         break;
+
+	      case 'I':
+	         deviceIndex	= atoi (optarg);
+	         break;
+
+#elif	defined (HAVE_AIRSPY)
+	      case 'G':
+	         deviceGain	= atoi (optarg);
+	         break;
+
+	      case 'P':
+	         ppmCorrection	= atoi (optarg);
+	         break;
+#endif
+#endif
 	      case 'S':
 	         isSilent	= true;
 	         break;
