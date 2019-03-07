@@ -26,6 +26,7 @@
 #include	"ringbuffer.h"
 #include	"device-handler.h"
 #include	<thread>
+#include	<atomic>
 class	dll_driver;
 //
 //	create typedefs for the library functions
@@ -81,7 +82,6 @@ public:
 	RingBuffer<uint8_t>	*_I_Buffer;
 	pfnrtlsdr_read_async	rtlsdr_read_async;
 	struct rtlsdr_dev	*device;
-	int32_t		sampleCounter;
 private:
 	int32_t		lastFrequency;
 	int16_t		ppmCorrection;
@@ -97,7 +97,7 @@ private:
 	bool		open;
 	int		*gains;
 	int16_t		gainsCount;
-	bool		running;
+	std::atomic<bool>	running;
 	int		frequency;
 //	here we need to load functions from the dll
 	bool		load_rtlFunctions	(void);

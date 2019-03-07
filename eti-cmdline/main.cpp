@@ -162,6 +162,8 @@ uint8_t		theMode		= 1;
 std::string	theChannel	= "11C";
 uint8_t		theBand		= BAND_III;
 int16_t		deviceGain	= 60;	// scale = 0 .. 99
+int16_t		GRdB		= 30;
+int16_t		lnaState	= 2;
 bool		autoGain	= false;
 int16_t		ppmCorrection	= 0;
 uint16_t	deviceIndex	= 0;
@@ -273,6 +275,18 @@ int32_t		basePort = 1234;
 	         theChannel	= std::string (optarg);
 	         break;
 
+#ifdef	HAVE_SDRPLAY
+	      case 'G':
+	         { int arg	= atoi (optarg);
+	           if ((arg >= 20) && (arg <= 59))
+	              GRdB	= arg;
+	            break;
+	         }
+
+	      case 'L':
+	         lnaState	= atoi (optarg);
+	         break;
+#else
 	      case 'G':
 	         {
 	            int deviceGainArg = atoi (optarg);
@@ -284,6 +298,7 @@ int32_t		basePort = 1234;
 	            }
 	         }
 	         break;
+#endif
 
 	      case 'Q':
 	         autoGain	= true;
@@ -332,8 +347,11 @@ int32_t		basePort = 1234;
 	                                     autoGain,
 	                                     deviceIndex);
 #elif	HAVE_SDRPLAY
-	   inputDevice	= new sdrplayHandler (tunedFrequency, ppmCorrection,
-	                                        deviceGain, autoGain, 0, 0);
+	   inputDevice	= new sdrplayHandler (tunedFrequency,
+	                                      ppmCorrection,
+	                                      GRdB,
+	                                      lnaState,
+	                                      autoGain, 0, 0);
 #elif	HAVE_AIRSPY
 	   inputDevice	= new airspyHandler (tunedFrequency,
 	                                        deviceGain, autoGain);
@@ -451,6 +469,8 @@ void    printOptions (void) {
    -P number   PPM correction\n\
    -C channel  DAB channel to be used (5A ... 13F resp. LA ... LP)\n\
    -G Gain     gain for device (range 0 .. 99)\n\
+   -G gainreduction for the SDRplay (20 .. 59)\n\
+   -L lnaState for the SDRplay only \n\
    -I number	deviceIndex (currently only for rtlsdr devices) \n\
    -Q          autogain for device (not all tuners support it!)\n\
    -F filename load samples from file\n\

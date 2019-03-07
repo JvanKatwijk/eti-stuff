@@ -82,10 +82,8 @@ int32_t	r;
 	libraryLoaded		= false;
 	open			= false;
 	_I_Buffer		= NULL;
-	this	-> sampleCounter= 0;
-	this	-> vfoOffset	= 0;
 	gains			= NULL;
-	running			= false;
+	running. store (false);
 
 #ifdef	__MINGW32__
 	const char *libraryString = "rtlsdr.dll";
@@ -137,6 +135,7 @@ int32_t	r;
         for (int i = 0; i < gainsCount; i ++)
            fprintf (stderr, "%d.%d ", gains [i] / 10, gains [i] % 10);
         fprintf (stderr, "\n");
+
         if (ppmCorrection != 0)
            rtlsdr_set_freq_correction (device, ppmCorrection);
         if (autogain)
@@ -163,11 +162,12 @@ err:
 }
 
 	rtlsdrHandler::~rtlsdrHandler	(void) {
-	if (running) { // we are running
+	if (running. load ()) { // we are running
 	   this -> rtlsdr_cancel_async (device);
 	   workerHandle. join ();
 	}
-	running	= false;
+
+	running. store (false);
 	if (open)
 	   this -> rtlsdr_close (device);
 	if (Handle != NULL) 
@@ -182,21 +182,23 @@ err:
 	   delete[] gains;
 	open = false;
 }
-
+//
+//	Not used here
 void	rtlsdrHandler::setVFOFrequency	(int32_t f) {
 	frequency	= f;
-	(void)(this -> rtlsdr_set_center_freq (device, f + vfoOffset));
+	(void)(this -> rtlsdr_set_center_freq (device, f));
 }
-
+//
+//	Not used here
 int32_t	rtlsdrHandler::getVFOFrequency	(void) {
-	return (int32_t)(this -> rtlsdr_get_center_freq (device)) - vfoOffset;
+	return (int32_t)(this -> rtlsdr_get_center_freq (device));
 }
 //
 //
 bool	rtlsdrHandler::restartReader	(void) {
 int32_t	r;
 
-	if (running)
+	if (running. load ())
 	   return true;
 
 	_I_Buffer	-> FlushRingBuffer ();
@@ -204,27 +206,28 @@ int32_t	r;
 	if (r < 0)
 	   return false;
 
-	this -> rtlsdr_set_center_freq (device, frequency + vfoOffset);
+	this -> rtlsdr_set_center_freq (device, frequency);
 	workerHandle = std::thread (controlThread, this);
 	rtlsdr_set_tuner_gain (device, gains [theGain * gainsCount / 100]);
         if (autogain)
            rtlsdr_set_agc_mode (device, 1);
 
-	running	= true;
+	running. store (true);
 	return true;
 }
 
 void	rtlsdrHandler::stopReader		(void) {
-	if (!running)
+	if (!running. load ())
 	   return;
 
 	this -> rtlsdr_cancel_async (device);
 	workerHandle. join ();
-	running	= false;
+	running. store (false);
 }
 //
 //	when selecting with an integer in the range 0 .. 100
 //	first find the table value
+//	Not used here
 void	rtlsdrHandler::setGain	(int32_t g) {
 	theGain	= g;
 	rtlsdr_set_tuner_gain (device, gains [theGain * gainsCount / 100]);
@@ -261,7 +264,7 @@ float convTable [] = {
 //	uint8_t to std::complex<float> *
 int32_t	rtlsdrHandler::getSamples (std::complex<float> *V, int32_t size) { 
 int32_t	amount, i;
-uint8_t	*tempBuffer = (uint8_t *)alloca (2 * size * sizeof (uint8_t));
+uint8_t	tempBuffer [2 * size];
 //
 	amount = _I_Buffer	-> getDataFromBuffer (tempBuffer, 2 * size);
 	for (i = 0; i < amount / 2; i ++)
