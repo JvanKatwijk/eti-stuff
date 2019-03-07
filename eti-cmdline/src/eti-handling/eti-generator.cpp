@@ -301,7 +301,7 @@ const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 	         memset (&theVector [offset], 0x55, 6144 - offset);
 //	         fwrite (theVector, 1, 6144, outputFile);
 	         etiWriter (theVector, 6144, userData);
-	 static int cnt	= 0;
+//	 static int cnt	= 0;
 //	         fprintf (stderr, "%d\r", ++cnt);
 	      }
 //	at the end, go for a new eti vector

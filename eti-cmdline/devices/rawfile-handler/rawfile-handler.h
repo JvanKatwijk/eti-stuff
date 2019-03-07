@@ -35,9 +35,9 @@ class	rawfileHandler: public deviceHandler {
 public:
 			rawfileHandler	(std::string, bool, inputstopped_t);
 	       		~rawfileHandler	(void);
-	int32_t		getSamples	(DSPCOMPLEX *, int32_t);
+	int32_t		getSamples	(std::complex<float> *, int32_t);
 	int32_t		Samples		(void);
-	bool		restartReader	(void);
+	bool		restartReader	(int32_t);
 	void		stopReader	(void);
 private:
 	std::string	fileName;

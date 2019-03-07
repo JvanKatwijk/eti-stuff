@@ -88,6 +88,6 @@ void	etiClass::set_syncReached	(void) {
 }
 
 bool	etiClass::Working		(void) {
-	my_ofdmProcessor. isRunning ();
+	return my_ofdmProcessor. isRunning ();
 }
 

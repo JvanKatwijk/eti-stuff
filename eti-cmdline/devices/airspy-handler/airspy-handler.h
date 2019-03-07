@@ -78,19 +78,12 @@ class airspyHandler: public deviceHandler {
 public:
 			airspyHandler		(int, int16_t, bool);
 			~airspyHandler		(void);
-	void		setVFOFrequency		(int32_t nf);
-	int32_t		getVFOFrequency		(void);
-	bool		restartReader		(void);
+	bool		restartReader		(int32_t);
 	void		stopReader		(void);
 	int32_t		getSamples		(DSPCOMPLEX *v, int32_t size);
 	int32_t		Samples			(void);
 	void		resetBuffer		(void);
 	int16_t		bitDepth		(void);
-//
-	int32_t		getRate			(void);
-	int32_t		getSamples		(DSPCOMPLEX  *V,
-	                         		 int32_t size, uint8_t M);
-	void		setGain			(int32_t);
 private:
 	bool		load_airspyFunctions	(void);
 //	The functions to be extracted from the dll/.so file

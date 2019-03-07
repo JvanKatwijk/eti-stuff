@@ -44,7 +44,7 @@
 //      cannot be handled properly by the underlying system.
 #define DUMPSIZE                4096
 
-class	common_fft;
+class	fftHandler;
 class	deviceHandler;
 class	etiGenerator;
 
@@ -129,8 +129,8 @@ virtual	void		run		(void);
 	int16_t		snrCount;
 	int16_t		snr;
 
-	common_fft	*fft_handler;
-	DSPCOMPLEX	*fft_buffer;
+	fftHandler	*fft_handler;
+	std::complex<float>	*fft_buffer;
 };
 #endif
 

@@ -42,10 +42,12 @@ using std::endl;
 //
 #ifdef	HAVE_RTLSDR
 #include	"rtlsdr-handler.h"
-#elif HAVE_SDRPLAY
+#elif	HAVE_SDRPLAY
 #include	"sdrplay-handler.h"
-#elif HAVE_AIRSPY
+#elif	HAVE_AIRSPY
 #include	"airspy-handler.h"
+#elif	HAVE_HACKRF
+#include	"hackrf-handler.h"
 #elif	HAVE_RAWFILES
 #include	"rawfile-handler.h"
 #elif	HAVE_WAVFILES
@@ -114,7 +116,7 @@ int	programCounter	= 1;
 void	programnameHandler (std::string name, int SId, void *ctx) {
 	(void)ctx;
 	mainLocker. lock ();
-	fprintf (stderr, "program\ (%2d)\t %s\t \%lX is in the list\n",
+	fprintf (stderr, "program\t (%2d)\t %s\t %X is in the list\n",
 	                               programCounter ++, name. c_str (), SId);
 	mainLocker. unlock ();
 }
@@ -161,12 +163,33 @@ int16_t		freqSyncTime	= 10;
 uint8_t		theMode		= 1;
 std::string	theChannel	= "11C";
 uint8_t		theBand		= BAND_III;
+<<<<<<< HEAD
 int16_t		deviceGain	= 60;	// scale = 0 .. 99
 int16_t		GRdB		= 30;
 int16_t		lnaState	= 2;
+=======
+>>>>>>> 02c245c502c9b0bfbecabb5e4c983950609d8251
 bool		autoGain	= false;
 int16_t		ppmCorrection	= 0;
-uint16_t	deviceIndex	= 0;
+#ifdef	HAVE_SDRPLAY
+int16_t		GRdB		= 30;
+int16_t		lnaState	= 2;
+#elif	HAVE_HACKRF
+int16_t		lnaGain		= 30;
+int16_t		vgaGain		= 30;
+#else
+int16_t		deviceGain	= 80;	// scale = 0 .. 100
+int16_t		deviceIndex	= 0;
+#endif
+
+#if defined(HAVE_RAWFILES) || defined(HAVE_WAVFILES)
+std::string	inputfileName;
+bool	continue_on_eof	= false;
+#elif defined (HAVE_RTL_TCP)
+std::string	hostname = "127.0.0.1";
+int32_t		basePort = 1234;
+#endif
+
 deviceHandler	*inputDevice;
 bandHandler	the_bandHandler;
 int32_t		tunedFrequency	= 220000000;	// just a setting
@@ -175,13 +198,6 @@ SNDFILE		*dumpFile	= NULL;
 #endif
 int	opt;
 struct sigaction sigact;
-#if defined(HAVE_RAWFILES) || defined(HAVE_WAVFILES)
-std::string	inputfileName;
-bool	continue_on_eof	= false;
-#elif defined (HAVE_RTL_TCP)
-std::string	hostname = "127.0.0.1";
-int32_t		basePort = 1234;
-#endif
 //
 //	default
 	etiFile		= stdout;
@@ -196,6 +212,12 @@ int32_t		basePort = 1234;
 	while ((opt = getopt (argc, argv, "ED:d:M:O:F:Sh")) != -1) {
 #elif defined (HAVE_RTL_TCP)
 	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:O:P:H:I:QR:Sh")) != -1) {
+#elif defined (HAVE_SDRPLAY) 
+	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:L::O:P:QR:Sh")) != -1) {
+#elif defined (HAVE_HACKRF)
+	while ((opt = getopt (argc, argv, "D:d:M:B:C:L:V:O:P:R:Sh")) != -1) {
+#elif defined (HAVE_AIRSPY)
+	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:O:P:R:Sh")) != -1) {
 #else
 	while ((opt = getopt (argc, argv, "I:D:d:M:B:C:G:O:P:QR:Sh")) != -1) {
 #endif
@@ -256,8 +278,7 @@ int32_t		basePort = 1234;
 	         continue_on_eof	= true;
 	         fprintf (stderr, "continue_on_eof is now set\n");
 	         break;
-#else
-#ifdef	HAVE_RTL_TCP
+#elif defined (HAVE_RTL_TCP)
 	      case 'H':
 	         hostname	= std::string (optarg);
 	         break;
@@ -265,7 +286,7 @@ int32_t		basePort = 1234;
 	      case 'I':
 	         basePort	= atoi (optarg);
 	         break;
-#endif
+#else
 	      case 'B':
 	         theBand = std::string (optarg) == std::string ("L_BAND") ?
 	                                     L_BAND : BAND_III;
@@ -275,6 +296,7 @@ int32_t		basePort = 1234;
 	         theChannel	= std::string (optarg);
 	         break;
 
+<<<<<<< HEAD
 #ifdef	HAVE_SDRPLAY
 	      case 'G':
 	         { int arg	= atoi (optarg);
@@ -287,16 +309,39 @@ int32_t		basePort = 1234;
 	         lnaState	= atoi (optarg);
 	         break;
 #else
+=======
+#if defined (HAVE_SDRPLAY)
+>>>>>>> 02c245c502c9b0bfbecabb5e4c983950609d8251
 	      case 'G':
-	         {
-	            int deviceGainArg = atoi (optarg);
-	            if ((deviceGainArg >= 0) && (deviceGainArg < 100)) {
-	               deviceGain	= deviceGainArg;
-	            }
-	            else {
-	               fprintf(stderr, "Invalid gain value, using default: %d\n", deviceGain);
-	            }
-	         }
+	         GRdB	= atoi (optarg);
+	         break;
+	      case 'L':
+	         lnaState	= atoi (optarg);
+	         break;
+
+	      case 'Q':
+	         autoGain	= true;
+	         break;
+
+	      case 'P':
+	         ppmCorrection	= atoi (optarg);
+	         break;
+
+#elif defined (HAVE_HACKRF)
+	      case 'L':
+	         lnaGain	= atoi (optarg);
+	         break;
+
+	      case 'V':
+	         vgaGain	= atoi (optarg);
+	         break;
+
+	      case 'P':
+	         ppmCorrection	= atoi (optarg);
+	         break;
+#elif defined (HAVE_RTLSDR)
+	      case 'G':
+	         deviceGain	= atoi (optarg);
 	         break;
 #endif
 
@@ -311,6 +356,16 @@ int32_t		basePort = 1234;
 	      case 'I':
 	         deviceIndex	= atoi (optarg);
 	         break;
+
+#elif	defined (HAVE_AIRSPY)
+	      case 'G':
+	         deviceGain	= atoi (optarg);
+	         break;
+
+	      case 'P':
+	         ppmCorrection	= atoi (optarg);
+	         break;
+#endif
 #endif
 	      case 'S':
 	         isSilent	= true;
@@ -342,16 +397,25 @@ int32_t		basePort = 1234;
 	try {
 #ifdef	HAVE_RTLSDR
 	   inputDevice	= new rtlsdrHandler (tunedFrequency,
-		                             ppmCorrection,
+	                                     ppmCorrection,
 	                                     deviceGain,
 	                                     autoGain,
 	                                     deviceIndex);
 #elif	HAVE_SDRPLAY
+<<<<<<< HEAD
 	   inputDevice	= new sdrplayHandler (tunedFrequency,
 	                                      ppmCorrection,
 	                                      GRdB,
 	                                      lnaState,
 	                                      autoGain, 0, 0);
+=======
+	   inputDevice	= new sdrplayHandler (tunedFrequency, ppmCorrection,
+	                                      GRdB, lnaState, autoGain, 0, 0);
+#elif	HAVE_HACKRF
+	   (void)autoGain;
+	   inputDevice	= new hackrfHandler (tunedFrequency, ppmCorrection,
+	                                      lnaGain, vgaGain);
+>>>>>>> 02c245c502c9b0bfbecabb5e4c983950609d8251
 #elif	HAVE_AIRSPY
 	   inputDevice	= new airspyHandler (tunedFrequency,
 	                                        deviceGain, autoGain);
@@ -400,7 +464,7 @@ int32_t		basePort = 1234;
 	                    &etiwriterHandler,
 	                    NULL);
 
-	inputDevice	-> restartReader ();
+	inputDevice	-> restartReader (tunedFrequency);
 	timesyncSet. store (false);
 	theWorker. start_ofdmProcessing ();
 	while (!timeSynced. load () && (--timeSyncTime >= 0)) 

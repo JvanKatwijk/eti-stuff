@@ -84,8 +84,8 @@ mir_sdr_DeviceT devDesc [4];
 	   this -> GRdB = 30;
 	_I_Buffer	= NULL;
 	err		= mir_sdr_ApiVersion (&ver);
-	if (ver < 2.13) {
-	   fprintf (stderr, "Please upgrade to sdrplay library 2.13\n");
+	if (!err && (ver < 2.13)) {
+	   fprintf (stderr, "sorry, library too old\n");
 	   throw (24);
 	}
 
@@ -102,7 +102,7 @@ mir_sdr_DeviceT devDesc [4];
 	                              devDesc [deviceIndex]. SerNo, hwVersion);
 	mir_sdr_SetDeviceIdx (deviceIndex);
 
-	if (hwVersion >= 2) 
+	if (hwVersion >= 2) {
 	   if (antenna == 0)
 	      err = mir_sdr_RSPII_AntennaControl (mir_sdr_RSPII_ANTENNA_A);
 	   else
@@ -136,9 +136,7 @@ mir_sdr_DeviceT devDesc [4];
 	if (_I_Buffer != NULL)
 	   delete _I_Buffer;
 }
-//
-
-bool	sdrplayHandler::restartReader	(void) {
+bool	sdrplayHandler::restartReader	(int32_t frequency) {
 int	gRdBSystem;
 int	samplesPerPacket;
 mir_sdr_ErrT	err;
@@ -168,9 +166,6 @@ int	localGRed	= GRdB;
         err             = mir_sdr_SetDcMode (4, 1);
         err             = mir_sdr_SetDcTrackTime (63);
 //
-        mir_sdr_SetSyncUpdatePeriod ((int)(inputRate / 2));
-        mir_sdr_SetSyncUpdateSampleNum (samplesPerPacket);
-        mir_sdr_DCoffsetIQimbalanceControl (0, 1);
         running. store (true);
         return true;
 }
@@ -186,10 +181,7 @@ void	sdrplayHandler::stopReader	(void) {
 //
 //	Note that the sdrPlay returns 12 bit values
 int32_t	sdrplayHandler::getSamples (std::complex<float> *V, int32_t size) { 
-int32_t count	= 0;
-
-	count = _I_Buffer	-> getDataFromBuffer (V, size);
-	return count;
+	return _I_Buffer	-> getDataFromBuffer (V, size);
 }
 
 int32_t	sdrplayHandler::Samples	(void) {

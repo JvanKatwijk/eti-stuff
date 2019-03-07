@@ -39,14 +39,13 @@ float	Phi_k;
 	this	-> threshold	= threshold;
 	this	-> diff_length	= diff_length;
 	refTable		= new std::complex<float> 	[T_u];	//
-	fft_processor		= new common_fft 	(T_u);
+	fft_processor		= new fftHandler 	(T_u);
 	fft_buffer		= fft_processor		-> getVector ();
-	res_processor		= new common_ifft 	(T_u);
-	res_buffer		= res_processor		-> getVector ();
 	phasedifferences	= new std::complex<float>	[diff_length];
 	fft_counter		= 0;
 
-	memset (refTable, 0, sizeof (std::complex<float>) * T_u);
+	for (i = 0; i < T_u; i ++)
+	   refTable [i] = std::complex<float> (0, 0);
 
 	for (i = 1; i <= p -> get_carriers () / 2; i ++) {
 	   Phi_k =  get_Phi (i);
@@ -60,9 +59,6 @@ float	Phi_k;
            phasedifferences [i - 1] = refTable [(T_u + i) % T_u] *
                                       conj (refTable [(T_u + i + 1) % T_u]);
 
-//      for (i = 0; i < DIFF_LENGTH; i ++)
-//         fprintf (stderr, "%f ", abs (arg (phasedifferences [i])));
-//      fprintf (stderr, "\n");
 }
 
 	phaseReference::~phaseReference (void) {
@@ -91,19 +87,19 @@ float	Max		= 1.0;
 //
 //	back into the frequency domain, now correlate
 	for (i = 0; i < T_u; i ++) 
-	   res_buffer [i] = fft_buffer [i] * conj (refTable [i]);
+	   fft_buffer [i] = fft_buffer [i] * conj (refTable [i]);
 //	and, again, back into the time domain
-	res_processor	-> do_IFFT ();
+	fft_processor	-> do_iFFT ();
 /**
   *	We compute the average signal value and the max
   */
 	for (i = 0; i < T_u; i ++)
-	   sum	+= abs (res_buffer [i]);
+	   sum	+= abs (fft_buffer [i]);
 	Max	= -10000;
 	for (i = 0; i < T_u; i ++)
-	   if (abs (res_buffer [i]) > Max) {
+	   if (abs (fft_buffer [i]) > Max) {
 	      maxIndex = i;
-	      Max = abs (res_buffer [i]);
+	      Max = abs (fft_buffer [i]);
 	   }
 /**
   *	that gives us a basis for defining the threshold
