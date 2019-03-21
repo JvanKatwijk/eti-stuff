@@ -65,6 +65,7 @@ void	controlThread (rtlsdrHandler *theStick) {
 	                              int16_t	deviceIndex) {
 int16_t	deviceCount;
 int32_t	r;
+bool	open;
 
 	this	-> frequency	= frequency;
 	this	-> ppmOffset	= ppmOffset;
@@ -77,7 +78,6 @@ int32_t	r;
 	_I_Buffer		= NULL;
 	gains			= NULL;
 	running. store (false);
-
 //
 //	Ok, from here we have the library functions accessible
 	deviceCount 		= rtlsdr_get_device_count ();
@@ -111,16 +111,13 @@ int32_t	r;
         for (int i = 0; i < gainsCount; i ++)
            fprintf (stderr, "%d.%d ", gains [i] / 10, gains [i] % 10);
         fprintf (stderr, "\n");
-<<<<<<< HEAD
 
-        if (ppmCorrection != 0)
-           rtlsdr_set_freq_correction (device, ppmCorrection);
-=======
         if (ppmOffset != 0)
            rtlsdr_set_freq_correction (device, ppmOffset);
->>>>>>> 02c245c502c9b0bfbecabb5e4c983950609d8251
+
         if (autogain)
            rtlsdr_set_agc_mode (device, 1);
+
         fprintf (stderr, "effective gain: gain %d.%d\n",
 	                             gains [theGain * gainsCount / 100] / 10,
 	                             gains [theGain * gainsCount / 100] % 10);
@@ -136,41 +133,18 @@ err:
 }
 
 	rtlsdrHandler::~rtlsdrHandler	(void) {
-<<<<<<< HEAD
-	if (running. load ()) { // we are running
-	   this -> rtlsdr_cancel_async (device);
-=======
 	if (running) { // we are running
 	   rtlsdr_cancel_async (device);
->>>>>>> 02c245c502c9b0bfbecabb5e4c983950609d8251
 	   workerHandle. join ();
 	}
 
 	running. store (false);
-	if (open)
-	   rtlsdr_close (device);
+	rtlsdr_close (device);
 	if (_I_Buffer != NULL)
 	   delete _I_Buffer;
 	if (gains != NULL)
 	   delete[] gains;
-	open = false;
 }
-<<<<<<< HEAD
-//
-//	Not used here
-void	rtlsdrHandler::setVFOFrequency	(int32_t f) {
-	frequency	= f;
-	(void)(this -> rtlsdr_set_center_freq (device, f));
-}
-//
-//	Not used here
-int32_t	rtlsdrHandler::getVFOFrequency	(void) {
-	return (int32_t)(this -> rtlsdr_get_center_freq (device));
-}
-//
-=======
-
->>>>>>> 02c245c502c9b0bfbecabb5e4c983950609d8251
 //
 bool	rtlsdrHandler::restartReader	(int32_t freqency) {
 int32_t	r;
@@ -183,12 +157,9 @@ int32_t	r;
 	if (r < 0)
 	   return false;
 
-<<<<<<< HEAD
-	this -> rtlsdr_set_center_freq (device, frequency);
-=======
 	rtlsdr_set_freq_correction	(device, ppmOffset);
 	rtlsdr_set_center_freq		(device, frequency);
->>>>>>> 02c245c502c9b0bfbecabb5e4c983950609d8251
+
 	workerHandle = std::thread (controlThread, this);
 	rtlsdr_set_tuner_gain (device, gains [theGain * gainsCount / 100]);
         if (autogain)
@@ -206,21 +177,6 @@ void	rtlsdrHandler::stopReader		(void) {
 	workerHandle. join ();
 	running. store (false);
 }
-//
-<<<<<<< HEAD
-//	when selecting with an integer in the range 0 .. 100
-//	first find the table value
-//	Not used here
-void	rtlsdrHandler::setGain	(int32_t g) {
-	theGain	= g;
-	rtlsdr_set_tuner_gain (device, gains [theGain * gainsCount / 100]);
-}
-	
-void	rtlsdrHandler::setAgc		(bool b) {
-}
-=======
->>>>>>> 02c245c502c9b0bfbecabb5e4c983950609d8251
-
 //
 //	we only have 8 bits, so rather than doing a float division to get
 //	the float value we want, we precompute the possibilities

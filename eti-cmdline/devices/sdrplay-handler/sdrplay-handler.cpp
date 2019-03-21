@@ -108,8 +108,8 @@ mir_sdr_DeviceT devDesc [4];
 	   else
 	      err = mir_sdr_RSPII_AntennaControl (mir_sdr_RSPII_ANTENNA_B);
 
-	(void)err;
-
+	   (void)err;
+	}
         if (hwVersion == 255) {
            nrBits       = 14;
            denominator  = 8192.0;

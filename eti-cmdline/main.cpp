@@ -163,12 +163,6 @@ int16_t		freqSyncTime	= 10;
 uint8_t		theMode		= 1;
 std::string	theChannel	= "11C";
 uint8_t		theBand		= BAND_III;
-<<<<<<< HEAD
-int16_t		deviceGain	= 60;	// scale = 0 .. 99
-int16_t		GRdB		= 30;
-int16_t		lnaState	= 2;
-=======
->>>>>>> 02c245c502c9b0bfbecabb5e4c983950609d8251
 bool		autoGain	= false;
 int16_t		ppmCorrection	= 0;
 #ifdef	HAVE_SDRPLAY
@@ -218,7 +212,7 @@ struct sigaction sigact;
 	while ((opt = getopt (argc, argv, "D:d:M:B:C:L:V:O:P:R:Sh")) != -1) {
 #elif defined (HAVE_AIRSPY)
 	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:O:P:R:Sh")) != -1) {
-#else
+#elif defined (HAVE_RTLSDR)
 	while ((opt = getopt (argc, argv, "I:D:d:M:B:C:G:O:P:QR:Sh")) != -1) {
 #endif
 	   switch (opt) {
@@ -296,22 +290,7 @@ struct sigaction sigact;
 	         theChannel	= std::string (optarg);
 	         break;
 
-<<<<<<< HEAD
-#ifdef	HAVE_SDRPLAY
-	      case 'G':
-	         { int arg	= atoi (optarg);
-	           if ((arg >= 20) && (arg <= 59))
-	              GRdB	= arg;
-	            break;
-	         }
-
-	      case 'L':
-	         lnaState	= atoi (optarg);
-	         break;
-#else
-=======
 #if defined (HAVE_SDRPLAY)
->>>>>>> 02c245c502c9b0bfbecabb5e4c983950609d8251
 	      case 'G':
 	         GRdB	= atoi (optarg);
 	         break;
@@ -343,20 +322,15 @@ struct sigaction sigact;
 	      case 'G':
 	         deviceGain	= atoi (optarg);
 	         break;
-#endif
-
-	      case 'Q':
-	         autoGain	= true;
-	         break;
-
 	      case 'P':
 	         ppmCorrection	= atoi (optarg);
 	         break;
-
 	      case 'I':
 	         deviceIndex	= atoi (optarg);
 	         break;
-
+	      case 'Q':
+	         autoGain	= true;
+	         break;
 #elif	defined (HAVE_AIRSPY)
 	      case 'G':
 	         deviceGain	= atoi (optarg);
@@ -402,20 +376,15 @@ struct sigaction sigact;
 	                                     autoGain,
 	                                     deviceIndex);
 #elif	HAVE_SDRPLAY
-<<<<<<< HEAD
 	   inputDevice	= new sdrplayHandler (tunedFrequency,
 	                                      ppmCorrection,
 	                                      GRdB,
 	                                      lnaState,
 	                                      autoGain, 0, 0);
-=======
-	   inputDevice	= new sdrplayHandler (tunedFrequency, ppmCorrection,
-	                                      GRdB, lnaState, autoGain, 0, 0);
 #elif	HAVE_HACKRF
 	   (void)autoGain;
 	   inputDevice	= new hackrfHandler (tunedFrequency, ppmCorrection,
 	                                      lnaGain, vgaGain);
->>>>>>> 02c245c502c9b0bfbecabb5e4c983950609d8251
 #elif	HAVE_AIRSPY
 	   inputDevice	= new airspyHandler (tunedFrequency,
 	                                        deviceGain, autoGain);

@@ -37,7 +37,6 @@ typedef void (*mir_sdr_StreamCallback_t)(int16_t	*xi,
 	                                 int32_t	rfChanged,
 	                                 int32_t	fsChanged,
 	                                 uint32_t	numSamples,
-	                                 uint32_t	hwRemoved,
 	                                 uint32_t	reset,
 	                                 uint32_t	hwRemoved,
 	                                 void		*cbContext);
