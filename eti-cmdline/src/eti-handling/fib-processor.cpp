@@ -100,7 +100,7 @@
 	this	-> userData	= userData;
 	this	-> ensembleName	= ensembleName;
 	this	-> programName	= programName;
-	memset (dateTime, 0, 8);
+	memset (dateTime, 0, sizeof (dateTime));
 	dateFlag	= false;
 	selectedService		= -1;
 	clearEnsemble	();
@@ -231,7 +231,6 @@ uint8_t	extension	= getBits_5 (d, 8 + 3);
 void	fib_processor::FIG0Extension0 (uint8_t *d) {
 uint16_t	EId;
 uint8_t		changeflag;
-uint16_t	highpart, lowpart;
 int16_t		occurrenceChange;
 uint8_t	CN	= getBits_1 (d, 8 + 0);
 
@@ -419,6 +418,7 @@ uint16_t        CAOrg   = getBits (d, used * 8 + 40, 16);
 serviceComponent *packetComp = find_packetComponent (SCId);
 
 	(void)CAOrgflag;
+	(void)CAOrg;
         used += 56 / 8;
         if (packetComp == NULL)		// no serviceComponent yet
            return used;
@@ -456,7 +456,8 @@ int16_t	subChId, serviceComp, language;
 	   loffset += 24;
 	}
 	(void)serviceComp;
-
+	(void)language;
+	(void)subChId;
 	return loffset / 8;
 }
 
@@ -610,17 +611,7 @@ int16_t		i;
 }
 
 void	fib_processor::FIG0Extension14 (uint8_t *d) {
-int16_t	Length	= getBits_5 (d, 3);	// in Bytes
-int16_t	used	= 2;			// in Bytes
-int16_t	i;
-
-	while (used < Length) {
-	   int16_t SubChId	= getBits_6 (d, used * 8);
-	   uint8_t FEC_scheme	= getBits_2 (d, used * 8 + 6);
-	   used = used + 1;
-
-
-	}
+	(void)d;
 }
 
 void	fib_processor::FIG0Extension16 (uint8_t *d) {
@@ -920,7 +911,7 @@ int16_t	i;
 
 	for (i = 0; i < 64; i ++)
 	   if ((listofServices [i]. inUse) &&
-	        ((uint32_t)(listofServices [i]. serviceId) == serviceId))
+	        ((int32_t)(listofServices [i]. serviceId) == serviceId))
 	      return &listofServices [i];
 
 	for (i = 0; i < 64; i ++)
