@@ -170,9 +170,24 @@ DIST          = /usr/lib64/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_opengl_private.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_openglextensions.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_openglextensions_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_packetprotocol_private.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_platformcompositor_support_private.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_printsupport.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_printsupport_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qml.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qml_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmldebug_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmldevtools_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmltest.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmltest_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quick.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quick_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickparticles_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quicktemplates2_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickwidgets.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickwidgets_private.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_service_support_private.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_sql.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_sql_private.pri \
@@ -320,9 +335,24 @@ Makefile: eti-backend.pro /usr/lib64/qt5/mkspecs/linux-g++/qmake.conf /usr/lib64
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_opengl_private.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_openglextensions.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_openglextensions_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_packetprotocol_private.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_platformcompositor_support_private.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_printsupport.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_printsupport_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qml.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qml_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmldebug_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmldevtools_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmltest.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_qmltest_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quick.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quick_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickparticles_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quicktemplates2_private.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickwidgets.pri \
+		/usr/lib64/qt5/mkspecs/modules/qt_lib_quickwidgets_private.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_service_support_private.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_sql.pri \
 		/usr/lib64/qt5/mkspecs/modules/qt_lib_sql_private.pri \
@@ -401,9 +431,24 @@ Makefile: eti-backend.pro /usr/lib64/qt5/mkspecs/linux-g++/qmake.conf /usr/lib64
 /usr/lib64/qt5/mkspecs/modules/qt_lib_opengl_private.pri:
 /usr/lib64/qt5/mkspecs/modules/qt_lib_openglextensions.pri:
 /usr/lib64/qt5/mkspecs/modules/qt_lib_openglextensions_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_packetprotocol_private.pri:
 /usr/lib64/qt5/mkspecs/modules/qt_lib_platformcompositor_support_private.pri:
 /usr/lib64/qt5/mkspecs/modules/qt_lib_printsupport.pri:
 /usr/lib64/qt5/mkspecs/modules/qt_lib_printsupport_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_qml.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_qml_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_qmldebug_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_qmldevtools_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_qmltest.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_qmltest_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quick.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quick_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quickcontrols2_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quickparticles_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quicktemplates2_private.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quickwidgets.pri:
+/usr/lib64/qt5/mkspecs/modules/qt_lib_quickwidgets_private.pri:
 /usr/lib64/qt5/mkspecs/modules/qt_lib_service_support_private.pri:
 /usr/lib64/qt5/mkspecs/modules/qt_lib_sql.pri:
 /usr/lib64/qt5/mkspecs/modules/qt_lib_sql_private.pri:

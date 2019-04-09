@@ -84,6 +84,8 @@ public:
 	int32_t		Samples			(void);
 	void		resetBuffer		(void);
 	int16_t		bitDepth		(void);
+	void		setGain			(int);
+
 private:
 	bool		load_airspyFunctions	(void);
 //	The functions to be extracted from the dll/.so file

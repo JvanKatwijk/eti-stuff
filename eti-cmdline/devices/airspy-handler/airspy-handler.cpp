@@ -178,7 +178,7 @@ err:
 	   delete theBuffer;
 }
 
-bool	airspyHandler::restartReader	(int32_t frequency {
+bool	airspyHandler::restartReader	(int32_t frequency) {
 int	result;
 int32_t	bufSize	= EXTIO_NS * EXTIO_BASE_TYPE_SIZE * 2;
 
