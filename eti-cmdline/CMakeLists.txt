@@ -314,17 +314,17 @@ endif ()
 
 	if (RTL_TCP)
 	   include_directories (
-	      ./devices/rtl_tcp
+	      ./devices/rtl_tcp-handler
 	   )
 
 	   set ($(objectName)_HDRS
 	        ${${objectName}_HDRS}
-	        ./devices/rtl_tcp/rtl_tcp-client.h
+	        ./devices/rtl_tcp-handler/rtl_tcp-handler.h
 	   )
 
 	   set (${objectName}_SRCS
 	        ${${objectName}_SRCS}
-	        ./devices/rtl_tcp/rtl_tcp-client.cpp
+	        ./devices/rtl_tcp-handler/rtl_tcp-handler.cpp
 	   )
 
 	   add_definitions (-DHAVE_RTL_TCP)

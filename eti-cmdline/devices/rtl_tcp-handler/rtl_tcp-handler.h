@@ -22,8 +22,8 @@
  *
  */
 
-#ifndef	__RTL_TCP_CLIENT
-#define	__RTL_TCP_CLIENT
+#ifndef	__RTL_TCP_HANDLER__
+#define	__RTL_TCP_HANDLER__
 #include	<iostream>
 #include	<sstream>
 #include	<errno.h>
@@ -48,20 +48,25 @@ struct command {
 	unsigned int param;
 }__attribute__((packed));
 
-class	rtl_tcp_client: public deviceHandler {
+class	rtl_tcpHandler: public deviceHandler {
 public:
-			rtl_tcp_client (std::string	hostname,
+			rtl_tcpHandler (std::string	hostname,
 	                                int32_t		port,
 	                                int32_t		frequency,
 	                                int16_t		gain,
 	                                bool		autogain,
 		                        int16_t		ppm);
 
-			~rtl_tcp_client	(void);
-	void		stopReader	(void);
-	int32_t		getSamples	(std::complex<float> *V, int32_t size);
-	int32_t		Samples		(void);
-	int16_t		bitDepth	(void);
+			~rtl_tcpHandler	(void);
+	void		setVFOFrequency		(int32_t nf);
+	int32_t		getVFOFrequency		(void);
+	bool		restartReader		(void);
+	void		stopReader		(void);
+	int32_t		getSamples		(std::complex<float> *V, int32_t size);
+	int32_t		Samples			(void);
+	void		resetBuffer		(void);
+	int16_t		bitDepth		(void);
+	void		setGain			(int32_t);
 private:
 virtual	void		run		(void);
 	std::string	hostname;

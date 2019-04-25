@@ -53,7 +53,7 @@ using std::endl;
 #elif	HAVE_WAVFILES
 #include	"wavfile-handler.h"
 #elif	HAVE_RTL_TCP
-#include	"rtl_tcp-client.h"
+#include	"rtl_tcp-handler.h"
 #endif
 //
 //	Be aware that the callbacks may arrive from different threads,
@@ -397,7 +397,7 @@ struct sigaction sigact;
 	                                      continue_on_eof,
 	                                      inputStopped);
 #elif	HAVE_RTL_TCP
-	   inputDevice = new rtl_tcp_client (hostname,
+	   inputDevice = new rtl_tcpHandler (hostname,
 	                                     basePort,
 	                                     tunedFrequency,
 	                                     deviceGain,

@@ -23,9 +23,9 @@
  *    A simple client for rtl_tcp
  */
 
-#include	"rtl_tcp-client.h"
+#include	"rtl_tcp-handler.h"
 //
-	rtl_tcp_client::rtl_tcp_client	(std::string	hostname,
+	rtl_tcpHandler::rtl_tcpHandler	(std::string	hostname,
 	                                 int32_t	port,
 	                                 int32_t	frequency,
 	                                 int16_t	gain,
@@ -47,7 +47,6 @@
 
 //	Fill in server IP address
 	struct sockaddr_in server;
-	int serverAddrLen;
 	bzero (&server, sizeof (server));
 
 	struct hostent *host = gethostbyname (hostname. c_str ());
@@ -93,16 +92,16 @@
 //
 //	and start the listening thread
 	running. store (false);
-        threadHandle    = std::thread (&rtl_tcp_client::run, this);
+        threadHandle    = std::thread (&rtl_tcpHandler::run, this);
 }
 
-	rtl_tcp_client::~rtl_tcp_client (void) {
+	rtl_tcpHandler::~rtl_tcpHandler (void) {
 	stopReader ();
 
 	close (theSocket);
 }
 
-void	rtl_tcp_client:: run (void) {
+void	rtl_tcpHandler:: run (void) {
 
 	running. store (true);
 	while (running. load ()) {
@@ -122,7 +121,7 @@ void	rtl_tcp_client:: run (void) {
 //	The brave old getSamples. For the dab stick, we get
 //	size: still in I/Q pairs, but we have to convert the data from
 //	uint8_t to std::complex<float>
-int32_t	rtl_tcp_client::getSamples (std::complex<float> *V, int32_t size) { 
+int32_t	rtl_tcpHandler::getSamples (std::complex<float> *V, int32_t size) { 
 int32_t	amount, i;
 uint8_t	*tempBuffer = (uint8_t *)alloca (2 * size * sizeof (uint8_t));
 //
@@ -134,17 +133,17 @@ uint8_t	*tempBuffer = (uint8_t *)alloca (2 * size * sizeof (uint8_t));
 	return amount / 2;
 }
 
-int32_t	rtl_tcp_client::Samples	(void) {
+int32_t	rtl_tcpHandler::Samples	(void) {
 	return  theBuffer	-> GetRingBufferReadAvailable () / 2;
 }
 //
 
 //	bitDepth is is used to set the scale for the spectrum
-int16_t	rtl_tcp_client::bitDepth	(void) {
+int16_t	rtl_tcpHandler::bitDepth	(void) {
 	return 8;
 }
 
-void	rtl_tcp_client::sendCommand (uint8_t cmd, uint32_t param) {
+void	rtl_tcpHandler::sendCommand (uint8_t cmd, uint32_t param) {
 uint8_t theCommand [5];
 
 	theCommand [0]		= cmd;
@@ -155,10 +154,61 @@ uint8_t theCommand [5];
 	write (theSocket, &theCommand, 5);
 }
 
-void	rtl_tcp_client::stopReader (void) {
+void	rtl_tcpHandler::setVFOFrequency	(int32_t newFrequency) {
+	vfoFrequency = newFrequency;
+	fprintf (stderr, "setting the frequency to %d\n", vfoFrequency);
+	sendCommand (0x01, vfoFrequency);
+}
+
+int32_t	rtl_tcpHandler::getVFOFrequency	(void) {
+	return vfoFrequency;
+}
+
+bool	rtl_tcpHandler::restartReader	(void) {
+
+	if (running)  // The socket is active
+	   return true;
+
+	// Re-Connect to the remote server
+        int res = connect (theSocket,
+                              (struct sockaddr*) &server, sizeof (server));
+        if (res < 0) {
+           std::cerr << "Error: " << strerror (errno) << std::endl;
+           throw (23);
+        }
+
+	// Re-Set the parameters
+        fprintf (stderr, "setting the rate to %d\n", theRate);
+        sendCommand (0x02, theRate);
+        fprintf (stderr, "setting the frequency to %d\n", vfoFrequency);
+        sendCommand (0x01, vfoFrequency);
+        sendCommand (0x03, autogain);
+        fprintf (stderr, "setting the gain to %d\n", gain);
+        sendCommand (0x04, 10 * gain);
+        sendCommand (0x05, ppm);
+
+	// Re-Start the listening thread
+        running. store (false);
+        threadHandle    = std::thread (&rtl_tcpHandler::run, this);
+
+	return true;
+}
+
+void	rtl_tcpHandler::resetBuffer (void) {
+	theBuffer -> FlushRingBuffer ();
+}
+
+void	rtl_tcpHandler::setGain	(int32_t g) {
+	gain	= (int16_t)g;
+        fprintf (stderr, "setting the gain to %d\n", gain);
+        sendCommand (0x04, 10 * gain);
+}
+
+void	rtl_tcpHandler::stopReader (void) {
 	if (running) {
 	   running. store (false);
 	   threadHandle. join ();
 	}
 }
+
 
