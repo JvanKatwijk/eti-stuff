@@ -165,6 +165,9 @@ std::string	theChannel	= "11C";
 uint8_t		theBand		= BAND_III;
 bool		autoGain	= false;
 int16_t		ppmCorrection	= 0;
+#ifdef	HAVE_AIRSPY
+bool		rf_bias		= false;
+#endif
 #ifdef	HAVE_SDRPLAY
 int16_t		GRdB		= 30;
 int16_t		lnaState	= 2;
@@ -211,7 +214,7 @@ struct sigaction sigact;
 #elif defined (HAVE_HACKRF)
 	while ((opt = getopt (argc, argv, "D:d:M:B:C:L:V:O:P:R:Sh")) != -1) {
 #elif defined (HAVE_AIRSPY)
-	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:O:P:R:Sh")) != -1) {
+	while ((opt = getopt (argc, argv, "bD:d:M:B:C:G:O:P:R:Sh")) != -1) {
 #elif defined (HAVE_RTLSDR)
 	while ((opt = getopt (argc, argv, "I:D:d:M:B:C:G:O:P:QR:Sh")) != -1) {
 #endif
@@ -336,6 +339,10 @@ struct sigaction sigact;
 	         deviceGain	= atoi (optarg);
 	         break;
 
+	      case 'b':
+	         rf_bias	= true;
+	         break;
+
 	      case 'P':
 	         ppmCorrection	= atoi (optarg);
 	         break;
@@ -387,7 +394,7 @@ struct sigaction sigact;
 	                                      lnaGain, vgaGain);
 #elif	HAVE_AIRSPY
 	   inputDevice	= new airspyHandler (tunedFrequency,
-	                                        deviceGain, autoGain);
+	                                     deviceGain, autoGain, rf_bias);
 #elif	HAVE_RAWFILES
 	   inputDevice	= new rawfileHandler (inputfileName,
 	                                      continue_on_eof, 

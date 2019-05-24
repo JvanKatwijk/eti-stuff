@@ -28,7 +28,9 @@ const	int	EXTIO_NS	=  8192;
 static
 const	int	EXTIO_BASE_TYPE_SIZE = sizeof (float);
 
-	airspyHandler::airspyHandler (int frequency, int16_t gain, bool b) {
+	airspyHandler::airspyHandler (int frequency,
+	                              int16_t gain,
+	                              bool b, bool rf_bias) {
 int	result, i;
 int	distance	= 10000000;
 uint32_t myBuffer [20];
@@ -36,7 +38,7 @@ uint32_t samplerate_count;
 
 	this	-> gain		= gain;
 	this	-> frequency	= frequency;
-//
+	this	-> rf_bias	= rf_bias;
 	device			= 0;
 	serialNumber		= 0;
 	theBuffer		= NULL;
@@ -158,8 +160,9 @@ uint32_t samplerate_count;
 	             my_airspy_error_name((airspy_error)result), result);
 	   }
 
-//	   if (rf_bias)
-//	      set_rf_bias ();
+	   if (rf_bias)
+	      my_airspy_set_rf_bias (device, 0);
+
 	   result = my_airspy_close (device);
 	   if (result != AIRSPY_SUCCESS) {
 	      printf ("airspy_close () failed: %s (%d)\n",
@@ -196,7 +199,7 @@ int32_t	bufSize	= EXTIO_NS * EXTIO_BASE_TYPE_SIZE * 2;
 
 	result = my_airspy_set_sensitivity_gain (device, gain * 21 / 100);
 	result = my_airspy_set_freq (device, frequency);
-	
+	(void) my_airspy_set_rf_bias (device, rf_bias ? 1 : 0);
 	result = my_airspy_start_rx (device,
 	            (airspy_sample_block_cb_fn)callback, this);
 	if (result != AIRSPY_SUCCESS) {

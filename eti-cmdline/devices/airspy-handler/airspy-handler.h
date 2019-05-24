@@ -76,7 +76,7 @@ typedef int (*pfn_airspy_set_sensitivity_gain)(struct airspy_device* device, uin
 
 class airspyHandler: public deviceHandler {
 public:
-			airspyHandler		(int, int16_t, bool);
+			airspyHandler		(int, int16_t, bool, bool);
 			~airspyHandler		(void);
 	bool		restartReader		(int32_t);
 	void		stopReader		(void);
@@ -121,6 +121,7 @@ private:
 const	char*		board_id_name (void);
 	int		gain;
 	int		frequency;
+	bool		rf_bias;
 	int32_t		selectedRate;
 	DSPCOMPLEX	*convBuffer;
 	int16_t		convBufferSize;
