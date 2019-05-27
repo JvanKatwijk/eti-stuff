@@ -43,7 +43,7 @@ The "normal" way for configuring and installing is
    	make
 
 where XXX refers to the input device being supported, one of 
-(RTLSDR, SDRPLAY, AIRSPY, HACKrf, RAWFILES, WAVFILES)
+(RTLSDR, SDRPLAY, AIRSPY, HACKRF, RAWFILES, WAVFILES)
 
 If `-DDUMPING=ON` is added, the possibility for dumping the input to an ".sdr" 
 file (note that an sdr-file is a ".wav" file, with a samplerate of 2048000 
