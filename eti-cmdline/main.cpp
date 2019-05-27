@@ -511,13 +511,14 @@ void    printOptions (void) {
    -G Gain     gain for device (range 0 .. 99)\n\
    -G gainreduction for the SDRplay (20 .. 59)\n\
    -L lnaState for the SDRplay only \n\
-   -I number	deviceIndex (currently only for rtlsdr devices) \n\
+   -I number   deviceIndex (currently only for rtlsdr devices) \n\
    -Q          autogain for device (not all tuners support it!)\n\
    -F filename load samples from file\n\
    -E          only for files: continue after EOF (replay file)\n\
    -O filename write output into a file (instead of stdout)\n\
    -S          do not display quality messages while running\n\
    -R filename (if configured) dump to an *.sdr file\n\
+   -b          activates bias tee (only for Airspy)\n\
    \n\
    -h          show options and quit\n"; 
 }
