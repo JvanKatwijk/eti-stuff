@@ -43,10 +43,10 @@ The "normal" way for configuring and installing is
    	make
 
 where XXX refers to the input device being supported, one of 
-(RTLSDR, SDRPLAY, AIRSPY, HACKrf, RAWFILES, WAVFILES)
+(RTLSDR, SDRPLAY, AIRSPY, HACKRF, RAWFILES, WAVFILES)
 
-If `-DDUMPING=ON` is added, the possibility for dumping the input to a ".sdr" 
-file (note that an sdr file is a ".wav" file, with a samplerate of 2048000 
+If `-DDUMPING=ON` is added, the possibility for dumping the input to an ".sdr" 
+file (note that an sdr-file is a ".wav" file, with a samplerate of 2048000 
 and short int values).
 
 The resulting program is named `eti-cmdline-XXX`, for XXX see above.
@@ -81,7 +81,7 @@ General parameters are
 
 For use with one of the physical devices, one may set the following parameters
 
-5. `-B ("L_BAND"| "BAND III")` for selecting the band. Default BAND III is chosen.
+5. `-B ("L_BAND" | "BAND III")` for selecting the band. Default BAND III is chosen.
 
 6. `-C channel`,  for selecting the channel to be set, e.g. 11C, default 11C
    is chosen
@@ -104,7 +104,7 @@ For use with sdrplay devices, one may use
 
 8. `-L number`, for setting the LNA state, and
 
-9. `-Q', for setting the autogain
+9. `-Q`, for setting the autogain
 
 10. `-P`, for setting the ppm correction
 
@@ -116,18 +116,20 @@ For use with HACKrf devices, one may use
 
 9. `-P number`, for setting the ppm correction.
 
-For use with AIRSPY devices, one may usse
+For use with AIRSPY devices, one may use
 
 7. `-G number` for setting the gain (combined gain setting, range 0..21)
 
 8. `-P number` for setting the ppm correction.
+
+9. `-b` activates the bias tee (i.e. for use with an external amplifier)
 
 
 For use with file input 
 
 7. `-F filename`, the full pathname for the input file
 
-8. `-E`, is selected the file will be reread after reaching eof.
+8. `-E`, if selected the file will be reread after reaching eof.
 
 For use with rtl_tcp
 
@@ -150,11 +152,11 @@ You can use dablin or dablin_gtk from https://github.com/Opendigitalradio/dablin
      
 	eti-cmdline-xxx -C 11C -G 80 | dablin_gtk -L
      
-where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay`, `airspy`, `rawfiles`, `wavfiles`).
+where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay`, `airspy`, `hackrf`, `rawfiles`, `wavfiles`).
 
 ## Copyright
 
-	Copyright (C)  2016, 2017, 2018
+	Copyright (C)  2016, 2017, 2018, 2019
 	Jan van Katwijk (J.vanKatwijk@gmail.com)
 	Lazy Chair Programming
 
