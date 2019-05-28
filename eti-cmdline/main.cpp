@@ -174,6 +174,7 @@ int16_t		lnaState	= 2;
 #elif	HAVE_HACKRF
 int16_t		lnaGain		= 30;
 int16_t		vgaGain		= 30;
+bool		ampEnable	= false;
 #else
 int16_t		deviceGain	= 80;	// scale = 0 .. 100
 int16_t		deviceIndex	= 0;
@@ -212,7 +213,7 @@ struct sigaction sigact;
 #elif defined (HAVE_SDRPLAY) 
 	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:L::O:P:QR:Sh")) != -1) {
 #elif defined (HAVE_HACKRF)
-	while ((opt = getopt (argc, argv, "D:d:M:B:C:L:V:O:P:R:Sh")) != -1) {
+	while ((opt = getopt (argc, argv, "ED:d:M:B:C:L:V:O:P:R:Sh")) != -1) {
 #elif defined (HAVE_AIRSPY)
 	while ((opt = getopt (argc, argv, "bD:d:M:B:C:G:O:P:R:Sh")) != -1) {
 #elif defined (HAVE_RTLSDR)
@@ -321,6 +322,10 @@ struct sigaction sigact;
 	      case 'P':
 	         ppmCorrection	= atoi (optarg);
 	         break;
+
+	      case 'E':
+	         ampEnable	= true;
+	         break;
 #elif defined (HAVE_RTLSDR)
 	      case 'G':
 	         deviceGain	= atoi (optarg);
@@ -390,8 +395,11 @@ struct sigaction sigact;
 	                                      autoGain, 0, 0);
 #elif	HAVE_HACKRF
 	   (void)autoGain;
-	   inputDevice	= new hackrfHandler (tunedFrequency, ppmCorrection,
-	                                      lnaGain, vgaGain);
+	   inputDevice	= new hackrfHandler (tunedFrequency,
+	                                     ppmCorrection,
+	                                     lnaGain,
+	                                     vgaGain,
+	                                     ampEnable);
 #elif	HAVE_AIRSPY
 	   inputDevice	= new airspyHandler (tunedFrequency,
 	                                     deviceGain, autoGain, rf_bias);
@@ -515,6 +523,7 @@ void    printOptions (void) {
    -Q          autogain for device (not all tuners support it!)\n\
    -F filename load samples from file\n\
    -E          only for files: continue after EOF (replay file)\n\
+   -E          only for HACKRF device: switch on amplifier\n\
    -O filename write output into a file (instead of stdout)\n\
    -S          do not display quality messages while running\n\
    -R filename (if configured) dump to an *.sdr file\n\

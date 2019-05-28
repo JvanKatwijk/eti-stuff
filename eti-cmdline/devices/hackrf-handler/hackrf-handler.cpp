@@ -27,11 +27,17 @@
 	hackrfHandler::hackrfHandler  (int32_t	frequency,
 	                               int16_t	ppm,
 	                               int16_t	lnaGain,
-	                               int16_t	vgaGain) {
+	                               int16_t	vgaGain,
+	                               bool	ampEnable) {
 int	res;
-	this	-> inputRate		= 2048000;
+
+	vfoFrequency		= frequency;
+	this	-> ppm		= ppm;
+	this	-> lnaGain	= lnaGain;
+	this	-> vgaGain	= vgaGain;
+	this	-> ampEnable	= ampEnable;
+	this	-> inputRate	= 2048000;
 	_I_Buffer	= new RingBuffer<std::complex<float>>(1024 * 1024);
-	vfoFrequency	= frequency;
 //
 	res	= hackrf_init ();
 	if (res != HACKRF_SUCCESS) {
@@ -79,8 +85,12 @@ int	res;
 	   (void)serial;
 	}
 
-	setLNAGain	(lnaGain);
-	setVGAGain	(vgaGain);
+	if ((vgaGain <= 62) && (vgaGain >= 0))
+	   (void)hackrf_set_vga_gain (theDevice, vgaGain);
+	if ((lnaGain <= 40) && (lnaGain >= 0))
+	   (void)hackrf_set_lna_gain (theDevice, lnaGain);
+	(void)hackrf_set_amp_enable (theDevice, ampEnable);
+
 	running. store (false);
 }
 
@@ -144,12 +154,12 @@ int	res;
 	   return true;
 
 	res     = hackrf_set_freq (theDevice, newFrequency);
-        if (res != HACKRF_SUCCESS) {
-           fprintf (stderr, "Problem with hackrf_set_freq: \n");
-           fprintf (stderr, "%s \n", hackrf_error_name (hackrf_error (res)));
-           return running. load ();;
-        }
-        vfoFrequency = newFrequency;
+	if (res != HACKRF_SUCCESS) {
+	   fprintf (stderr, "Problem with hackrf_set_freq: \n");
+	   fprintf (stderr, "%s \n", hackrf_error_name (hackrf_error (res)));
+	   return running. load ();;
+	}
+	vfoFrequency = newFrequency;
 
 	res	= hackrf_start_rx (theDevice, callback, this);	
 	if (res != HACKRF_SUCCESS) {
@@ -157,6 +167,13 @@ int	res;
 	   fprintf (stderr, "%s \n", hackrf_error_name (hackrf_error (res)));
 	   return false;
 	}
+
+	if ((vgaGain <= 62) && (vgaGain >= 0))
+	   (void)hackrf_set_vga_gain (theDevice, vgaGain);
+	if ((lnaGain <= 40) && (lnaGain >= 0))
+	   (void)hackrf_set_lna_gain (theDevice, lnaGain);
+	(void)hackrf_set_amp_enable (theDevice, ampEnable);
+
 	running. store (hackrf_is_streaming (theDevice));
 	return running. load ();
 }

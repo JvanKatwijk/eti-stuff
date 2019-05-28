@@ -116,6 +116,7 @@ For use with HACKrf devices, one may use
 
 9. `-P number`, for setting the ppm correction.
 
+10. `-E`, for switching on the on board amplifier.
 For use with AIRSPY devices, one may use
 
 7. `-G number` for setting the gain (combined gain setting, range 0..21)
