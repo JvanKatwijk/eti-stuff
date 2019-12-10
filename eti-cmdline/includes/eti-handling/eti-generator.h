@@ -49,6 +49,7 @@
 #include	"ringbuffer.h"
 #include	"fic-handler.h"
 #include	"dab-params.h"
+#include	"protection.h"
 
 class	RadioInterface;
 class	ensembleHandler;
@@ -57,6 +58,16 @@ typedef struct {
 	int16_t		blkno;
 	int16_t 	data [3072];
 } bufferElement;
+
+
+//
+//	to build a simple cache for the protection handlers
+typedef	struct {
+	bool    uepFlag;
+        int     bitRate;
+        int     protLevel;
+        protection *p;
+} protDesc;
 
 class etiGenerator {
 public:
@@ -97,6 +108,8 @@ private:
 	int32_t		process_CIF		(int16_t *,
 	                                         uint8_t *, int32_t);
 	void		postProcess		(uint8_t *, int32_t);
+	std::vector<protDesc> protTable;
+	protection	*find			(bool, int16_t, int16_t);
 };
 
 #endif

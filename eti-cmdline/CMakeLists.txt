@@ -1,7 +1,7 @@
 cmake_minimum_required( VERSION 2.8.11 )
 set (objectName eti_cmdline)
-set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -Wall -std=c++11 -g")
-set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g")
+set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -Wall -std=c++11 -flto -ffast-math")
+set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flto -ffast-math")
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set (CMAKE_INSTALL_PREFIX "/usr/local/bin" CACHE PATH "default install path" FORCE )
 endif()
@@ -66,6 +66,14 @@ endif ()
 if(DEFINED DUMPING)
    set(DUMPING true)
 endif ()
+
+if(DEFINED PC)
+   set(X64_DEFINED true)
+endif ()
+
+if(DEFINED RPI)
+   set(RPI_DEFINED true)
+endif ()
 ########################################################################
 	find_package (PkgConfig)
 
@@ -105,6 +113,7 @@ endif ()
 	           ./includes
 	           ./includes/ofdm
 	           ./includes/eti-handling
+	           ./includes/eti-handling/viterbi-spiral
 	           ./includes/support
 	           ./devices
 	           /usr/include/
@@ -119,7 +128,8 @@ endif ()
 	     ./includes/ofdm/phasetable.h
 	     ./includes/ofdm/freq-interleaver.h
 	     ./includes/eti-handling/eti-generator.h
-	     ./includes/eti-handling/viterbi-handler.h
+#	     ./includes/eti-handling/viterbi-handler.h
+	     ./includes/eti-handling/viterbi-spiral/viterbi-spiral.h
 	     ./includes/eti-handling/protection.h
 	     ./includes/eti-handling/uep-protection.h
 	     ./includes/eti-handling/eep-protection.h
@@ -141,7 +151,8 @@ endif ()
 	     ./src/ofdm/phasetable.cpp
 	     ./src/ofdm/freq-interleaver.cpp
 	     ./src/eti-handling/eti-generator.cpp
-	     ./src/eti-handling/viterbi-handler.cpp
+#	     ./src/eti-handling/viterbi-handler.cpp
+	     ./src/eti-handling/viterbi-spiral/viterbi-spiral.cpp
 	     ./src/eti-handling/fic-handler.cpp
 	     ./src/eti-handling/fib-processor.cpp
 	     ./src/eti-handling/protection.cpp
@@ -154,6 +165,43 @@ endif ()
 	     ./src/support/dab-params.cpp
 	     ./devices/device-handler.cpp
 	)
+
+	if (X64_DEFINED) 
+	   set (${objectName}_SRCS
+                ${${objectName}_SRCS}
+              ./src/eti-handling/viterbi-spiral/spiral-sse.c
+	   )
+	   set (${objectName}_HDRS
+	        ${${objectName}_HDRS}
+             ./src/eti-handling/viterbi-spiral/spiral-sse.h
+	   )
+           add_definitions (-DSSE_AVAILABLE)
+	endif (X64_DEFINED)
+
+	if (RPI_DEFINED)
+	   set (${objectName}_SRCS
+                ${${objectName}_SRCS}
+              ./src/eti-handling/viterbi-spiral/spiral-neon.c
+	   )
+	   set (${objectName}_HDRS
+	        ${${objectName}_HDRS}
+             ./src/eti-handling/viterbi-spiral/spiral-neon.h
+	   )
+   	   add_definitions (-DNEON_AVAILABLE)
+	   set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4")
+	   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4")
+	endif (RPI_DEFINED)
+
+	if ((NOT X64_DEFINED) AND (NOT RPI_DEFINED))
+	   set (${objectName}_SRCS
+                ${${objectName}_SRCS}
+              ./src/eti-handling/viterbi-spiral/spiral-no-sse.c
+	   )
+	   set (${objectName}_HDRS
+	        ${${objectName}_HDRS}
+             ./src/eti-handling/viterbi-spiral/spiral-no-sse.h
+	   )
+	endif ((NOT X64_DEFINED) AND (NOT RPI_DEFINED))
 
 #	if (SDRPLAY)
 #	   find_path (SDRPLAYLIB_INCLUDE_DIR

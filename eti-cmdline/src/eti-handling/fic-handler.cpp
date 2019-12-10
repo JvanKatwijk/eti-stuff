@@ -51,7 +51,7 @@ uint8_t PI_X [24] = {
 	                                ensemblename_t	ensembleName,
 	                                programname_t	programName,
 	                                fibquality_t	set_fibQuality):
-	                                             viterbiHandler (768),
+	                                             viterbiSpiral (768),
 	                                             fibProcessor (userData,
 	                                                           ensembleName,
 	                                                           programName) {

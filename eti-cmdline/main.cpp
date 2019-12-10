@@ -211,7 +211,7 @@ struct sigaction sigact;
 #elif defined (HAVE_RTL_TCP)
 	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:O:P:H:I:QR:Sh")) != -1) {
 #elif defined (HAVE_SDRPLAY) 
-	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:L::O:P:QR:Sh")) != -1) {
+	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:L:O:P:QR:Sh")) != -1) {
 #elif defined (HAVE_HACKRF)
 	while ((opt = getopt (argc, argv, "ED:d:M:B:C:L:V:O:P:R:Sh")) != -1) {
 #elif defined (HAVE_AIRSPY)
@@ -298,6 +298,7 @@ struct sigaction sigact;
 	      case 'G':
 	         GRdB	= atoi (optarg);
 	         break;
+
 	      case 'L':
 	         lnaState	= atoi (optarg);
 	         break;

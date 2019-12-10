@@ -1,0 +1,128 @@
+diff --git a/eti-cmdline/devices/airspy-handler/airspy-handler.cpp b/eti-cmdline/devices/airspy-handler/airspy-handler.cpp
+index fdd889f..cbeba89 100644
+--- a/eti-cmdline/devices/airspy-handler/airspy-handler.cpp
++++ b/eti-cmdline/devices/airspy-handler/airspy-handler.cpp
+@@ -28,7 +28,9 @@ const	int	EXTIO_NS	=  8192;
+ static
+ const	int	EXTIO_BASE_TYPE_SIZE = sizeof (float);
+ 
+-	airspyHandler::airspyHandler (int frequency, int16_t gain, bool b) {
++	airspyHandler::airspyHandler (int frequency,
++	                              int16_t gain,
++	                              bool b, bool rf_bias) {
+ int	result, i;
+ int	distance	= 10000000;
+ uint32_t myBuffer [20];
+@@ -36,7 +38,7 @@ uint32_t samplerate_count;
+ 
+ 	this	-> gain		= gain;
+ 	this	-> frequency	= frequency;
+-//
++	this	-> rf_bias	= rf_bias;
+ 	device			= 0;
+ 	serialNumber		= 0;
+ 	theBuffer		= NULL;
+@@ -158,8 +160,9 @@ uint32_t samplerate_count;
+ 	             my_airspy_error_name((airspy_error)result), result);
+ 	   }
+ 
+-//	   if (rf_bias)
+-//	      set_rf_bias ();
++
++	   my_airspy_set_rf_bias (device, rf_bias ? 1 : 0);
++
+ 	   result = my_airspy_close (device);
+ 	   if (result != AIRSPY_SUCCESS) {
+ 	      printf ("airspy_close () failed: %s (%d)\n",
+@@ -178,21 +181,7 @@ err:
+ 	   delete theBuffer;
+ }
+ 
+-void	airspyHandler::setVFOFrequency (int32_t nf) {
+-int result = my_airspy_set_freq (device, nf);
+-
+-	frequency	= nf;
+-	if (result != AIRSPY_SUCCESS) {
+-	   printf ("my_airspy_set_freq() failed: %s (%d)\n",
+-	            my_airspy_error_name((airspy_error)result), result);
+-	}
+-}
+-
+-int32_t	airspyHandler::getVFOFrequency (void) {
+-	return frequency;
+-}
+-
+-bool	airspyHandler::restartReader	(void) {
++bool	airspyHandler::restartReader	(int32_t frequency) {
+ int	result;
+ int32_t	bufSize	= EXTIO_NS * EXTIO_BASE_TYPE_SIZE * 2;
+ 
+@@ -210,7 +199,7 @@ int32_t	bufSize	= EXTIO_NS * EXTIO_BASE_TYPE_SIZE * 2;
+ 
+ 	result = my_airspy_set_sensitivity_gain (device, gain * 21 / 100);
+ 	result = my_airspy_set_freq (device, frequency);
+-	
++	(void) my_airspy_set_rf_bias (device, rf_bias ? 1 : 0);
+ 	result = my_airspy_start_rx (device,
+ 	            (airspy_sample_block_cb_fn)callback, this);
+ 	if (result != AIRSPY_SUCCESS) {
+@@ -353,21 +342,11 @@ int16_t	airspyHandler::bitDepth (void) {
+ 	return 13;
+ }
+ 
+-int32_t	airspyHandler::getRate (void) {
+-	return inputRate;
+-}
+-
+ int32_t	airspyHandler::getSamples (DSPCOMPLEX *v, int32_t size) {
+ 
+ 	return theBuffer	-> getDataFromBuffer (v, size);
+ }
+ 
+-int32_t	airspyHandler::getSamples	(DSPCOMPLEX  *V,
+-	                         int32_t size, uint8_t M) {
+-	(void)M;
+-	return getSamples (V, size);
+-}
+-
+ int32_t	airspyHandler::Samples	(void) {
+ 	return theBuffer	-> GetRingBufferReadAvailable ();
+ }
+diff --git a/eti-cmdline/devices/airspy-handler/airspy-handler.h b/eti-cmdline/devices/airspy-handler/airspy-handler.h
+index 32fe79b..1065802 100644
+--- a/eti-cmdline/devices/airspy-handler/airspy-handler.h
++++ b/eti-cmdline/devices/airspy-handler/airspy-handler.h
+@@ -76,21 +76,16 @@ typedef int (*pfn_airspy_set_sensitivity_gain)(struct airspy_device* device, uin
+ 
+ class airspyHandler: public deviceHandler {
+ public:
+-			airspyHandler		(int, int16_t, bool);
++			airspyHandler		(int, int16_t, bool, bool);
+ 			~airspyHandler		(void);
+-	void		setVFOFrequency		(int32_t nf);
+-	int32_t		getVFOFrequency		(void);
+-	bool		restartReader		(void);
++	bool		restartReader		(int32_t);
+ 	void		stopReader		(void);
+ 	int32_t		getSamples		(DSPCOMPLEX *v, int32_t size);
+ 	int32_t		Samples			(void);
+ 	void		resetBuffer		(void);
+ 	int16_t		bitDepth		(void);
+-//
+-	int32_t		getRate			(void);
+-	int32_t		getSamples		(DSPCOMPLEX  *V,
+-	                         		 int32_t size, uint8_t M);
+-	void		setGain			(int32_t);
++	void		setGain			(int);
++
+ private:
+ 	bool		load_airspyFunctions	(void);
+ //	The functions to be extracted from the dll/.so file
+@@ -126,6 +121,7 @@ private:
+ const	char*		board_id_name (void);
+ 	int		gain;
+ 	int		frequency;
++	bool		rf_bias;
+ 	int32_t		selectedRate;
+ 	DSPCOMPLEX	*convBuffer;
+ 	int16_t		convBufferSize;

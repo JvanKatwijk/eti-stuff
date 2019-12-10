@@ -23,7 +23,6 @@
 #ifndef	__OFDM_PROCESSOR__
 #define	__OFDM_PROCESSOR__
 /*
- *
  */
 #include	"dab-constants.h"
 #include	<thread>
@@ -63,6 +62,7 @@ public:
 	                         syncsignal_t,
 	                         snrsignal_t,
 	                         etiGenerator	*,
+	                         int16_t,
 	                         int16_t,
 	                         uint8_t);
 	virtual ~ofdmProcessor	(void);
@@ -125,7 +125,8 @@ virtual	void		run		(void);
 	void		processBlock_0	(DSPCOMPLEX *);
 	void		processBlock	(DSPCOMPLEX*, int16_t*);
 	int16_t		get_snr		(DSPCOMPLEX *);
-
+	int16_t		threshold_1;
+	int16_t		threshold_2;
 	int16_t		snrCount;
 	int16_t		snr;
 

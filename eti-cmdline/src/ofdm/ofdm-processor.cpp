@@ -25,7 +25,6 @@
 #include	"eti-generator.h"
 #include	"fft.h"
 //
-
 /**
   *	\brief ofdmProcessor
   *	The ofdmProcessor class is the driver of the processing
@@ -57,12 +56,12 @@ int16_t	res	= 1;
 	                                 syncsignal_t	set_syncSignal,
 	                                 snrsignal_t	set_snrSignal,
 	                                 etiGenerator	*eti,
-	                                 int16_t	threshold,
+	                                 int16_t	threshold_1,
+	                                 int16_t	threshold_2,
 	                                 uint8_t	freqsyncMethod):
 	                                    params (dabMode),
 	                                    myMapper (&params),
 	                                    phaseSynchronizer (&params,
-	                                                       threshold,
 	                                                       DIFF_LENGTH) {
 int32_t	i;
 	this	-> inputDevice		= inputDevice;
@@ -82,19 +81,21 @@ int32_t	i;
 	this	-> carriers		= params. get_carriers ();
 	this	-> carrierDiff		= params. get_carrierDiff ();
 	this	-> ibits		= new int16_t [2 * this -> carriers];
-	this	-> referenceFase	= new DSPCOMPLEX [T_u];
+	this	-> referenceFase	= new std::complex<float> [T_u];
 	this	-> my_etiGenerator	= eti;
+	this	-> threshold_1		= threshold_1;
+	this	-> threshold_2		= threshold_2;
 	fft_handler			= new fftHandler (T_u);
 	fft_buffer			= fft_handler -> getVector ();
 //
-	ofdmBuffer			= new DSPCOMPLEX [76 * T_s];
+	ofdmBuffer			= new std::complex<float> [2 * T_s];
 	ofdmBufferIndex			= 0;
 	ofdmSymbolCount			= 0;
 	sampleCnt			= 0;
 	fineCorrector		= 0;	
 	coarseCorrector		= 0;
 	f2Correction		= true;
-	oscillatorTable		= new DSPCOMPLEX [INPUT_RATE];
+	oscillatorTable		= new std::complex<float> [INPUT_RATE];
 
 	for (i = 0; i < INPUT_RATE; i ++)
 	   oscillatorTable [i] = std::complex<float> (
@@ -260,7 +261,7 @@ notSynced:
 	   syncBufferIndex = 0;
 	   currentStrength	= 0;
 	   for (i = 0; i < 50; i ++) {
-	      DSPCOMPLEX sample			= getSample (0);
+	      std::complex<float> sample	= getSample (0);
 	      envBuffer [syncBufferIndex]	= jan_abs (sample);
 	      currentStrength 			+= envBuffer [syncBufferIndex];
 	      syncBufferIndex ++;
@@ -275,7 +276,7 @@ notSynced:
   */
 	   counter	= 0;
 	   while (currentStrength / 50  > 0.50 * sLevel) {
-	      DSPCOMPLEX sample	=
+	      std::complex<float> sample	=
 	                      getSample (coarseCorrector + fineCorrector);
 	      envBuffer [syncBufferIndex] = jan_abs (sample);
 //	update the levels
@@ -296,7 +297,8 @@ notSynced:
 	   counter	= 0;
 //SyncOnEndNull:
 	   while (currentStrength / 50 < 0.75 * sLevel) {
-	      DSPCOMPLEX sample = getSample (coarseCorrector + fineCorrector);
+	      std::complex<float> sample =
+	                   getSample (coarseCorrector + fineCorrector);
 	      envBuffer [syncBufferIndex] = jan_abs (sample);
 
 //	update the levels
@@ -313,7 +315,6 @@ notSynced:
   *	The end of the null period is identified, probably about 40
   *	samples earlier.
   */
-SyncOnPhase:
 /**
   *	We now have to find the exact first sample of the non-null period.
   *	We use a correlation that will find the first sample after the
@@ -330,7 +331,7 @@ SyncOnPhase:
 //
 ///	and then, call upon the phase synchronizer to verify/compute
 ///	the real "first" sample
-	   startIndex = phaseSynchronizer. findIndex (ofdmBuffer);
+	   startIndex = phaseSynchronizer. findIndex (ofdmBuffer, threshold_1);
 	   if (startIndex < 0) { // no sync, try again
 //	      fprintf (stderr, "startIndex = %d\n", startIndex);
 /**
@@ -339,13 +340,24 @@ SyncOnPhase:
   */
 	      goto notSynced;
 	   }
+
+	   goto SyncOnPhase;
+
+Check_endofNull:
+
+	   getSamples (ofdmBuffer, T_u, coarseCorrector + fineCorrector);
+	   startIndex = phaseSynchronizer. findIndex (ofdmBuffer, threshold_2);
+	   if (startIndex < 0) 
+	      goto notSynced;
+
 	   set_syncSignal (true, userData);
+SyncOnPhase:
 /**
   *	Once here, we are synchronized, we need to copy the data we
   *	used for synchronization for block 0
   */
 	   memmove (ofdmBuffer, &ofdmBuffer [startIndex],
-	                  (T_u - startIndex) * sizeof (DSPCOMPLEX));
+	                  (T_u - startIndex) * sizeof (std::complex<float>));
 	   ofdmBufferIndex	= T_u - startIndex;
 
 	   my_etiGenerator	-> newFrame ();
@@ -379,7 +391,7 @@ SyncOnPhase:
   *	between the samples in the cyclic prefix and the
   *	corresponding samples in the datapart.
   */
-	   FreqCorr		= DSPCOMPLEX (0, 0);
+	   FreqCorr		= std::complex<float> (0, 0);
 	   for (ofdmSymbolCount = 2;
 	        ofdmSymbolCount <= (uint16_t)nrBlocks;
 	        ofdmSymbolCount ++) {
@@ -403,12 +415,20 @@ SyncOnPhase:
 	   syncBufferIndex	= 0;
 	   currentStrength	= 0;
 	   getSamples (ofdmBuffer, T_null, coarseCorrector + fineCorrector);
-/**
-  *	The first sample to be found for the next frame should be T_g
-  *	samples ahead
-  *	Here we just check the fineCorrector
-  */
-	   counter	= 0;
+	   
+	   float sum    = 0;
+           for (i = 0; i < T_null; i ++)
+              sum += abs (ofdmBuffer [i]);
+           sum /= T_null;
+           static       float snr       = 0;
+           snr = 0.9 * snr +
+             0.1 * 20 * log10 ((sLevel + 0.005) / sum);
+           static int ccc       = 0;
+           if (++ccc > 10) {
+              ccc = 0;
+              show_snr ((int)snr, userData);
+           }
+
 //
 	   if (fineCorrector > carrierDiff / 2) {
 	      coarseCorrector += carrierDiff;
@@ -421,7 +441,7 @@ SyncOnPhase:
 	   }
 //ReadyForNewFrame:
 ///	and off we go, up to the next frame
-	   goto SyncOnPhase;
+	   goto Check_endofNull;
 	}
 	catch (int e) {
 	   ;
@@ -431,10 +451,11 @@ SyncOnPhase:
 	fprintf (stderr, "ofdmProcessor is shutting down\n");
 }
 
-void	ofdmProcessor::processBlock (DSPCOMPLEX *inv, int16_t *ibits) {
+void	ofdmProcessor::processBlock (std::complex<float> *inv, int16_t *ibits) {
 int16_t		i;
 
-	memcpy (fft_buffer, &inv [T_s - T_u], T_u * sizeof (DSPCOMPLEX));
+	memcpy (fft_buffer, &inv [T_g],
+	                       T_u * sizeof (std::complex<float>));
 	fft_handler -> do_FFT ();
 //
 //	Note that "mapIn" maps to -carriers / 2 .. carriers / 2
@@ -445,9 +466,10 @@ int16_t		i;
 	   if (index < 0) 
 	      index += T_u;
 	      
-	   DSPCOMPLEX	r1 = fft_buffer [index] * conj (referenceFase [index]);
+	   std::complex<float>	r1 =
+	            fft_buffer [index] * conj (referenceFase [index]);
 	   referenceFase [index] = fft_buffer [index];
-	   DSPFLOAT ab1	= jan_abs (r1);
+	   float ab1	= jan_abs (r1);
 //	Recall:  with this viterbi decoder
 //	we have 127 = max pos, -127 = max neg
 	   ibits [i]		= - real (r1) / ab1 * 127.0;
@@ -457,22 +479,11 @@ int16_t		i;
 
 ////////////////////////////////////////////////////////////////////////////
 
-void	ofdmProcessor::processBlock_0 (DSPCOMPLEX *vi) {
+void	ofdmProcessor::processBlock_0 (std::complex<float> *vi) {
 
-	memcpy (fft_buffer, vi, T_u * sizeof (DSPCOMPLEX));
+	memcpy (fft_buffer, vi, T_u * sizeof (std::complex<float>));
 	fft_handler	-> do_FFT ();
-	snr             = 0.7 * snr + 0.3 * get_snr (fft_buffer);
-	if (++snrCount > 10) {
-	  show_snr (snr, userData);
-	  snrCount = 0;
-	}
-/**
-  *     we are now in the frequency domain, and we keep the carriers
-  *     as coming from the FFT as phase reference.
-  */
-
-	memcpy (referenceFase, fft_buffer, T_u * sizeof (DSPCOMPLEX));
-	
+	memcpy (referenceFase, fft_buffer, T_u * sizeof (std::complex<float>));
 }
 
 //
@@ -501,7 +512,7 @@ void	ofdmProcessor::syncReached (void) {
   *	Just get the strength from the selected carriers compared
   *	to the strength of the carriers outside that region
   */
-int16_t	ofdmProcessor::get_snr (DSPCOMPLEX *v) {
+int16_t	ofdmProcessor::get_snr (std::complex<float> *v) {
 int16_t	i;
 float	noise 	= 0;
 float	signal	= 0;

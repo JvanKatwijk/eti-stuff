@@ -29,16 +29,14 @@
   *	The class inherits from the phaseTable.
   */
 	phaseReference::phaseReference (dabParams	*p,
-	                                int16_t		threshold,
 	                                int16_t		diff_length):
 	                                     phaseTable (p -> get_dabMode ()) {
 int32_t	i;
 float	Phi_k;
 
 	this	-> T_u		= p -> get_T_u ();
-	this	-> threshold	= threshold;
 	this	-> diff_length	= diff_length;
-	refTable		= new std::complex<float> 	[T_u];	//
+	refTable		= new std::complex<float> [T_u];	//
 	fft_processor		= new fftHandler 	(T_u);
 	fft_buffer		= fft_processor		-> getVector ();
 	phasedifferences	= new std::complex<float>	[diff_length];
@@ -76,7 +74,7 @@ float	Phi_k;
   *	we believe that that indicates the first sample we were
   *	looking for.
   */
-int32_t	phaseReference::findIndex (std::complex<float> *v) {
+int32_t	phaseReference::findIndex (std::complex<float> *v, int16_t threshold) {
 int32_t	i;
 int32_t	maxIndex	= -1;
 float	sum		= 0;

@@ -57,7 +57,7 @@
 	                                             syncsignalHandler,
 	                                             snrsignalHandler,
 	                                             &my_etiGenerator,
-	                                             3, 2) {
+	                                             2, 5, 2) {
 }
 
 	etiClass::~etiClass		(void) {

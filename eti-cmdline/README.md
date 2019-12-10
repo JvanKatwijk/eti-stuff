@@ -39,7 +39,7 @@ The "normal" way for configuring and installing is
 
    	mkdir build
   	cd build
-   	cmake .. -DXXX=ON  [-DDUMPING=ON]
+   	cmake .. -DXXX=ON  [-DDUMPING=ON] [-DX64_DEFINED]
    	make
 
 where XXX refers to the input device being supported, one of 
@@ -48,6 +48,11 @@ where XXX refers to the input device being supported, one of
 If `-DDUMPING=ON` is added, the possibility for dumping the input to an ".sdr" 
 file (note that an sdr-file is a ".wav" file, with a samplerate of 2048000 
 and short int values).
+
+If `-DX64_DEFINED' is added, SSE instructions will be used in the viterbi decoding.
+
+If `-DRPI_DEFINED' is added and building takes place on an RPI, an attempt
+is made to use neon insrtructions (problems with the toolchain though)
 
 The resulting program is named `eti-cmdline-XXX`, for XXX see above.
 

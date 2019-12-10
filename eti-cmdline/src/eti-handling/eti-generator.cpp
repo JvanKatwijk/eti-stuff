@@ -334,21 +334,27 @@ uint8_t	shiftRegister [9];
 //	xep_protection handlers, since it is most likely that
 //	more than one service is protected with the same parameters.
 //	(Note time deinterleaving is done already)
-	   if (data. uepFlag) {
-	      uep_protection uep_deconvolver (data. bitrate, data. protlev);
-	      uep_deconvolver.
-	          deconvolve (&input [data. start_cu * CUSize],
-	                      data. size * CUSize,
-	                      outVector);
-	   }
-	   else {
-	      eep_protection eep_deconvolver (data. bitrate,
-	                                                data. protlev);
-	      eep_deconvolver.
-	         deconvolve (&input [data. start_cu * CUSize],
-	                     data. size * CUSize,
-	                     outVector);
-	   }
+
+	   protection	*p = find (data. uepFlag, data. bitrate, data.protlev);
+	   p -> deconvolve (&input [data. start_cu * CUSize],
+	                    data. size * CUSize,
+	                    outVector);
+
+//	   if (data. uepFlag) {
+//	      uep_protection uep_deconvolver (data. bitrate, data. protlev);
+//	      uep_deconvolver.
+//	          deconvolve (&input [data. start_cu * CUSize],
+//	                      data. size * CUSize,
+//	                      outVector);
+//	   }
+//	   else {
+//	      eep_protection eep_deconvolver (data. bitrate,
+//	                                                data. protlev);
+//	      eep_deconvolver.
+//	         deconvolve (&input [data. start_cu * CUSize],
+//	                     data. size * CUSize,
+//	                     outVector);
+//	   }
 //
 //	What remains is dispersion of the bits, packing then as bytes
 //	and adding these bytes to the output vector.
@@ -476,4 +482,29 @@ channel_data data;
 
 	return fillPointer;
 }
+
+protection *etiGenerator::find (bool uepFlag, int16_t bitRate,
+	                                           int16_t protLevel) {
+protDesc tmp;
+
+        for (int i = 0; i < protTable. size (); i ++) {
+           if (uepFlag != protTable. at (i). uepFlag)
+              continue;
+           if (bitRate != protTable. at (i). bitRate)
+              continue;
+           if (protLevel != protTable. at (i). protLevel)
+              continue;
+           return protTable. at (i).p;
+        }
+        tmp. uepFlag    = uepFlag;
+        tmp. bitRate    = bitRate;
+        tmp. protLevel  = protLevel;
+	if (uepFlag)
+           tmp. p	= new uep_protection (bitRate, protLevel);
+	else
+	   tmp. p	= new eep_protection (bitRate, protLevel);
+        protTable. push_back (tmp);
+	return tmp. p;
+}
+
 

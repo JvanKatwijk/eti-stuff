@@ -33,14 +33,13 @@
 
 class phaseReference : public phaseTable {
 public:
-		phaseReference (dabParams *, int16_t, int16_t);
+		phaseReference (dabParams *,int16_t);
 		~phaseReference	(void);
-	int32_t	findIndex	(std::complex<float> *);
+	int32_t	findIndex	(std::complex<float> *, int16_t);
 	int16_t	estimateOffset	(std::complex<float> *);
 	std::complex<float>	*refTable;
 private:
 	int32_t		T_u;
-	int16_t		threshold;
 	int16_t		diff_length;
 
 	fftHandler	*fft_processor;

@@ -148,6 +148,7 @@ uint32_t samplerate_count;
 
 	theBuffer		= new RingBuffer<DSPCOMPLEX> (512 *1024);
 	running			= false;
+	my_airspy_set_rf_bias (device, rf_bias ? 1 : 0);
 }
 
 	airspyHandler::~airspyHandler (void) {
@@ -159,7 +160,6 @@ uint32_t samplerate_count;
 	      printf ("my_airspy_stop_rx () failed: %s (%d)\n",
 	             my_airspy_error_name((airspy_error)result), result);
 	   }
-
 
 	   my_airspy_set_rf_bias (device, rf_bias ? 1 : 0);
 
