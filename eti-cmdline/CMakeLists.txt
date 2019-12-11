@@ -67,11 +67,11 @@ if(DEFINED DUMPING)
    set(DUMPING true)
 endif ()
 
-if(DEFINED PC)
+if(DEFINED X64)
    set(X64_DEFINED true)
 endif ()
 
-if(DEFINED RPI)
+if(DEFINED RPI_DEFINED)
    set(RPI_DEFINED true)
 endif ()
 ########################################################################
@@ -176,9 +176,7 @@ endif ()
              ./src/eti-handling/viterbi-spiral/spiral-sse.h
 	   )
            add_definitions (-DSSE_AVAILABLE)
-	endif (X64_DEFINED)
-
-	if (RPI_DEFINED)
+	elseif (RPI_DEFINED)
 	   set (${objectName}_SRCS
                 ${${objectName}_SRCS}
               ./src/eti-handling/viterbi-spiral/spiral-neon.c
@@ -190,9 +188,7 @@ endif ()
    	   add_definitions (-DNEON_AVAILABLE)
 	   set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4")
 	   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4")
-	endif (RPI_DEFINED)
-
-	if ((NOT X64_DEFINED) AND (NOT RPI_DEFINED))
+	else (X64_DEFINED)
 	   set (${objectName}_SRCS
                 ${${objectName}_SRCS}
               ./src/eti-handling/viterbi-spiral/spiral-no-sse.c
@@ -201,7 +197,7 @@ endif ()
 	        ${${objectName}_HDRS}
              ./src/eti-handling/viterbi-spiral/spiral-no-sse.h
 	   )
-	endif ((NOT X64_DEFINED) AND (NOT RPI_DEFINED))
+	endif (X64_DEFINED)
 
 #	if (SDRPLAY)
 #	   find_path (SDRPLAYLIB_INCLUDE_DIR

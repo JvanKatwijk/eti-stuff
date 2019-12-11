@@ -66,7 +66,8 @@ typedef	struct {
 	bool    uepFlag;
         int     bitRate;
         int     protLevel;
-        protection *p;
+	uint8_t	*dispersionVector;
+        protection *protector;
 } protDesc;
 
 class etiGenerator {
@@ -109,7 +110,7 @@ private:
 	                                         uint8_t *, int32_t);
 	void		postProcess		(uint8_t *, int32_t);
 	std::vector<protDesc> protTable;
-	protection	*find			(bool, int16_t, int16_t);
+	protDesc	*find			(bool, int16_t, int16_t);
 };
 
 #endif
