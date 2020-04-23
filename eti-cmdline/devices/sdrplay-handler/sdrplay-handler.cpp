@@ -2,7 +2,7 @@
 /*
  *    Copyright (C) 2014 .. 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
- *    Lazy Chair Programming
+ *    Lazy Chair Computing
  *
  *    This file is part of the eti cmdline
  *
@@ -43,6 +43,9 @@ float	denominator	= p -> denominator;
 	   localBuf [i] = std::complex<float>
 	                             (float (xi [i]) / denominator,
 	                              float (xq [i]) / denominator);
+	if (p -> _I_Buffer -> GetRingBufferWriteAvailable () < numSamples)
+	   fprintf (stderr, "x");
+	else
 	p -> _I_Buffer -> putDataIntoBuffer (localBuf, numSamples);
 	(void)	firstSampleNum;
 	(void)	grChanged;

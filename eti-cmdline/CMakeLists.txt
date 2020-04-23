@@ -1,7 +1,9 @@
 cmake_minimum_required( VERSION 2.8.11 )
 set (objectName eti_cmdline)
-set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -Wall -std=c++11 -flto -ffast-math")
-set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flto -ffast-math")
+#set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -Wall -std=c++11 -flto -ffast-math")
+#set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flto -ffast-math")
+set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -Wall -std=c++11 -g -ffast-math")
+set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g -ffast-math")
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set (CMAKE_INSTALL_PREFIX "/usr/local/bin" CACHE PATH "default install path" FORCE )
 endif()
@@ -46,6 +48,11 @@ endif ()
 if(DEFINED HACKRF)
    set(HACKRF true)
    set (objectName eti-cmdline-hackrf)
+endif ()
+
+if(DEFINED LIMESDR)
+   set(LIMESDR true)
+   set (objectName eti-cmdline-limesdr)
 endif ()
 
 if(DEFINED RAWFILES)
@@ -288,6 +295,33 @@ endif ()
 
            add_definitions (-DHAVE_HACKRF)
         endif (HACKRF)
+
+	if (LIMESDR)
+           find_library (LIMELIB LimeSuite)
+           if(NOT(LIMELIB))
+              message(FATAL_ERROR "please install LimeSuite")
+           else(NOT(LIMELIB))
+              list (APPEND extraLibs ${LIMELIB})
+           endif(NOT(LIMELIB))
+
+	   include_directories (
+	     ./devices/lime-handler
+	   )
+
+	   set ($(objectName)_HDRS
+	        ${${objectName}_HDRS}
+	        ./devices/lime-handler/LMS7002M_parameters.h
+	        ./devices/lime-handler/LimeSuite.h
+	        ./devices/lime-handler/lime-handler.h
+           )
+
+	   set (${objectName}_SRCS
+	        ${${objectName}_SRCS}
+	        ./devices/lime-handler/lime-handler.cpp
+	   )
+
+	 add_definitions (-DHAVE_LIME)
+	endif (LIMESDR)
 
 	if (AIRSPY)
            find_package(LibAIRSPY)

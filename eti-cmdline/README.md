@@ -1,10 +1,14 @@
 
+-------------------------------------------------------------------
 # eti-cmdline
+--------------------------------------------------------------------
 
 eti-cmdline is an experimental program for creating a stream of ETI frames 
 from a selected DAB input channel. The program is fully command line driven.
 
+--------------------------------------------------------------------
 ## Table of Contents
+--------------------------------------------------------------------
 
 * [Supported Devices](#supported-input-devices)
 * [Installation](#installation)
@@ -12,7 +16,9 @@ from a selected DAB input channel. The program is fully command line driven.
 * [Command line parameters](#command-line-parameters)
 * [Copyright](#copyright)
 
+----------------------------------------------------------------------
 ## Supported input devices
+----------------------------------------------------------------------
 
 The supported input devices are:
 
@@ -20,10 +26,13 @@ The supported input devices are:
 2. SDRplay devices (RSP1 and RSP2)
 3. AIRSpy devices
 4. HACKrf devices
-5. prerecorded RAW input files (in format u8, \*.raw)
-6. prerecorded wave files (in format s16le, \*.sdr)
+5. Lime  devices
+6. prerecorded RAW input files (in format u8, \*.raw)
+7. prerecorded wave files (in format s16le, \*.sdr)
 
+------------------------------------------------------------------------
 ## Installation
+------------------------------------------------------------------------
 
 For compiling and installing the software `cmake` needs to be installed. 
 
@@ -33,7 +42,9 @@ Required libraries - apart from those needed to support the device - are:
 * libsndfile
 * libsamplerate
 
+------------------------------------------------------------------------
 ## Configuring
+------------------------------------------------------------------------
 
 The "normal" way for configuring and installing is 
 
@@ -59,8 +70,9 @@ The resulting program is named `eti-cmdline-XXX`, for XXX see above.
 The command `(sudo) make install` will install the created executable in 
 `/usr/local/bin` unless specified differently (note that it requires root permissions)
 
-
+--------------------------------------------------------------------------
 ## Command line parameters
+--------------------------------------------------------------------------
 
 Once the executable is created, it needs to be told what channel you want to be read in and converted.
 
@@ -91,60 +103,12 @@ For use with one of the physical devices, one may set the following parameters
 6. `-C channel`,  for selecting the channel to be set, e.g. 11C, default 11C
    is chosen
 
-For use with rtlsdr based devices, one may use
 
-7. `-G number`, for setting the gain with the device, a number between 0 .. 100,
-   where 100 is the highest gain.
+For device specific settings: run ./eti-cmdline -h
 
-8. `-Q`, for setting the autogain with the device (assuming the device supports
-   autogain setting)
-
-9. `-P number`, for setting the ppm correction
-
-10. `-I number`, for setting the device index. 
-
-For use with sdrplay devices, one may use
-
-7. `-G number`, for setting the if gain reduction, and
-
-8. `-L number`, for setting the LNA state, and
-
-9. `-Q`, for setting the autogain
-
-10. `-P`, for setting the ppm correction
-
-For use with HACKrf devices, one may use
-
-7. `-L number`, for setting the lna gain, and
-
-8. `-V number`, for setting the vga gain
-
-9. `-P number`, for setting the ppm correction.
-
-10. `-E`, for switching on the on board amplifier.
-For use with AIRSPY devices, one may use
-
-7. `-G number` for setting the gain (combined gain setting, range 0..21)
-
-8. `-P number` for setting the ppm correction.
-
-9. `-b` activates the bias tee (i.e. for use with an external amplifier)
-
-
-For use with file input 
-
-7. `-F filename`, the full pathname for the input file
-
-8. `-E`, if selected the file will be reread after reaching eof.
-
-For use with rtl_tcp
-
-11. `-H hostname`, the hostname of the server to connect to, default 127.0.0.1
-
-12. `-I port`, the port to listen to, default 1234
-
-
+-------------------------------------------------------------------------
 ### Writing to eti files
+--------------------------------------------------------------------------
 
 Example:
 
@@ -160,9 +124,11 @@ You can use dablin or dablin_gtk from https://github.com/Opendigitalradio/dablin
      
 where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay`, `airspy`, `hackrf`, `rawfiles`, `wavfiles`).
 
+-----------------------------------------------------------------------------
 ## Copyright
+-----------------------------------------------------------------------------
 
-	Copyright (C)  2016, 2017, 2018, 2019
+	Copyright (C)  2016, 2017, 2018, 2019, 2020
 	Jan van Katwijk (J.vanKatwijk@gmail.com)
 	Lazy Chair Programming
 

@@ -2,7 +2,7 @@
 /*
  *    Copyright (C) 2016, 2017, 2018
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
- *    Lazy Chair Programming
+ *    Lazy Chair Computing
  *
  *    This file is part of the eti-cmdline program.
  *
@@ -48,6 +48,8 @@ using std::endl;
 #include	"airspy-handler.h"
 #elif	HAVE_HACKRF
 #include	"hackrf-handler.h"
+#elif	HAVE_LIME
+#include	"lime-handler.h"
 #elif	HAVE_RAWFILES
 #include	"rawfile-handler.h"
 #elif	HAVE_WAVFILES
@@ -163,36 +165,60 @@ int16_t		freqSyncTime	= 10;
 uint8_t		theMode		= 1;
 std::string	theChannel	= "11C";
 uint8_t		theBand		= BAND_III;
-bool		autoGain	= false;
-int16_t		ppmCorrection	= 0;
-#ifdef	HAVE_AIRSPY
-bool		rf_bias		= false;
-#endif
-#ifdef	HAVE_SDRPLAY
-int16_t		GRdB		= 30;
-int16_t		lnaState	= 2;
-#elif	HAVE_HACKRF
-int16_t		lnaGain		= 30;
-int16_t		vgaGain		= 30;
-bool		ampEnable	= false;
-#else
-int16_t		deviceGain	= 80;	// scale = 0 .. 100
-int16_t		deviceIndex	= 0;
-#endif
-
-#if defined(HAVE_RAWFILES) || defined(HAVE_WAVFILES)
-std::string	inputfileName;
-bool	continue_on_eof	= false;
-#elif defined (HAVE_RTL_TCP)
-std::string	hostname = "127.0.0.1";
-int32_t		basePort = 1234;
-#endif
-
-deviceHandler	*inputDevice;
+deviceHandler	*inputDevice	= nullptr;
 bandHandler	the_bandHandler;
 int32_t		tunedFrequency	= 220000000;	// just a setting
+#ifdef	HAVE_HACKRF
+int		lnaGain		= 40;
+int		vgaGain		= 40;
+int		ppmOffset	= 0;
+bool		ampEnable	= false;
+const char	*optionsString	= "D:d:M:B:C:O:R:G:g:Ap:";
+#elif	HAVE_LIME
+int16_t		gain		= 70;
+std::string	antenna		= "Auto";
+const char	*optionsString	= "D:d:M:B:C:O:R:G:X:";
+#elif	HAVE_SDRPLAY	
+int16_t		GRdB		= 30;
+int16_t		lnaState	= 2;
+bool		autoGain	= false;
+int16_t		ppmOffset	= 0;
+const char	*optionsString	= "D:d:M:B:C:O:R:G:L:Qp:";
+#elif	HAVE_SDRPLAY_V3	
+int16_t		GRdB		= 30;
+int16_t		lnaState	= 2;
+bool		autogain	= false;
+int16_t		ppmOffset	= 0;
+const char	*optionsString	= "D:d:M:B:C:O:R:G:L:Qp:";
+#elif	HAVE_AIRSPY
+int16_t		gain		= 20;
+bool		autogain	= false;
+bool		rf_bias		= false;
+const char	*optionsString	= "D:d:M:B:C:O:R:G:p:B";
+#elif	HAVE_RTLSDR
+int16_t		gain		= 50;
+bool		autogain	= false;
+int16_t		ppmOffset	= 0;
+const char	*optionsString	= "D:d:M:B:C:O:R:G:Qp:";
+#elif	HAVE_WAVFILES
+std::string	fileName;
+bool		repeater	= true;
+const char	*optionsString	= "D:d:M:B:O:F:r";
+#elif	HAVE_RAWFILES
+std::string	fileName;
+bool	repeater		= true;
+const char	*optionsString	= "D:d:M:B:O:F:r";
+#elif
+//	HAVE_RTL_TCP
+int		gain		= 50;
+bool		autogain	= false;
+int		ppmOffset	= 0;
+std::string	hostname = "127.0.0.1";		// default
+int32_t		basePort = 1234;		// default
+const char	*optionsString	= "D:d:M:B:C:O:R:G:Qp:H:I";
+#endif
 #ifdef	HAVE_DUMPING
-SNDFILE		*dumpFile	= NULL;
+SNDFILE		*dumpFile	= nullptr;
 #endif
 int	opt;
 struct sigaction sigact;
@@ -207,17 +233,19 @@ struct sigaction sigact;
 //
 //	for file input some command line parameters are meeaningless
 #if defined (HAVE_RAWFILES) || defined (HAVE_WAVFILES)
-	while ((opt = getopt (argc, argv, "ED:d:M:O:F:Sh")) != -1) {
+	while ((opt = getopt (argc, argv, optionsString)) != -1) {
 #elif defined (HAVE_RTL_TCP)
-	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:O:P:H:I:QR:Sh")) != -1) {
+	while ((opt = getopt (argc, argv, optionsString)) != -1) {
 #elif defined (HAVE_SDRPLAY) 
-	while ((opt = getopt (argc, argv, "D:d:M:B:C:G:L:O:P:QR:Sh")) != -1) {
+	while ((opt = getopt (argc, argv, optionsString)) != -1) {
 #elif defined (HAVE_HACKRF)
-	while ((opt = getopt (argc, argv, "ED:d:M:B:C:L:V:O:P:R:Sh")) != -1) {
+	while ((opt = getopt (argc, argv, optionsString)) != -1) {
 #elif defined (HAVE_AIRSPY)
-	while ((opt = getopt (argc, argv, "bD:d:M:B:C:G:O:P:R:Sh")) != -1) {
+	while ((opt = getopt (argc, argv, optionsString)) != -1) {
 #elif defined (HAVE_RTLSDR)
-	while ((opt = getopt (argc, argv, "I:D:d:M:B:C:G:O:P:QR:Sh")) != -1) {
+	while ((opt = getopt (argc, argv, optionsString)) != -1) {
+#elif defined (HAVE_LIME)
+	while ((opt = getopt (argc, argv, optionsString)) != -1) {
 #endif
 	   switch (opt) {
 	      case 'D':
@@ -235,7 +263,7 @@ struct sigaction sigact;
 	         }
 	       
 	         etiFile	= fopen (optarg, "w+b");
-	         if (etiFile == NULL) {
+	         if (etiFile == nullptr) {
 	            fprintf (stderr, "eti file %s cannot be opened\n", optarg);
 	            exit (23);
 	         }
@@ -250,7 +278,7 @@ struct sigaction sigact;
 	            sf_info -> channels     = 2;
 	            sf_info -> format       = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
 	            dumpFile	= sf_open (optarg, SFM_WRITE, sf_info);
-	            if (dumpFile == NULL) {
+	            if (dumpFile == nullptr) {
 	               fprintf (stderr,
 	                        "dumpfile %s cannot be opened\n", optarg);
 	               exit (24);
@@ -272,7 +300,7 @@ struct sigaction sigact;
 	         inputfileName	= std::string (optarg);
 	         break;
 
-	      case 'E':
+	      case 'r':
 	         continue_on_eof	= true;
 	         fprintf (stderr, "continue_on_eof is now set\n");
 	         break;
@@ -307,35 +335,33 @@ struct sigaction sigact;
 	         autoGain	= true;
 	         break;
 
-	      case 'P':
-	         ppmCorrection	= atoi (optarg);
+	      case 'p':
+	         ppmOffset	= atoi (optarg);
 	         break;
 
 #elif defined (HAVE_HACKRF)
-	      case 'L':
+	      case 'G':
 	         lnaGain	= atoi (optarg);
 	         break;
 
-	      case 'V':
+	      case 'g':
 	         vgaGain	= atoi (optarg);
 	         break;
 
-	      case 'P':
-	         ppmCorrection	= atoi (optarg);
+	      case 'p':
+	         ppmOffset	= atoi (optarg);
 	         break;
 
-	      case 'E':
+	      case 'A':
 	         ampEnable	= true;
 	         break;
+
 #elif defined (HAVE_RTLSDR)
 	      case 'G':
 	         deviceGain	= atoi (optarg);
 	         break;
-	      case 'P':
-	         ppmCorrection	= atoi (optarg);
-	         break;
-	      case 'I':
-	         deviceIndex	= atoi (optarg);
+	      case 'p':
+	         ppmOffset	= atoi (optarg);
 	         break;
 	      case 'Q':
 	         autoGain	= true;
@@ -345,13 +371,19 @@ struct sigaction sigact;
 	         deviceGain	= atoi (optarg);
 	         break;
 
-	      case 'b':
+	      case 'B':
 	         rf_bias	= true;
 	         break;
 
-	      case 'P':
-	         ppmCorrection	= atoi (optarg);
-	         break;
+#elif	defined(HAVE_LIME)
+              case 'G':
+              case 'g':
+                 gain           = atoi (optarg);
+                 break;
+
+              case 'X':
+                 antenna        = std::string (optarg);
+                 break;
 #endif
 #endif
 	      case 'S':
@@ -384,26 +416,28 @@ struct sigaction sigact;
 	try {
 #ifdef	HAVE_RTLSDR
 	   inputDevice	= new rtlsdrHandler (tunedFrequency,
-	                                     ppmCorrection,
+	                                     ppmOffset,
 	                                     deviceGain,
 	                                     autoGain,
 	                                     deviceIndex);
 #elif	HAVE_SDRPLAY
 	   inputDevice	= new sdrplayHandler (tunedFrequency,
-	                                      ppmCorrection,
+	                                      ppmOffset,
 	                                      GRdB,
 	                                      lnaState,
 	                                      autoGain, 0, 0);
 #elif	HAVE_HACKRF
 	   (void)autoGain;
 	   inputDevice	= new hackrfHandler (tunedFrequency,
-	                                     ppmCorrection,
+	                                     ppmOffset,
 	                                     lnaGain,
 	                                     vgaGain,
 	                                     ampEnable);
 #elif	HAVE_AIRSPY
 	   inputDevice	= new airspyHandler (tunedFrequency,
 	                                     deviceGain, autoGain, rf_bias);
+#elif	HAVE_LIME
+	   inputDevice	= new limeHandler   (tunedFrequency, gain, antenna);
 #elif	HAVE_RAWFILES
 	   inputDevice	= new rawfileHandler (inputfileName,
 	                                      continue_on_eof, 
@@ -418,7 +452,7 @@ struct sigaction sigact;
 	                                     tunedFrequency,
 	                                     deviceGain,
 	                                     autoGain,
-	                                     ppmCorrection);
+	                                     ppmOffset);
 #endif
 	}
 	catch (int e) {
@@ -430,9 +464,9 @@ struct sigaction sigact;
 	sigact.sa_handler = sighandler;
 	sigemptyset(&sigact.sa_mask);
 	sigact.sa_flags = 0;
-	sigaction(SIGINT, &sigact, NULL);
-//	sigaction(SIGTERM, &sigact, NULL);
-//	sigaction(SIGQUIT, &sigact, NULL);
+	sigaction(SIGINT, &sigact, nullptr);
+//	sigaction(SIGTERM, &sigact, nullptr);
+//	sigaction(SIGQUIT, &sigact, nullptr);
 
 //
 //	do_process (channel);
@@ -447,7 +481,7 @@ struct sigaction sigact;
 	                    &programnameHandler,
 	                    &fibqualityHandler,
 	                    &etiwriterHandler,
-	                    NULL);
+	                    nullptr);
 
 	inputDevice	-> restartReader (tunedFrequency);
 	timesyncSet. store (false);
@@ -500,10 +534,10 @@ struct sigaction sigact;
 
 	inputDevice	-> stopReader ();
 	delete	inputDevice;
-	if (etiFile != NULL)
+	if (etiFile != nullptr)
 	   fclose (etiFile);
 #ifdef	HAVE_DUMPFILE
-	if (dumpFile != NULL)
+	if (dumpFile != nullptr)
 	   sf_close (dumpFile);
 #endif
 	exit (1);
@@ -511,25 +545,54 @@ struct sigaction sigact;
 
 void    printOptions (void) {
         std::cerr << 
-" eti-cmdline-xxx options are\n\
-\n\
-   -D number   time (in seconds) to look for a DAB ensemble\n\
-   -B Band     select DAB Band (default: BAND_III, or L_BAND)\n\
-   -P number   PPM correction\n\
-   -C channel  DAB channel to be used (5A ... 13F resp. LA ... LP)\n\
-   -G Gain     gain for device (range 0 .. 99)\n\
-   -G gainreduction for the SDRplay (20 .. 59)\n\
-   -L lnaState for the SDRplay only \n\
-   -I number   deviceIndex (currently only for rtlsdr devices) \n\
-   -Q          autogain for device (not all tuners support it!)\n\
-   -F filename load samples from file\n\
-   -E          only for files: continue after EOF (replay file)\n\
-   -E          only for HACKRF device: switch on amplifier\n\
-   -O filename write output into a file (instead of stdout)\n\
-   -S          do not display quality messages while running\n\
-   -R filename (if configured) dump to an *.sdr file\n\
-   -b          activates bias tee (only for Airspy)\n\
-   \n\
-   -h          show options and quit\n"; 
+" general eti-cmdline-xxx options are\n"
+"\n"
+"   -D number   time (in seconds) to look for a DAB ensemble\n"
+"   -M mode     Mode to be used "
+"   -B Band     select DAB Band (default: BAND_III, or L_BAND)\n"
+"   -C channel  DAB channel to be used (5A ... 13F resp. LA ... LP)\n"
+"   -O filename write output into a file (instead of stdout)\n"
+"   -R filename (if configured) dump to an *.sdr file\n"
+"   -h          show options and quit\n"; 
+
+#ifdef	HAVE_WAVFILES
+	std::cerr << 
+"   -F filename, -r repeat after reaching eof\n";
+#elif	HAVE_RAWFILES
+	std::cerr << 
+"   -F filename, -r repeat after reaching eof\n";
+#elif	HAVE_SDRPLAY
+	std::cerr <<
+"   -G number ifgain reduction (20 .. 59), \n"
+"   -L number lna state selection \n"
+"   -Q autogain on \n"
+"   -p number ppm correction \n";
+#elif	HAVE_AIRSPY
+	std::cerr <<
+"   -G number Gain (combined gain in the range 1 .. 21) \n"
+"   -B bias on\n";
+#elif	HAVE_HACKRF
+	std::cerr <<
+"   -G number lna gain \n"
+"   -g number vga gain \n"
+"   -A ampEnable on\n"
+"   -p number ppm correction\n";
+#elif	HAVE_RTLSDR
+	std::cerr <<
+"   -G number gain setting, depending on the version of the stick \n"
+"   -p number ppm setting \n"
+"   -Q autogain on\n";
+#elif	HAVE_LIME
+	std::cerr << 
+"   -G number gain setting \n"
+"   -X string antenna setting\n";
+#elif	HAVE_RTLTCP
+	std::cerr <<
+"    -G number gain setting \n"
+"    -Q autogain on \n"
+"    -p number ppm correction \n"
+"    -H string hostname \n"
+"    -I number baseport\n";
+#endif
 }
 

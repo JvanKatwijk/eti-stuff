@@ -36,7 +36,7 @@ public:
 virtual			~deviceHandler 	(void);
 virtual		bool	restartReader	(int32_t);
 virtual		void	stopReader	(void);
-virtual		int32_t	getSamples	(DSPCOMPLEX *, int32_t);
+virtual		int32_t	getSamples	(std::complex<float> *, int32_t);
 virtual		int32_t	Samples		(void);
 virtual		void	resetBuffer	(void);
 virtual		int16_t	bitDepth	(void) { return 10;}

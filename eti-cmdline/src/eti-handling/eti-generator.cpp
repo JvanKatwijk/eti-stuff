@@ -16,7 +16,7 @@
  *
  *    Copyright (C) 2016
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
- *    Lazy Chair Programming
+ *    Lazy Chair Computing
  *
  *    This file is part of the eti library
  *    eti library is free software; you can redistribute it and/or modify
@@ -311,77 +311,100 @@ const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 	}
 }
 
-//
 //	In process_CIF we iterate over the data in the CIF and map that
 //	upon a segment in the eti vector
+//
+//	Since from the subchannel data we know the location in
+//	the input vector, the output vector and the
+//	parameters for deconvolution, we can do
+//	the processing in parallel. So, for each subchannel
+//	we just launch a task
+class parameter {
+public:
+	int16_t	*input;
+	bool	uepFlag;
+	int	bitRate;
+	int	protLevel;
+	int	start_cu;
+	int	size;
+	uint8_t	*output;
+};
+
+static void     process_subCh (parameter *p);
+
 int32_t	etiGenerator::process_CIF (int16_t *input,
 	                           uint8_t *output, int32_t offset) {
-int16_t	i, j, k;
-uint8_t	shiftRegister [9];
+int16_t	i;
+std::vector<std::thread> theThreads;
+std::vector<parameter *> theParameters;
+int	cnt	= 0;
 
 	for (i = 0; i < 64; i ++) {
 	   channel_data data;
 	   my_ficHandler. get_channelInfo (&data, i);
-	   if (!data. in_use)
-	      continue;
-
-	   uint8_t outVector [24 * data. bitrate];
-	   memset (outVector, 0, 24 * data. bitrate);
-
-//	Apply appropriate depuncturing for each subchannel 
+	   if (data. in_use) {
+	      parameter *t	= new parameter;
+	      t -> input	= input;
+	      t -> uepFlag	= data. uepFlag;
+	      t -> bitRate	= data. bitrate;
+	      t -> protLevel	= data. protlev;
+	      t -> start_cu	= data. start_cu;
+	      t -> size		= data. size;
+	      t -> output	= &output [offset];
+	      offset 		+= data. bitrate * 24 / 8;
 //
-//	An "optimization" here could be to maintain a "cache" of
-//	xep_protection handlers, since it is most likely that
-//	more than one service is protected with the same parameters.
-//	(Note time deinterleaving is done already)
-
-	   protDesc	*p = find (data. uepFlag, data. bitrate, data.protlev);
-	   p -> protector ->  deconvolve (&input [data. start_cu * CUSize],
-	                    data. size * CUSize,
-	                    outVector);
-
-//	   if (data. uepFlag) {
-//	      uep_protection uep_deconvolver (data. bitrate, data. protlev);
-//	      uep_deconvolver.
-//	          deconvolve (&input [data. start_cu * CUSize],
-//	                      data. size * CUSize,
-//	                      outVector);
-//	   }
-//	   else {
-//	      eep_protection eep_deconvolver (data. bitrate,
-//	                                                data. protlev);
-//	      eep_deconvolver.
-//	         deconvolve (&input [data. start_cu * CUSize],
-//	                     data. size * CUSize,
-//	                     outVector);
-//	   }
-//
-//	What remains is dispersion of the bits, packing then as bytes
-//	and adding these bytes to the output vector.
-//	   uint8_t dispersionVector [24 * data. bitrate];
-//	   memset (shiftRegister, 1, 9);
-//	   for (j = 0; j < 24 * data. bitrate; j ++) {
-//	      uint8_t b = shiftRegister [8] ^ shiftRegister [4];
-//	      for (k = 8; k > 0; k--)
-//	         shiftRegister [k] = shiftRegister [k - 1];
-//	      shiftRegister [0] = b;
-//	      dispersionVector [j] = b;
-//	   }
-
-	   for (j = 0; j < 24 * data. bitrate; j ++)
-	      outVector [j] ^= p -> dispersionVector [j];
-//	      outVector [j] ^= dispersionVector [j];
-	   for (j = 0; j < 24 * data. bitrate / 8; j ++) {
-              int temp = 0;
-              for (k = 0; k < 8; k ++)
-                 temp = (temp << 1) | (outVector [j * 8 + k] & 01);
-              output [offset + j] = temp;
+//	we need to save a reference to the parameters
+//	since we have to delete the instance later on
+	      theParameters. push_back (t);
+	      theThreads . push_back (std::thread (process_subCh, t));
 	   }
-	   offset += 24 * data. bitrate / 8;
 	}
+
+	for (std::thread &th : theThreads) {
+	   th. join ();
+	}
+	for (parameter*t: theParameters)
+	   delete t;
 	return offset;
 }
 
+static void	process_subCh (parameter *p) {
+uint8_t outVector [24 * p -> bitRate];
+int	j, k;
+
+	memset (outVector, 0, 24 * p -> bitRate);
+	if (p -> uepFlag) {
+           uep_protection uepProtector (p -> bitRate, p -> protLevel);
+	   uepProtector. deconvolve (&p -> input [p -> start_cu * CUSize],
+	                             p -> size * CUSize,
+	                             outVector);
+	}
+        else {
+           eep_protection  eepProtector (p -> bitRate, p -> protLevel);
+	   eepProtector.  deconvolve (&p -> input [p -> start_cu * CUSize],
+	                              p -> size * CUSize,
+	                              outVector);
+	}
+//
+	uint8_t	shiftRegister [9];
+	memset (shiftRegister, 1, 9);
+
+	for (j = 0; j < 24 * p -> bitRate; j ++) {
+	   uint8_t b = shiftRegister [8] ^ shiftRegister [4];
+	   for (k = 8; k > 0; k--)
+	      shiftRegister [k] = shiftRegister [k - 1];
+	   shiftRegister [0] = b;
+	   outVector [j] ^= b;
+        }
+//
+//	and the storage:
+	for (j = 0; j < 24 * p -> bitRate / 8; j ++) {
+	   int temp = 0;
+	   for (k = 0; k < 8; k ++)
+	      temp = (temp << 1) | (outVector [j * 8 + k] & 01);
+	   p -> output [j] = temp;
+	}
+}
 
 void	etiGenerator::postProcess (uint8_t *theVector, int32_t offset){
 }
@@ -491,7 +514,7 @@ channel_data data;
 protDesc *etiGenerator::find (bool uepFlag, int16_t bitRate,
 	                                           int16_t protLevel) {
 protDesc tmp;
-int	i;
+uint16_t	i;
 
         for (i = 0; i < protTable. size (); i ++) {
            if (uepFlag != protTable. at (i). uepFlag)

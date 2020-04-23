@@ -59,6 +59,7 @@ typedef struct {
 	int16_t 	data [3072];
 } bufferElement;
 
+class	parameter;
 
 //
 //	to build a simple cache for the protection handlers
@@ -108,6 +109,8 @@ private:
 	                                         int16_t, int16_t, int16_t);
 	int32_t		process_CIF		(int16_t *,
 	                                         uint8_t *, int32_t);
+//	void		process_subCh		(parameter	*);
+
 	void		postProcess		(uint8_t *, int32_t);
 	std::vector<protDesc> protTable;
 	protDesc	*find			(bool, int16_t, int16_t);
