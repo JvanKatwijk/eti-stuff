@@ -5,6 +5,7 @@
  *    Lazy Chair Programming
  *
  *    This file is part of the eti library
+ *
  *    eti library is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
@@ -159,7 +160,8 @@ int16_t	inputCounter	= 0;
            if (indexTable [i])
               viterbiBlock [i] = v [inputCounter ++];
 
-        viterbiSpiral::deconvolve (viterbiBlock. data (), outBuffer);
+        viterbiHandler::deconvolve (viterbiBlock. data (), outBuffer);
+//	viterbiSpiral::deconvolve (viterbiBlock. data (), outBuffer);
         return true;
 }
 

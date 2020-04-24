@@ -112,8 +112,6 @@ private:
 //	void		process_subCh		(parameter	*);
 
 	void		postProcess		(uint8_t *, int32_t);
-	std::vector<protDesc> protTable;
-	protDesc	*find			(bool, int16_t, int16_t);
 };
 
 #endif

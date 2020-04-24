@@ -2,12 +2,13 @@
 /*
  *    Copyright (C) 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
- *    Lazy Chair Programming
+ *    Lazy Chair Computing
  *
  *    This file is part of the eti-cmdline
- *    eti-cmdline library is free software;
- *    you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
+ *
+ *    eti-cmdline library is free software; you can redistribute
+ *    it and/or modify it under the terms of the GNU General Public
+ *    License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
@@ -28,9 +29,11 @@
 
 #include        <stdint.h>
 #include        <vector>
-#include        "viterbi-spiral.h"
+#include        "viterbi-handler.h"
+//#include        "viterbi-spiral.h"
 
-class   protection: public viterbiSpiral {
+class   protection: public viterbiHandler {
+//class   protection: public viterbiSpiral {
 public:
                 protection      (int16_t, int16_t);
 virtual         ~protection     (void);

@@ -2,9 +2,10 @@
 /*
  *    Copyright (C) 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
- *    Lazy Chair Programming
+ *    Lazy Chair Computing
  *
  *    This file is part of the eti library
+ *
  *    eti library is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
@@ -24,7 +25,7 @@
 #include	"protection.h"
 
    protection::protection  (int16_t bitRate, int16_t protLevel):
-                                        viterbiSpiral (24 * bitRate),
+                                        viterbiHandler (24 * bitRate),
 	                                viterbiBlock (24 * bitRate * 4 + 24),
 	                                indexTable   (24 * bitRate * 4 + 24) {
 	this    -> bitRate      = bitRate;

@@ -145,7 +145,7 @@ endif ()
 	     ./includes/ofdm/phasetable.h
 	     ./includes/ofdm/freq-interleaver.h
 	     ./includes/eti-handling/eti-generator.h
-#	     ./includes/eti-handling/viterbi-handler.h
+	     ./includes/eti-handling/viterbi-handler.h
 	     ./includes/eti-handling/viterbi-spiral/viterbi-spiral.h
 	     ./includes/eti-handling/protection.h
 	     ./includes/eti-handling/uep-protection.h
@@ -168,7 +168,7 @@ endif ()
 	     ./src/ofdm/phasetable.cpp
 	     ./src/ofdm/freq-interleaver.cpp
 	     ./src/eti-handling/eti-generator.cpp
-#	     ./src/eti-handling/viterbi-handler.cpp
+	     ./src/eti-handling/viterbi-handler.cpp
 	     ./src/eti-handling/viterbi-spiral/viterbi-spiral.cpp
 	     ./src/eti-handling/fic-handler.cpp
 	     ./src/eti-handling/fib-processor.cpp

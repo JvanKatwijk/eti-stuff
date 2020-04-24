@@ -96,6 +96,8 @@ bool	fibValid  [16];
 
 #define	CUSize	(4 * 16)
 
+std::vector<protDesc> protTable;
+
 //
 //	fibvector contains the processed fics, i.e ready for addition
 //	to the eti frame.
@@ -338,7 +340,6 @@ int32_t	etiGenerator::process_CIF (int16_t *input,
 int16_t	i;
 std::vector<std::thread> theThreads;
 std::vector<parameter *> theParameters;
-int	cnt	= 0;
 
 	for (i = 0; i < 64; i ++) {
 	   channel_data data;
@@ -373,24 +374,59 @@ static void	process_subCh (parameter *p) {
 uint8_t outVector [24 * p -> bitRate];
 int	j, k;
 
-	memset (outVector, 0, 24 * p -> bitRate);
-	if (p -> uepFlag) {
-           uep_protection uepProtector (p -> bitRate, p -> protLevel);
-	   uepProtector. deconvolve (&p -> input [p -> start_cu * CUSize],
-	                             p -> size * CUSize,
+bool	uepFlag		= p -> uepFlag;
+int	bitRate		= p -> bitRate;
+int	protLevel	= p -> protLevel;
+int	size		= p -> size;
+int	start_cu	= p -> start_cu;
+//protDesc theProtector;
+//bool	found		= false;
+	memset (outVector, 0, 24 * bitRate);
+
+//	for (int i = 0; i < protTable. size (); i ++) {
+//	   if (protTable. at (i). uepFlag != uepFlag) 
+//	      continue;
+//	   if (protTable. at (i). bitRate != bitRate) 
+//	      continue;
+//	   if (protTable. at (i). protLevel != protLevel) 
+//	      continue;
+//	   found = true;
+//	   theProtector	= protTable. at (i);
+//	   break;
+//	}
+//
+//	if (!found) {
+//	   theProtector. uepFlag = uepFlag;
+//	   theProtector. bitRate = bitRate;
+//	   theProtector. protLevel = protLevel;
+//	   if (uepFlag)
+//	      theProtector. protector = new uep_protection (bitRate, protLevel);
+//	   else
+//	      theProtector. protector = new eep_protection (bitRate, protLevel);
+//	   protTable. push_back (theProtector);
+//	}
+//
+//	theProtector.
+//	         protector -> deconvolve (&p -> input [start_cu * CUSize],
+//	                                  size * CUSize,
+//	                                  outVector);
+	if (uepFlag) {
+	   uep_protection uepProtector (bitRate, protLevel);
+	   uepProtector. deconvolve (&p -> input [start_cu * CUSize],
+	                             size * CUSize,
 	                             outVector);
 	}
-        else {
-           eep_protection  eepProtector (p -> bitRate, p -> protLevel);
-	   eepProtector.  deconvolve (&p -> input [p -> start_cu * CUSize],
-	                              p -> size * CUSize,
+	else {
+	   eep_protection  eepProtector (bitRate, protLevel);
+	   eepProtector.  deconvolve (&p -> input [start_cu * CUSize],
+	                              size * CUSize,
 	                              outVector);
 	}
-//
+
 	uint8_t	shiftRegister [9];
 	memset (shiftRegister, 1, 9);
 
-	for (j = 0; j < 24 * p -> bitRate; j ++) {
+	for (j = 0; j < 24 * bitRate; j ++) {
 	   uint8_t b = shiftRegister [8] ^ shiftRegister [4];
 	   for (k = 8; k > 0; k--)
 	      shiftRegister [k] = shiftRegister [k - 1];
@@ -399,7 +435,7 @@ int	j, k;
         }
 //
 //	and the storage:
-	for (j = 0; j < 24 * p -> bitRate / 8; j ++) {
+	for (j = 0; j < 24 * bitRate / 8; j ++) {
 	   int temp = 0;
 	   for (k = 0; k < 8; k ++)
 	      temp = (temp << 1) | (outVector [j * 8 + k] & 01);
@@ -511,41 +547,4 @@ channel_data data;
 
 	return fillPointer;
 }
-
-protDesc *etiGenerator::find (bool uepFlag, int16_t bitRate,
-	                                           int16_t protLevel) {
-protDesc tmp;
-uint16_t	i;
-
-        for (i = 0; i < protTable. size (); i ++) {
-           if (uepFlag != protTable. at (i). uepFlag)
-              continue;
-           if (bitRate != protTable. at (i). bitRate)
-              continue;
-           if (protLevel != protTable. at (i). protLevel)
-              continue;
-           return &protTable. at (i);
-        }
-        tmp. uepFlag    = uepFlag;
-        tmp. bitRate    = bitRate;
-        tmp. protLevel  = protLevel;
-	tmp. dispersionVector = new uint8_t [24 * bitRate];
-	uint8_t	shiftRegister [9];
-	
-	memset (shiftRegister, 1, 9);
-	for (int j = 0; j < 24 * bitRate; j ++) {
-	   uint8_t b = shiftRegister [8] ^ shiftRegister [4];
-	   for (int k = 8; k > 0; k--)
-	      shiftRegister [k] = shiftRegister [k - 1];
-	   shiftRegister [0] = b;
-	   tmp. dispersionVector [j] = b;
-        }
-	if (uepFlag)
-           tmp. protector	= new uep_protection (bitRate, protLevel);
-	else
-	   tmp. protector	= new eep_protection (bitRate, protLevel);
-        protTable. push_back (tmp);
-	return &protTable. at (i);
-}
-
 
