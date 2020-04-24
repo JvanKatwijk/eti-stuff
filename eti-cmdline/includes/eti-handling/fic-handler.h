@@ -55,9 +55,10 @@ private:
 	                                         int16_t, uint8_t *, bool *);
 	int8_t		*PI_15;
 	int8_t		*PI_16;
-	uint8_t		*bitBuffer_in;
-	uint8_t		*bitBuffer_out;
-	int16_t		*ofdm_input;
+	uint8_t		bitBuffer_out	[768];
+	int16_t		ofdm_input	[2304];
+	bool		punctureTable	[3072 + 24];
+	uint8_t		PRBS 		[768];
 	int16_t		index;
 	int16_t		BitsperBlock;
 	int16_t		ficno;
@@ -65,8 +66,6 @@ private:
 	int16_t		ficMissed;
 	int16_t		ficRatio;
 	uint16_t	convState;
-	uint8_t		PRBS [768];
-	uint8_t		shiftRegister [9];
 	int16_t		ficErrors;
 	int16_t		ficSuccess;
 };

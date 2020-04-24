@@ -40,6 +40,11 @@ if(DEFINED SDRPLAY)
    set (objectName eti-cmdline-sdrplay)
 endif ()
 
+if(DEFINED SDRPLAY_V3)
+   set(SDRPLAY_V3 true)
+   set (objectName eti-cmdline-sdrplay)
+endif ()
+
 if(DEFINED RTLSDR)
    set(RTLSDR true)
    set (objectName eti-cmdline-rtlsdr)
@@ -64,6 +69,11 @@ if(DEFINED WAVFILES)
    set(WAVFILES true)
    set (objectName eti-cmdline-wavfiles)
 endif ()
+
+#if(DEFINED XMLFILES)
+#   set(XMLFILES true)
+#   set (objectName eti-cmdline-xml)
+#endif ()
 
 if(DEFINED RTL_TCP)
    set(RTL_TCP true)
@@ -263,6 +273,40 @@ endif ()
 	 add_definitions (-DHAVE_SDRPLAY)
 	endif (SDRPLAY)
 
+	if (SDRPLAY_V3)
+	   find_path (SDRPLAYLIB_INCLUDE_DIR
+                      NAMES sdrplay_api.h
+                      PATHS
+                      /usr/local/include/
+	   )
+           include_directories (${SDRPLAYLIB_INCLUDE_DIR})
+
+           find_library (SDRPLAYLIB sdrplay_api)
+           if(NOT(SDRPLAYLIB))
+              message(FATAL_ERROR "please install -lsdrplay_api")
+           else(NOT(SDRPLAYLIB))
+              list (APPEND extraLibs ${SDRPLAYLIB})
+           endif(NOT(SDRPLAYLIB))
+
+	   include_directories (
+	     ./devices/sdrplay-handler-v3
+	   )
+
+	   set ($(objectName)_HDRS
+	        ${${objectName}_HDRS}
+	        ./devices/sdrplay-handler-v3/sdrplay-handler-v3.h
+	        ./devices/sdrplay-handler-v3/sdrplay-controller.h
+           )
+
+	   set (${objectName}_SRCS
+	        ${${objectName}_SRCS}
+	        ./devices/sdrplay-handler-v3/sdrplay-handler-v3.cpp
+	        ./devices/sdrplay-handler-v3/sdrplay-controller.cpp
+	   )
+
+	   add_definitions (-DHAVE_SDRPLAY_V3)
+	endif (SDRPLAY_V3)
+
 	if (HACKRF)
            find_path (HACKLIB_INCLUDE_DIR
                       NAMES hackrf.h
@@ -425,6 +469,29 @@ endif ()
 
 	   add_definitions (-DHAVE_WAVFILES)
 	endif (WAVFILES)
+
+	if (XMLFILES)
+	   include_directories (
+	     ./devices/xml-filereader
+	   )
+
+	   set ($(objectName)_HDRS
+	        ${${objectName}_HDRS}
+	        ./devices/xml-filereader/xml-filereader.h
+	        ./devices/xml-filereader/xmlreader.h
+	        ./devices/xml-filereader/element-reader.h
+	        ./devices/xml-filereader/xml-descriptor.h
+	   )
+
+	   set (${objectName}_SRCS
+	        ${${objectName}_SRCS}
+	        ./devices/xml-filereader/xml-filereader.cpp
+	        ./devices/xml-filereader/xml-reader.cpp
+	        ./devices/xml-filereader/xml-descriptor.cpp
+	   )
+
+	   add_definitions (-DHAVE_XML_FILES)
+	endif (XMLFILES)
 
 	include_directories (
 	          ${SDRPLAY_INCLUDES}

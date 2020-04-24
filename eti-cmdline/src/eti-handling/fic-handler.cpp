@@ -5,6 +5,7 @@
  *    Lazy Chair Computing
  *
  *    This file is part of the eti-cmdline
+ *
  *    eti-cmdline is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
@@ -55,19 +56,19 @@ uint8_t PI_X [24] = {
 	                                             fibProcessor (userData,
 	                                                           ensembleName,
 	                                                           programName) {
-int16_t	i, j;
+int16_t	i, j, k;
+int	local	= 0;
+int16_t shiftRegister [9] = {1, 1, 1, 1, 1, 1, 1, 1, 1};
+
 	this	-> userData		= userData;
 	this	-> set_fibQuality	= set_fibQuality;
-	bitBuffer_out			= new uint8_t [768];
-	ofdm_input 			= new int16_t [2304];
 	index				= 0;
 	BitsperBlock			= 2 * p -> get_carriers ();
 	ficBlocks			= 0;
 	ficMissed			= 0;
 	ficRatio			= 0;
-	PI_15				= get_PCodes (15 - 1);
-	PI_16				= get_PCodes (16 - 1);
-	memset (shiftRegister, 1, 9);
+//	PI_15				= get_PCodes (15 - 1);
+//	PI_16				= get_PCodes (16 - 1);
 
 	for (i = 0; i < 768; i ++) {
 	   PRBS [i] = shiftRegister [8] ^ shiftRegister [4];
@@ -76,14 +77,48 @@ int16_t	i, j;
 
 	   shiftRegister [0] = PRBS [i];
 	}
+//
+//	Since the depuncturing is the same throughout all calls
+//	(even through all instances, so we could create a static
+//	table), we make an punctureTable that contains the indices of
+//	the ofdmInput table
+	memset (punctureTable, 0, (3072 + 24) * sizeof (uint8_t));
+	for (i = 0; i < 21; i ++) {
+	   for (k = 0; k < 32 * 4; k ++) {
+	      if (get_PCodes (16 - 1) [k % 32] != 0)  
+	         punctureTable [local] = true;
+	      local ++;
+	   }
+	}
+/**
+  *	In the second step
+  *	we have 3 blocks with puncturing according to PI_15
+  *	each 128 bit block contains 4 subblocks of 32 bits
+  *	on which the given puncturing is applied
+  */
+	for (i = 0; i < 3; i ++) {
+	   for (k = 0; k < 32 * 4; k ++) {
+	      if (get_PCodes (15 - 1) [k % 32] != 0)  
+	         punctureTable [local] = true;
+	      local ++;
+	   }
+	}
+
+/**
+  *	we have a final block of 24 bits  with puncturing according to PI_X
+  *	This block constitues the 6 * 4 bits of the register itself.
+  */
+	for (k = 0; k < 24; k ++) {
+	   if (get_PCodes (8 - 1) [k] != 0) 
+	      punctureTable [local] = true;
+	   local ++;
+	}
 
 	ficErrors			= 0;
 	ficSuccess			= 0;
 }
 
 		ficHandler::~ficHandler (void) {
-	        delete	bitBuffer_out;
-	        delete	ofdm_input;
 }
 
 /**
@@ -139,50 +174,14 @@ void	ficHandler::process_ficInput (int16_t *ficblock,
 	                              bool	*valid) {
 int16_t	input_counter	= 0;
 int16_t	i, k;
-int32_t	local		= 0;
 int16_t	viterbiBlock [3072 + 24];
+int16_t inputCount	= 0;
 
-/**
-  *	a block of 2304 bits is considered to be a codeword
-  *	In the first step we have 21 blocks with puncturing according to PI_16
-  *	each 128 bit block contains 4 subblocks of 32 bits
-  *	on which the given puncturing is applied
-  */
-	for (i = 0; i < 21; i ++) {
-	   for (k = 0; k < 32 * 4; k ++) {
-	      if (PI_16 [k % 32] == 1)  
-	         viterbiBlock [local] = ficblock [input_counter ++];
-	      else
-	         viterbiBlock [local] = 0;	// a real "do not know"
-	      local ++;
-	   }
-	}
-/**
-  *	In the second step
-  *	we have 3 blocks with puncturing according to PI_15
-  *	each 128 bit block contains 4 subblocks of 32 bits
-  *	on which the given puncturing is applied
-  */
-	for (i = 0; i < 3; i ++) {
-	   for (k = 0; k < 32 * 4; k ++) {
-	      if (PI_15 [k % 32] == 1)  
-	         viterbiBlock [local ++] = ficblock [input_counter ++];
-	      else
-	         viterbiBlock [local ++] = 0;	// a real "do not know"
-	      }
-	}
+	memset (viterbiBlock, 0, (3072 + 24) * sizeof (int16_t));
 
-/**
-  *	we have a final block of 24 bits  with puncturing according to PI_X
-  *	This block constitues the 6 * 4 bits of the register itself.
-  */
-	for (k = 0; k < 24; k ++) {
-	   if (PI_X [k] == 1) {
-	      viterbiBlock [local ++] = ficblock [input_counter ++];
-	   }
-	   else
-	      viterbiBlock [local ++] = 0;
-	}
+	for (i = 0; i < 3072 + 24; i ++)
+	   if (punctureTable [i])
+	      viterbiBlock [i] = ofdm_input [inputCount ++];
 /**
   *	Now we have the full word ready for deconvolution
   *	deconvolution is according to DAB standard section 11.2

@@ -44,6 +44,8 @@ using std::endl;
 #include	"rtlsdr-handler.h"
 #elif	HAVE_SDRPLAY
 #include	"sdrplay-handler.h"
+#elif	HAVE_SDRPLAY_V3
+#include	"sdrplay-handler-v3.h"
 #elif	HAVE_AIRSPY
 #include	"airspy-handler.h"
 #elif	HAVE_HACKRF
@@ -56,6 +58,8 @@ using std::endl;
 #include	"wavfile-handler.h"
 #elif	HAVE_RTL_TCP
 #include	"rtl_tcp-client.h"
+#elif	HAVE_XML_FILES
+#include	"xml-filereader.h"
 #endif
 //
 //	Be aware that the callbacks may arrive from different threads,
@@ -187,7 +191,7 @@ const char	*optionsString	= "D:d:M:B:C:O:R:G:L:Qp:";
 #elif	HAVE_SDRPLAY_V3	
 int16_t		GRdB		= 30;
 int16_t		lnaState	= 2;
-bool		autogain	= false;
+bool		autoGain	= false;
 int16_t		ppmOffset	= 0;
 const char	*optionsString	= "D:d:M:B:C:O:R:G:L:Qp:";
 #elif	HAVE_AIRSPY
@@ -203,13 +207,19 @@ const char	*optionsString	= "D:d:M:B:C:O:R:G:Qp:";
 #elif	HAVE_WAVFILES
 std::string	fileName;
 bool		repeater	= true;
+bool		continue_on_eof	= false;
 const char	*optionsString	= "D:d:M:B:O:F:r";
 #elif	HAVE_RAWFILES
 std::string	fileName;
-bool	repeater		= true;
+bool		repeater	= true;
+bool		continue_on_eof	= false;
 const char	*optionsString	= "D:d:M:B:O:F:r";
-#elif
-//	HAVE_RTL_TCP
+#elif	HAVE_XML_FILES
+std::string	fileName;
+bool		repeater	= true;
+bool		continue_on_eof	= false;
+const char	*optionsString	= "D:d:M:B:O:F:r";
+#elif	HAVE_RTL_TCP
 int		gain		= 50;
 bool		autogain	= false;
 int		ppmOffset	= 0;
@@ -232,21 +242,7 @@ struct sigaction sigact;
 	run.			store (false);
 //
 //	for file input some command line parameters are meeaningless
-#if defined (HAVE_RAWFILES) || defined (HAVE_WAVFILES)
 	while ((opt = getopt (argc, argv, optionsString)) != -1) {
-#elif defined (HAVE_RTL_TCP)
-	while ((opt = getopt (argc, argv, optionsString)) != -1) {
-#elif defined (HAVE_SDRPLAY) 
-	while ((opt = getopt (argc, argv, optionsString)) != -1) {
-#elif defined (HAVE_HACKRF)
-	while ((opt = getopt (argc, argv, optionsString)) != -1) {
-#elif defined (HAVE_AIRSPY)
-	while ((opt = getopt (argc, argv, optionsString)) != -1) {
-#elif defined (HAVE_RTLSDR)
-	while ((opt = getopt (argc, argv, optionsString)) != -1) {
-#elif defined (HAVE_LIME)
-	while ((opt = getopt (argc, argv, optionsString)) != -1) {
-#endif
 	   switch (opt) {
 	      case 'D':
 	         freqSyncTime	= atoi (optarg);
@@ -295,9 +291,9 @@ struct sigaction sigact;
 	            theMode = 1; 
 	         break;
 
-#if	defined (HAVE_RAWFILES) || defined (HAVE_WAVFILES)
+#if	defined (HAVE_RAWFILES) || defined (HAVE_WAVFILES) || defined (HAVE_XML_FILES)
 	      case 'F':
-	         inputfileName	= std::string (optarg);
+	         fileName	= std::string (optarg);
 	         break;
 
 	      case 'r':
@@ -323,6 +319,23 @@ struct sigaction sigact;
 	         break;
 
 #if defined (HAVE_SDRPLAY)
+	      case 'G':
+	         GRdB	= atoi (optarg);
+	         break;
+
+	      case 'L':
+	         lnaState	= atoi (optarg);
+	         break;
+
+	      case 'Q':
+	         autoGain	= true;
+	         break;
+
+	      case 'p':
+	         ppmOffset	= atoi (optarg);
+	         break;
+
+#elif defined (HAVE_SDRPLAY_V3)
 	      case 'G':
 	         GRdB	= atoi (optarg);
 	         break;
@@ -400,7 +413,7 @@ struct sigaction sigact;
 	   }
 	}
 
-#if defined(HAVE_RAWFILES) || defined(HAVE_WAVFILES)
+#if defined(HAVE_RAWFILES) || defined(HAVE_WAVFILES) || defined (HAVE_XML_FILES)
 //	check on name ??
 #else
 	tunedFrequency	=  the_bandHandler. Frequency (theBand, theChannel);
@@ -420,6 +433,12 @@ struct sigaction sigact;
 	                                     deviceGain,
 	                                     autoGain,
 	                                     deviceIndex);
+#elif	HAVE_SDRPLAY_V3
+	   inputDevice	= new sdrplayHandler_v3 (tunedFrequency,
+	                                         ppmOffset,
+	                                         GRdB,
+	                                         lnaState,
+	                                         autoGain, 0, 0);
 #elif	HAVE_SDRPLAY
 	   inputDevice	= new sdrplayHandler (tunedFrequency,
 	                                      ppmOffset,
@@ -439,11 +458,15 @@ struct sigaction sigact;
 #elif	HAVE_LIME
 	   inputDevice	= new limeHandler   (tunedFrequency, gain, antenna);
 #elif	HAVE_RAWFILES
-	   inputDevice	= new rawfileHandler (inputfileName,
+	   inputDevice	= new rawfileHandler (fileName,
 	                                      continue_on_eof, 
 	                                      inputStopped);
 #elif	HAVE_WAVFILES
-	   inputDevice	= new wavfileHandler (inputfileName,
+	   inputDevice	= new wavfileHandler (fileName,
+	                                      continue_on_eof,
+	                                      inputStopped);
+#elif	HAVE_XML_FILES
+	   inputDevice	= new xml_fileReader (fileName,
 	                                      continue_on_eof,
 	                                      inputStopped);
 #elif	HAVE_RTL_TCP
