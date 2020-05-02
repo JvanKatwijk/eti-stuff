@@ -172,8 +172,7 @@ void	ficHandler::process_ficInput (int16_t *ficblock,
 	                              int16_t ficno,
 	                              uint8_t *fib_bytes,
 	                              bool	*valid) {
-int16_t	input_counter	= 0;
-int16_t	i, k;
+int16_t	i;
 int16_t	viterbiBlock [3072 + 24];
 int16_t inputCount	= 0;
 
@@ -239,3 +238,4 @@ int16_t	ficHandler::get_ficRatio (void) {
 void	ficHandler::get_CIFCount	(int16_t *hi, int16_t *lo) {
 	fibProcessor. get_CIFCount (hi, lo);
 }
+

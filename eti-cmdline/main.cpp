@@ -195,14 +195,15 @@ bool		autoGain	= false;
 int16_t		ppmOffset	= 0;
 const char	*optionsString	= "D:d:M:B:C:O:R:G:L:Qp:";
 #elif	HAVE_AIRSPY
-int16_t		gain		= 20;
-bool		autogain	= false;
+int16_t		deviceGain	= 20;
+bool		autoGain	= false;
 bool		rf_bias		= false;
-const char	*optionsString	= "D:d:M:B:C:O:R:G:p:B";
+const char	*optionsString	= "D:d:M:B:C:O:R:G:p:b";
 #elif	HAVE_RTLSDR
-int16_t		gain		= 50;
-bool		autogain	= false;
+int16_t		deviceGain	= 50;
+bool		autoGain	= false;
 int16_t		ppmOffset	= 0;
+int		deviceIndex	= 0;
 const char	*optionsString	= "D:d:M:B:C:O:R:G:Qp:";
 #elif	HAVE_WAVFILES
 std::string	fileName;
@@ -220,8 +221,8 @@ bool		repeater	= true;
 bool		continue_on_eof	= false;
 const char	*optionsString	= "D:d:M:B:O:F:r";
 #elif	HAVE_RTL_TCP
-int		gain		= 50;
-bool		autogain	= false;
+int		deviceGain	= 50;
+bool		autoGain	= false;
 int		ppmOffset	= 0;
 std::string	hostname = "127.0.0.1";		// default
 int32_t		basePort = 1234;		// default
@@ -384,7 +385,7 @@ struct sigaction sigact;
 	         deviceGain	= atoi (optarg);
 	         break;
 
-	      case 'B':
+	      case 'b':
 	         rf_bias	= true;
 	         break;
 
@@ -446,7 +447,6 @@ struct sigaction sigact;
 	                                      lnaState,
 	                                      autoGain, 0, 0);
 #elif	HAVE_HACKRF
-	   (void)autoGain;
 	   inputDevice	= new hackrfHandler (tunedFrequency,
 	                                     ppmOffset,
 	                                     lnaGain,
@@ -593,7 +593,7 @@ void    printOptions (void) {
 #elif	HAVE_AIRSPY
 	std::cerr <<
 "   -G number Gain (combined gain in the range 1 .. 21) \n"
-"   -B bias on\n";
+"   -b bias on\n";
 #elif	HAVE_HACKRF
 	std::cerr <<
 "   -G number lna gain \n"

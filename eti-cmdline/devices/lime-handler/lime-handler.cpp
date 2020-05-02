@@ -176,9 +176,6 @@ int16_t	limeHandler::bitDepth		(void) {
 void	limeHandler::run	(void) {
 int	res;
 lms_stream_status_t streamStatus;
-int	underruns	= 0;
-int	overruns	= 0;
-int	dropped		= 0;
 int	amountRead	= 0;
 
 	fprintf (stderr, "lime is working now\n");
