@@ -37,7 +37,7 @@ int	res;
 	this	-> vgaGain	= vgaGain;
 	this	-> ampEnable	= ampEnable;
 	this	-> inputRate	= 2048000;
-	_I_Buffer	= new RingBuffer<std::complex<float>>(1024 * 1024);
+	_I_Buffer	= new RingBuffer<std::complex<float>>(1024 * 1024, "hackrf I/Q ringbuffer");
 //
 	res	= hackrf_init ();
 	if (res != HACKRF_SUCCESS) {

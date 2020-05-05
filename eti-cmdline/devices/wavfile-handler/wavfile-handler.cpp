@@ -61,7 +61,7 @@ SF_INFO *sf_info;
         }
 	this	-> continue_on_eof	= continue_on_eof;
 	this	-> inputStopped		= inputStopped;
-	_I_Buffer	= new RingBuffer<std::complex<float>>(__BUFFERSIZE);
+	_I_Buffer	= new RingBuffer<std::complex<float>>(__BUFFERSIZE, "wavfile I/Q ringbuffer");
 	currPos		= 0;
 	eof		= false;
 	run. store (false);

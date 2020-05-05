@@ -122,7 +122,7 @@ mir_sdr_DeviceT devDesc [4];
            denominator  = 2048.0;
         }
 
-	_I_Buffer	= new RingBuffer<std::complex<float>>(8 * 1024 * 1024);
+	_I_Buffer	= new RingBuffer<std::complex<float>>(8 * 1024 * 1024, "sdrplay I/Q ringbuffer");
 //
 	mir_sdr_AgcControl (autoGain ?
                          mir_sdr_AGC_100HZ :

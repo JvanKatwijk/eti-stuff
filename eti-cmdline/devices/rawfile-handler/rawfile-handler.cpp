@@ -52,7 +52,7 @@ struct timeval	tv;
 	}
 	this	-> continue_on_eof	= continue_on_eof;
 	this	-> inputStopped		= inputStopped;
-	_I_Buffer	= new RingBuffer<uint8_t>(INPUT_FRAMEBUFFERSIZE);
+	_I_Buffer	= new RingBuffer<uint8_t>(INPUT_FRAMEBUFFERSIZE, "rawfile I/Q ringbuffer");
 	currPos		= 0;
 	eof		= false;
 }

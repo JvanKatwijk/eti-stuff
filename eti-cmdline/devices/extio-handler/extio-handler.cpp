@@ -196,7 +196,7 @@ int32_t	inputRate	= 0;
 	   return;
 	}
 
-	theBuffer	= new RingBuffer<DSPCOMPLEX>(1024 * 1024);
+	theBuffer	= new RingBuffer<DSPCOMPLEX>(1024 * 1024, "extio I/Q ringbuffer");
 	fprintf (stderr, "hardware type = %d\n", hardwareType);
 	switch (hardwareType) {
 	   case exthwNone:

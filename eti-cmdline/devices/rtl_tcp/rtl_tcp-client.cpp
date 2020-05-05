@@ -80,7 +80,7 @@
 //
 //	OK, we are connected,
 //	first allocate a large buffer
-	theBuffer	= new RingBuffer<uint8_t> (1024 * 1024);
+	theBuffer	= new RingBuffer<uint8_t> (1024 * 1024, "rtl_tcp I/Q ringbuffer");
 //	and set the parameters right
 	fprintf (stderr, "setting the rate to %d\n", theRate);
 	sendCommand (0x02, theRate);

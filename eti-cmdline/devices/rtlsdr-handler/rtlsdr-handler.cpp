@@ -123,7 +123,7 @@ bool	open;
 	                             gains [theGain * gainsCount / 100] % 10);
         rtlsdr_set_tuner_gain (device, gains [theGain * gainsCount / 100]);
 
-	_I_Buffer	= new RingBuffer<uint8_t>(1024 * 1024);
+	_I_Buffer	= new RingBuffer<uint8_t>(1024 * 1024, "rtlsdr I/Q ringbuffer");
 	return;
 
 err:

@@ -131,8 +131,12 @@ volatile	uint32_t	readIndex;
 		uint32_t	bigMask;
 	        uint32_t	smallMask;
 		char		*buffer;
+		const char	*ringName;
+		uint32_t	numOverflows;
 public:
-	RingBuffer (uint32_t elementCount) {
+	RingBuffer (uint32_t elementCount, const char * paszRingName = "RingBuffer" ) {
+	ringName = paszRingName;
+	numOverflows = 0;
 	if (((elementCount - 1) & elementCount) != 0)
 	    elementCount = 2 * 16384;	/* default	*/
 
@@ -145,6 +149,8 @@ public:
 }
 
 	~RingBuffer () {
+	   //if ( numOverflows )
+	   fprintf(stderr, "\n%u buffer overflows in total for %s\n", numOverflows, ringName);
 	   delete[]	 buffer;
 }
 
@@ -201,8 +207,15 @@ int32_t GetRingBufferWriteRegions (uint32_t elementCount,
 uint32_t   index;
 uint32_t   available = GetRingBufferWriteAvailable ();
 
-	if (elementCount > available)
+	if (elementCount > available) {
+	   ++numOverflows;
+	   if ( numOverflows <= 3 ) {
+	      fprintf(stderr, "\nbuffer overflow %u for %s: want to write %u - but only %u available\n", numOverflows, ringName, elementCount, available);
+	      if ( numOverflows == 3 )
+	         fprintf(stderr, "  following buffer overflows are suppressed for %s\n", ringName);
+	   }
 	   elementCount = available;
+	}
 
 /* Check to see if write is not contiguous. */
 	index = writeIndex & smallMask;

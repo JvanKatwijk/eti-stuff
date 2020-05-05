@@ -38,7 +38,7 @@
 	                                bool	continue_on_eof,
 	                                inputstopped_t inputStopped) {
 	fileName	= f;
-	_I_Buffer	= new RingBuffer<std::complex<float>>(INPUT_FRAMEBUFFERSIZE);
+	_I_Buffer	= new RingBuffer<std::complex<float>>(INPUT_FRAMEBUFFERSIZE, "xml I/Q ringbuffer");
 	theFile	= fopen (f. toUtf8 (). data(), "rb");
 	if (theFile == nullptr) {
 	   fprintf (stderr, "file %s cannot open\n",

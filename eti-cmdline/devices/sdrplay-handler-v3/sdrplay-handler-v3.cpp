@@ -37,7 +37,7 @@
 	this	-> lnaState	= lnaState;
 	this	-> autogain	= autogain;
 	_I_Buffer		= new RingBuffer<
-	                              std::complex<float>>(8 *1024 * 1024);
+	                              std::complex<float>>(8 *1024 * 1024, "sdrplay-v3 I/Q ringbuffer");
 	theController	= new sdrplayController (frequency,
 	                                         ppmCorrection,
 	                                         GRdB,

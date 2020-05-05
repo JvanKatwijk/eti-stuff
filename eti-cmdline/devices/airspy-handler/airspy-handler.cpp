@@ -146,7 +146,7 @@ uint32_t samplerate_count;
 	convIndex		= 0;
 	convBuffer		= new DSPCOMPLEX [convBufferSize + 1];
 
-	theBuffer		= new RingBuffer<DSPCOMPLEX> (512 *1024);
+	theBuffer		= new RingBuffer<DSPCOMPLEX> (512 *1024, "airspy I/Q ringbuffer");
 	running			= false;
 	my_airspy_set_rf_bias (device, rf_bias ? 1 : 0);
 }
