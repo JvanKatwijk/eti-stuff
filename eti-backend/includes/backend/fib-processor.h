@@ -1,8 +1,8 @@
 #
 /*
- *    Copyright (C) 2013 - 2017
+ *    Copyright (C) 2016 - 2020
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
- *    Lazy Chair Programming
+ *    Lazy Chair Computing
  *
  *    This file is part of the SDR-J (JSDR).
  *    SDR-J is free software; you can redistribute it and/or modify
@@ -18,11 +18,10 @@
  *    You should have received a copy of the GNU General Public License
  *    along with SDR-J; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
  */
 #
-#ifndef	FIB_PROCESSOR
-#define	FIB_PROCESSOR
+#ifndef	__FIB_PROCESSOR__
+#define	__FIB_PROCESSOR__
 #
 //
 #include	<stdint.h>

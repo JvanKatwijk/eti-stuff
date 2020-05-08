@@ -18,24 +18,25 @@
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
- *    This file is part of the eti library
+ *    This file is part of the eti-cmdline
  *
- *    eti library is free software; you can redistribute it and/or modify
+ *    eti-cmdline is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    eti library is distributed in the hope that it will be useful,
+ *    eti-cmdline is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with eti library; if not, write to the Free Software
+ *    along with eti-cmdline; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 #
 #include	"dab-constants.h"
+#include	<mutex>
 #include	"eti-generator.h"
 #include	"eep-protection.h"
 #include	"uep-protection.h"
@@ -95,9 +96,16 @@ uint8_t	fibVector [16][96];
 bool	fibValid  [16];
 
 #define	CUSize	(4 * 16)
-
+//
+//	The "protTable" acts as a cache for the different
+//	deconvolvers. Note that reentrancy of the deconvolvers
+//	is not garanteed, therefore - if running parallel -
+//	the specific use is guarded by a lock
+//	Note that NOT running parallel requires far less user time
 std::vector<protDesc> protTable;
-
+#ifdef	__CONCURRENT__
+mutex	lockTable [64];
+#endif
 //
 //	fibvector contains the processed fics, i.e ready for addition
 //	to the eti frame.
@@ -149,6 +157,7 @@ std::vector<protDesc> protTable;
 
 void	etiGenerator::start	(void) {
 	running. store (true);
+	protTable. resize (0);
         threadHandle    = std::thread (&etiGenerator::run, this);
 }
 
@@ -200,10 +209,10 @@ const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 	   dataBuffer -> getDataFromBuffer (&b, 1);
 	   if (b. blkno != expected_block) {
 	      fprintf (stderr, "got %d, expected %d\n", b.blkno, expected_block);
-	      expected_block = 2;
-	      index_Out	= 0;
+	      expected_block	= 2;
+	      index_Out		= 0;
 	      amount. store (0);
-	      Minor	= 0;
+	      Minor		= 0;
 	      continue;
 	   }
 //
@@ -312,6 +321,9 @@ const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 	      Minor ++;
 	   }
 	}
+	for (int i = 0; i < protTable. size (); i ++)
+	   delete protTable. at (i). theDeconvolver;
+	protTable. resize (0);
 }
 
 //	In process_CIF we iterate over the data in the CIF and map that
@@ -333,7 +345,8 @@ public:
 	uint8_t	*output;
 };
 
-static void     process_subCh (parameter *p);
+static void     process_subCh (int, parameter *p,
+	                           protection *prot, std::mutex *);
 
 int32_t	etiGenerator::process_CIF (int16_t *input,
 	                           uint8_t *output, int32_t offset) {
@@ -341,10 +354,14 @@ int16_t	i;
 std::vector<std::thread> theThreads;
 std::vector<parameter *> theParameters;
 
+bool	found		= false;
+protection	*theDeconvolver	= nullptr;
+int	lockNumber	= 1;
 	for (i = 0; i < 64; i ++) {
 	   channel_data data;
 	   my_ficHandler. get_channelInfo (&data, i);
 	   if (data. in_use) {
+	      found = false;
 	      parameter *t	= new parameter;
 	      t -> input	= input;
 	      t -> uepFlag	= data. uepFlag;
@@ -355,78 +372,79 @@ std::vector<parameter *> theParameters;
 	      t -> output	= &output [offset];
 	      offset 		+= data. bitrate * 24 / 8;
 //
+	      for (int i = 0; i < protTable. size (); i ++) {
+	         if (protTable. at (i). uepFlag != t -> uepFlag) 
+	            continue;
+	         if (protTable. at (i). bitRate != t -> bitRate) 
+	            continue;
+	         if (protTable. at (i). protLevel != t -> protLevel) 
+	            continue;
+	         found = true;
+	         lockNumber = i;
+	         theDeconvolver	= protTable. at (i). theDeconvolver;
+	         break;
+	      }
+
+	      if (!found) {
+	         protDesc theProtector;
+	         theProtector. uepFlag = t -> uepFlag;
+	         theProtector. bitRate = t -> bitRate;
+	         theProtector. protLevel = t -> protLevel;
+	         if (t -> uepFlag)
+	            theProtector. theDeconvolver =
+	                                new uep_protection (t -> bitRate,
+	                                                    t -> protLevel);
+	         else
+	            theProtector. theDeconvolver =
+	                                new eep_protection (t -> bitRate,
+	                                                    t -> protLevel);
+	         theDeconvolver 	= theProtector. theDeconvolver;
+	         protTable. push_back (theProtector);
+		 lockNumber	= protTable. size () - 1;
+	      }
 //	we need to save a reference to the parameters
 //	since we have to delete the instance later on
 	      theParameters. push_back (t);
-	      theThreads . push_back (std::thread (process_subCh, t));
+#ifdef	__CONCURRENT__
+	      theThreads . push_back (std::thread (process_subCh, i, t,
+	                                           theDeconvolver,
+	                                           &lockTable [lockNumber]))
+#else;
+	      process_subCh (i, t, theDeconvolver, nullptr);
+#endif
 	   }
 	}
-
+#ifdef	__CONCURRENT__
 	for (std::thread &th : theThreads) {
 	   th. join ();
 	}
+#endif
 	for (parameter*t: theParameters)
 	   delete t;
 	return offset;
 }
 
-static void	process_subCh (parameter *p) {
+static void	process_subCh (int nr, parameter *p,
+	                                protection *prot, std::mutex *locker) {
 uint8_t outVector [24 * p -> bitRate];
 int	j, k;
 
-bool	uepFlag		= p -> uepFlag;
-int	bitRate		= p -> bitRate;
-int	protLevel	= p -> protLevel;
-int	size		= p -> size;
-int	start_cu	= p -> start_cu;
-//protDesc theProtector;
-//bool	found		= false;
-	memset (outVector, 0, 24 * bitRate);
+	memset (outVector, 0, 24 * p -> bitRate);
 
-//	for (int i = 0; i < protTable. size (); i ++) {
-//	   if (protTable. at (i). uepFlag != uepFlag) 
-//	      continue;
-//	   if (protTable. at (i). bitRate != bitRate) 
-//	      continue;
-//	   if (protTable. at (i). protLevel != protLevel) 
-//	      continue;
-//	   found = true;
-//	   theProtector	= protTable. at (i);
-//	   break;
-//	}
+#ifdef	__CONCURRENT__
+	locker -> lock ();
+#endif
+	prot -> deconvolve (&p -> input [p -> start_cu * CUSize],
+	                                 p -> size * CUSize,
+	                                 outVector);
+#ifdef	__CONCURRENT__
+	locker -> unlock ();
+#endif
 //
-//	if (!found) {
-//	   theProtector. uepFlag = uepFlag;
-//	   theProtector. bitRate = bitRate;
-//	   theProtector. protLevel = protLevel;
-//	   if (uepFlag)
-//	      theProtector. protector = new uep_protection (bitRate, protLevel);
-//	   else
-//	      theProtector. protector = new eep_protection (bitRate, protLevel);
-//	   protTable. push_back (theProtector);
-//	}
-//
-//	theProtector.
-//	         protector -> deconvolve (&p -> input [start_cu * CUSize],
-//	                                  size * CUSize,
-//	                                  outVector);
-	if (uepFlag) {
-	   uep_protection uepProtector (bitRate, protLevel);
-	   uepProtector. deconvolve (&p -> input [start_cu * CUSize],
-	                             size * CUSize,
-	                             outVector);
-	}
-	else {
-	   eep_protection  eepProtector (bitRate, protLevel);
-	   eepProtector.  deconvolve (&p -> input [start_cu * CUSize],
-	                              size * CUSize,
-	                              outVector);
-	}
-
 	uint8_t	shiftRegister [9];
 	memset (shiftRegister, 1, 9);
 
-	for (j = 0; j < 24 * bitRate; j ++) {
+	for (j = 0; j < 24 *p -> bitRate; j ++) {
 	   uint8_t b = shiftRegister [8] ^ shiftRegister [4];
 	   for (k = 8; k > 0; k--)
 	      shiftRegister [k] = shiftRegister [k - 1];
@@ -435,7 +453,7 @@ int	start_cu	= p -> start_cu;
         }
 //
 //	and the storage:
-	for (j = 0; j < 24 * bitRate / 8; j ++) {
+	for (j = 0; j < 24 * p -> bitRate / 8; j ++) {
 	   int temp = 0;
 	   for (k = 0; k < 8; k ++)
 	      temp = (temp << 1) | (outVector [j * 8 + k] & 01);

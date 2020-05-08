@@ -50,7 +50,7 @@ The "normal" way for configuring and installing is
 
    	mkdir build
   	cd build
-   	cmake .. -DXXX=ON  [-DDUMPING=ON] [-DX64_DEFINED]
+   	cmake .. -DXXX=ON  [-DDUMPING=ON] [-DX64_DEFINED] [-D__CONCURRENT__]
    	make
 
 where XXX refers to the input device being supported, one of 
@@ -69,6 +69,11 @@ The resulting program is named `eti-cmdline-XXX`, for XXX see above.
 
 The command `(sudo) make install` will install the created executable in 
 `/usr/local/bin` unless specified differently (note that it requires root permissions)
+
+If \-D__CONCURRENT' is added, the translation of sub channels
+will be done in separate threads. Note however, that - since
+deconvolution procedures are cached and not reentrant - not
+using threads takes less cpu user time.
 
 --------------------------------------------------------------------------
 ## Command line parameters

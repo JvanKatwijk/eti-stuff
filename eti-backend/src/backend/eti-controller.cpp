@@ -1,10 +1,11 @@
 #
 /*
- *    Copyright (C) 2016 2017
+ *    Copyright (C) 2016 .. 2020
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
- *    Lazy Chair Programming
+ *    Lazy Chair Computing
  *
  *    This file is part of the eti-backend
+ *
  *    eti-backend is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or

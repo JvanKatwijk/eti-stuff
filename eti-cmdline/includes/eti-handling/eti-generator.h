@@ -16,7 +16,7 @@
  *
  *    Copyright (C) 2016
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
- *    Lazy Chair Programming
+ *    Lazy Chair Computing
  *
  *    This file is part of the eti library
  *    eti library is free software; you can redistribute it and/or modify
@@ -68,7 +68,7 @@ typedef	struct {
         int     bitRate;
         int     protLevel;
 	uint8_t	*dispersionVector;
-        protection *protector;
+        protection *theDeconvolver;
 } protDesc;
 
 class etiGenerator {

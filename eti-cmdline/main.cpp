@@ -59,7 +59,7 @@ using std::endl;
 #elif	HAVE_RTL_TCP
 #include	"rtl_tcp-client.h"
 #elif	HAVE_XML_FILES
-#include	"xml-filereader.h"
+#include	"xml-filereader.h"	// does not work yet
 #endif
 //
 //	Be aware that the callbacks may arrive from different threads,

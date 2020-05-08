@@ -1,4 +1,5 @@
 linux-bin
 eti-cmdline/Makefile
+eti-cmdline/build
 
 

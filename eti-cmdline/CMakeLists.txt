@@ -203,8 +203,8 @@ endif ()
              ./src/eti-handling/viterbi-spiral/spiral-neon.h
 	   )
    	   add_definitions (-DNEON_AVAILABLE)
-	   set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4")
-	   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4")
+#	   set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4")
+#	   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4")
 	else (X64_DEFINED)
 	   set (${objectName}_SRCS
                 ${${objectName}_SRCS}
@@ -507,6 +507,11 @@ endif ()
 	                ${${objectName}_SRCS}
 	)
 
+	if (RPI_DEFINED)
+	   # compiler options seem changed with gcc versions. gcc 8.3.0 on Raspbian didn't accept -mcpu ..
+	   # test options with "make VERBOSE=1"
+	   target_compile_options(${objectName}  PRIVATE -march=armv7-a -mfloat-abi=hard -mfpu=neon-vfpv4 )
+	endif()
 	target_link_libraries (${objectName}
 	                       ${FFTW3F_LIBRARIES}
 	                       ${extraLibs}

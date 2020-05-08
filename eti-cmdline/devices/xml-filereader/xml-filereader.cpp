@@ -4,7 +4,7 @@
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
- *    This file is part of the eti-cmdline
+ *    This file is part of eti-cmdline
  *
  *    eti-cmdline is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
