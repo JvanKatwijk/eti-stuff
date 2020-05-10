@@ -42,6 +42,7 @@
 #include	<stdint.h>
 #include	<stdio.h>
 #include	<thread>
+#include	"semaphore.h"
 #include	<vector>
 #include	<atomic>
 #include	"callback-types.h"
@@ -86,6 +87,7 @@ public:
 	void	startProcessing	(void);
 	void	reset		(void);
 private:
+	semaphore	theLocker;
 	void		*userData;
 	etiwriter_t	etiWriter;
 	std::thread	threadHandle;

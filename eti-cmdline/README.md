@@ -50,11 +50,11 @@ The "normal" way for configuring and installing is
 
    	mkdir build
   	cd build
-   	cmake .. -DXXX=ON  [-DDUMPING=ON] [-DX64_DEFINED] [-D__CONCURRENT__]
+   	cmake .. -DXXX=ON  [-DDUMPING=ON] [-DX64_DEFINED|-DRPI_DEFINED] [-D__PROCESSORS__=DD\
    	make
 
 where XXX refers to the input device being supported, one of 
-(RTLSDR, SDRPLAY, AIRSPY, HACKRF, RAWFILES, WAVFILES)
+(RTLSDR, SDRPLAY, SDRPLAY_V3, AIRSPY, HACKRF, RAWFILES, WAVFILES)
 
 If `-DDUMPING=ON` is added, the possibility for dumping the input to an ".sdr" 
 file (note that an sdr-file is a ".wav" file, with a samplerate of 2048000 
@@ -65,15 +65,18 @@ If `-DX64_DEFINED' is added, SSE instructions will be used in the viterbi decodi
 If `-DRPI_DEFINED' is added and building takes place on an RPI, an attempt
 is made to use neon insrtructions (problems with the toolchain though)
 
+If `-D__PROCESSORS__=DD' is added, where DD is a positive number, then
+the translation of the contents on subchannels will be in DD separate
+threads (one thread will handle one subchannel contents)
+
 The resulting program is named `eti-cmdline-XXX`, for XXX see above.
 
 The command `(sudo) make install` will install the created executable in 
 `/usr/local/bin` unless specified differently (note that it requires root permissions)
 
-If \-D__CONCURRENT' is added, the translation of sub channels
-will be done in separate threads. Note however, that - since
-deconvolution procedures are cached and not reentrant - not
-using threads takes less cpu user time.
+Note that since ALL subchannels have to be processed,
+running  the program on an RPI 2 or RPI 3 does not work properly
+(buffer overloads).
 
 --------------------------------------------------------------------------
 ## Command line parameters

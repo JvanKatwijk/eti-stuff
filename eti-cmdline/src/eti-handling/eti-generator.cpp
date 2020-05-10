@@ -34,9 +34,11 @@
  *    along with eti-cmdline; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-#
+
+#ifndef	__PROCESSORS__
+#define	__PROCESSORS__	1
+#endif
 #include	"dab-constants.h"
-#include	<mutex>
 #include	"eti-generator.h"
 #include	"eep-protection.h"
 #include	"uep-protection.h"
@@ -97,15 +99,10 @@ bool	fibValid  [16];
 
 #define	CUSize	(4 * 16)
 //
-//	The "protTable" acts as a cache for the different
-//	deconvolvers. Note that reentrancy of the deconvolvers
-//	is not garanteed, therefore - if running parallel -
-//	the specific use is guarded by a lock
-//	Note that NOT running parallel requires far less user time
-std::vector<protDesc> protTable;
-#ifdef	__CONCURRENT__
-mutex	lockTable [64];
-#endif
+//	For each subchannel we create a
+//	deconvoluter and a descramble table up front
+protection *protTable [64];
+uint8_t	*descrambler [64];
 //
 //	fibvector contains the processed fics, i.e ready for addition
 //	to the eti frame.
@@ -124,6 +121,7 @@ mutex	lockTable [64];
 	                                         programname_t	programName,
 	                                         fibquality_t	set_fibQuality,
 	                                         etiwriter_t	etiWriter):
+	                                           theLocker (4),
 	                                            params (dabMode),
 	                                            my_ficHandler (&params,
 	                                                           userData,
@@ -157,7 +155,10 @@ mutex	lockTable [64];
 
 void	etiGenerator::start	(void) {
 	running. store (true);
-	protTable. resize (0);
+	for (int i = 0; i < 64; i ++) {
+	   protTable [i] = nullptr;
+	   descrambler [i] = nullptr;
+	}
         threadHandle    = std::thread (&etiGenerator::run, this);
 }
 
@@ -321,9 +322,13 @@ const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 	      Minor ++;
 	   }
 	}
-	for (int i = 0; i < protTable. size (); i ++)
-	   delete protTable. at (i). theDeconvolver;
-	protTable. resize (0);
+	for (int i = 0; i < 64; i ++) {
+	   if (protTable [i] != nullptr) {
+	      delete protTable [i];
+	      delete [] descrambler [i];
+	   }
+	}
+	
 }
 
 //	In process_CIF we iterate over the data in the CIF and map that
@@ -346,22 +351,20 @@ public:
 };
 
 static void     process_subCh (int, parameter *p,
-	                           protection *prot, std::mutex *);
+	                           protection *prot,
+	                           uint8_t *, semaphore *);
 
 int32_t	etiGenerator::process_CIF (int16_t *input,
 	                           uint8_t *output, int32_t offset) {
 int16_t	i;
 std::vector<std::thread> theThreads;
+uint8_t	shiftRegister [9];
 std::vector<parameter *> theParameters;
 
-bool	found		= false;
-protection	*theDeconvolver	= nullptr;
-int	lockNumber	= 1;
 	for (i = 0; i < 64; i ++) {
 	   channel_data data;
 	   my_ficHandler. get_channelInfo (&data, i);
 	   if (data. in_use) {
-	      found = false;
 	      parameter *t	= new parameter;
 	      t -> input	= input;
 	      t -> uepFlag	= data. uepFlag;
@@ -371,85 +374,67 @@ int	lockNumber	= 1;
 	      t -> size		= data. size;
 	      t -> output	= &output [offset];
 	      offset 		+= data. bitrate * 24 / 8;
-//
-	      for (int i = 0; i < protTable. size (); i ++) {
-	         if (protTable. at (i). uepFlag != t -> uepFlag) 
-	            continue;
-	         if (protTable. at (i). bitRate != t -> bitRate) 
-	            continue;
-	         if (protTable. at (i). protLevel != t -> protLevel) 
-	            continue;
-	         found = true;
-	         lockNumber = i;
-	         theDeconvolver	= protTable. at (i). theDeconvolver;
-	         break;
-	      }
 
-	      if (!found) {
-	         protDesc theProtector;
-	         theProtector. uepFlag = t -> uepFlag;
-	         theProtector. bitRate = t -> bitRate;
-	         theProtector. protLevel = t -> protLevel;
+	      if (protTable [i] == nullptr) {
 	         if (t -> uepFlag)
-	            theProtector. theDeconvolver =
-	                                new uep_protection (t -> bitRate,
+	            protTable [i] = new uep_protection (t -> bitRate,
 	                                                    t -> protLevel);
 	         else
-	            theProtector. theDeconvolver =
-	                                new eep_protection (t -> bitRate,
+	            protTable [i] = new eep_protection (t -> bitRate,
 	                                                    t -> protLevel);
-	         theDeconvolver 	= theProtector. theDeconvolver;
-	         protTable. push_back (theProtector);
-		 lockNumber	= protTable. size () - 1;
-	      }
+	         
+	         memset (shiftRegister, 1, 9);
+	         descrambler [i] = new uint8_t [24 * t -> bitRate];
+
+	         for (int j = 0; j < 24 * t -> bitRate; j ++) {
+	            uint8_t b = shiftRegister [8] ^ shiftRegister [4];
+	            for (int k = 8; k > 0; k--)
+	               shiftRegister [k] = shiftRegister [k - 1];
+	            shiftRegister [0] = b;
+	            descrambler [i] [j] = b;
+	         }
+              }
 //	we need to save a reference to the parameters
 //	since we have to delete the instance later on
 	      theParameters. push_back (t);
-#ifdef	__CONCURRENT__
+	      theLocker. wait ();
 	      theThreads . push_back (std::thread (process_subCh, i, t,
-	                                           theDeconvolver,
-	                                           &lockTable [lockNumber]))
-#else;
-	      process_subCh (i, t, theDeconvolver, nullptr);
-#endif
+	                                           protTable [i],
+	                                           descrambler [i],
+	                                           &theLocker));
 	   }
 	}
-#ifdef	__CONCURRENT__
 	for (std::thread &th : theThreads) {
 	   th. join ();
 	}
-#endif
 	for (parameter*t: theParameters)
 	   delete t;
 	return offset;
 }
 
 static void	process_subCh (int nr, parameter *p,
-	                                protection *prot, std::mutex *locker) {
+	                                protection *prot,
+	                                uint8_t *desc,
+	                                semaphore *locker) {
 uint8_t outVector [24 * p -> bitRate];
 int	j, k;
 
 	memset (outVector, 0, 24 * p -> bitRate);
 
-#ifdef	__CONCURRENT__
-	locker -> lock ();
-#endif
 	prot -> deconvolve (&p -> input [p -> start_cu * CUSize],
 	                                 p -> size * CUSize,
 	                                 outVector);
-#ifdef	__CONCURRENT__
-	locker -> unlock ();
-#endif
 //
-	uint8_t	shiftRegister [9];
-	memset (shiftRegister, 1, 9);
+//	uint8_t	shiftRegister [9];
+//	memset (shiftRegister, 1, 9);
 
 	for (j = 0; j < 24 *p -> bitRate; j ++) {
-	   uint8_t b = shiftRegister [8] ^ shiftRegister [4];
-	   for (k = 8; k > 0; k--)
-	      shiftRegister [k] = shiftRegister [k - 1];
-	   shiftRegister [0] = b;
-	   outVector [j] ^= b;
+//	   uint8_t b = shiftRegister [8] ^ shiftRegister [4];
+//	   for (k = 8; k > 0; k--)
+//	      shiftRegister [k] = shiftRegister [k - 1];
+//	   shiftRegister [0] = b;
+//	   outVector [j] ^= b;
+	   outVector [j] ^= desc [j];
         }
 //
 //	and the storage:
@@ -459,6 +444,7 @@ int	j, k;
 	      temp = (temp << 1) | (outVector [j * 8 + k] & 01);
 	   p -> output [j] = temp;
 	}
+	locker -> release ();
 }
 
 void	etiGenerator::postProcess (uint8_t *theVector, int32_t offset){

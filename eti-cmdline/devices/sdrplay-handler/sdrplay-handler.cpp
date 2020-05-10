@@ -43,7 +43,7 @@ float	denominator	= p -> denominator;
 	   localBuf [i] = std::complex<float>
 	                             (float (xi [i]) / denominator,
 	                              float (xq [i]) / denominator);
-	if (p -> _I_Buffer -> GetRingBufferWriteAvailable () < numSamples)
+	if (p -> _I_Buffer -> GetRingBufferWriteAvailable () < (int) numSamples)
 	   fprintf (stderr, "x");
 	else
 	p -> _I_Buffer -> putDataIntoBuffer (localBuf, numSamples);
