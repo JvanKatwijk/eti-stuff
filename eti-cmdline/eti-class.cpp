@@ -30,6 +30,7 @@
 
 	etiClass::etiClass	(uint8_t	theMode,
 	                         deviceHandler	*inputDevice,
+	                         int		nrProcessors,
 #ifdef	HAVE_DUMPING
 	                         SNDFILE	*dumpFile,
 #endif
@@ -43,6 +44,7 @@
 //
 	                         void		*userData
 	                        ): my_etiGenerator (theMode,
+	                                            nrProcessors,
 	                                            userData,
 	                                            ensemblenameHandler,
 	                                            programnameHandler,

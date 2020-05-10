@@ -35,9 +35,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef	__PROCESSORS__
-#define	__PROCESSORS__	1
-#endif
+//
 #include	"dab-constants.h"
 #include	"eti-generator.h"
 #include	"eep-protection.h"
@@ -116,12 +114,13 @@ uint8_t	*descrambler [64];
 //	Note CIF counts from 0 .. 3
 //
 		etiGenerator::etiGenerator	(uint8_t	dabMode,
+	                                         int		nrProcs,
 	                                         void		*userData,
 	                                         ensemblename_t ensembleName,
 	                                         programname_t	programName,
 	                                         fibquality_t	set_fibQuality,
 	                                         etiwriter_t	etiWriter):
-	                                           theLocker (4),
+	                                            theLocker (nrProcs),
 	                                            params (dabMode),
 	                                            my_ficHandler (&params,
 	                                                           userData,
@@ -413,9 +412,8 @@ std::vector<parameter *> theParameters;
 }
 
 static void	process_subCh (int nr, parameter *p,
-	                                protection *prot,
-	                                uint8_t *desc,
-	                                semaphore *locker) {
+	                       protection *prot,
+	                       uint8_t *desc, semaphore *locker) {
 uint8_t outVector [24 * p -> bitRate];
 int	j, k;
 
@@ -425,15 +423,7 @@ int	j, k;
 	                                 p -> size * CUSize,
 	                                 outVector);
 //
-//	uint8_t	shiftRegister [9];
-//	memset (shiftRegister, 1, 9);
-
 	for (j = 0; j < 24 *p -> bitRate; j ++) {
-//	   uint8_t b = shiftRegister [8] ^ shiftRegister [4];
-//	   for (k = 8; k > 0; k--)
-//	      shiftRegister [k] = shiftRegister [k - 1];
-//	   shiftRegister [0] = b;
-//	   outVector [j] ^= b;
 	   outVector [j] ^= desc [j];
         }
 //

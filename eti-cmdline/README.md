@@ -50,7 +50,7 @@ The "normal" way for configuring and installing is
 
    	mkdir build
   	cd build
-   	cmake .. -DXXX=ON  [-DDUMPING=ON] [-DX64_DEFINED|-DRPI_DEFINED] [-D__PROCESSORS__=DD\
+   	cmake .. -DXXX=ON  [-DDUMPING=ON] [-DX64_DEFINED|-DRPI_DEFINED]
    	make
 
 where XXX refers to the input device being supported, one of 
@@ -64,10 +64,6 @@ If `-DX64_DEFINED' is added, SSE instructions will be used in the viterbi decodi
 
 If `-DRPI_DEFINED' is added and building takes place on an RPI, an attempt
 is made to use neon insrtructions (problems with the toolchain though)
-
-If `-D__PROCESSORS__=DD' is added, where DD is a positive number, then
-the translation of the contents on subchannels will be in DD separate
-threads (one thread will handle one subchannel contents)
 
 The resulting program is named `eti-cmdline-XXX`, for XXX see above.
 
@@ -86,6 +82,8 @@ Once the executable is created, it needs to be told what channel you want to be 
 
 General parameters are
 
+0. `-P number`, where the number indicates the degree of parallellism in the
+processing of the subchannels
 1. `-D number`, where number indicates the number of seconds used to collect information 
    on the ensemble. The default value is 10. In 9 out of 10 cases, if there is not an 
    ensemble detected within 10 seconds, it will never be detected.

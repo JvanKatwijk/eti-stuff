@@ -68,6 +68,7 @@ public:
 //	Initialization:
 		etiClass	       (uint8_t	Mode,
 	                                deviceHandler	*handler,
+	                                int		nrProcessors,
 #ifdef	HAVE_DUMPING
 	                                SNDFILE		*dumpFile,
 #endif

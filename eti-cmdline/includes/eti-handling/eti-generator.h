@@ -75,6 +75,7 @@ typedef	struct {
 class etiGenerator {
 public:
 		etiGenerator	(uint8_t,
+	                         int,
 	                         void	*,
 	                         ensemblename_t,
 	                         programname_t,
