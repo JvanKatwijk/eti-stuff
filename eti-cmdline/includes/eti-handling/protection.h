@@ -29,11 +29,13 @@
 
 #include        <stdint.h>
 #include        <vector>
-#include        "viterbi-handler.h"
-//#include        "viterbi-spiral.h"
+//#include	"viterbi-handler.h"
+#include	"viterbi-spiral.h"
+//#include	"viterbi.h"
 
-class   protection: public viterbiHandler {
-//class   protection: public viterbiSpiral {
+//class   protection: public viterbi {
+//class   protection: public viterbiHandler {
+class   protection: public viterbiSpiral {
 public:
                 protection      (int16_t, int16_t);
 virtual         ~protection     (void);

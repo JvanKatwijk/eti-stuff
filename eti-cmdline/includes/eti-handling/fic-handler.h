@@ -30,11 +30,13 @@
 #include	<stdio.h>
 #include	<stdint.h>
 #include	"viterbi-spiral.h"
+//#include	"viterbi.h"
 #include	"callback-types.h"
 #include	"fib-processor.h"
 
 class	dabParams;
 
+//class ficHandler:public viterbi {
 class ficHandler:public viterbiSpiral {
 public:
 			ficHandler		(dabParams  *,

@@ -1,9 +1,9 @@
 cmake_minimum_required( VERSION 2.8.11 )
 set (objectName eti_cmdline)
-#set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -Wall -std=c++11 -flto -ffast-math")
-#set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flto -ffast-math")
-set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -Wall -std=c++11 -g -ffast-math")
-set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g -ffast-math")
+set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -Wall -std=c++11 -flto -ffast-math")
+set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flto -ffast-math")
+#set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -Wall -std=c++11 -pg -ffast-math")
+#set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg -ffast-math")
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set (CMAKE_INSTALL_PREFIX "/usr/local/bin" CACHE PATH "default install path" FORCE )
 endif()
@@ -146,7 +146,7 @@ endif ()
 	     ./includes/ofdm/freq-interleaver.h
 	     ./includes/eti-handling/semaphore.h
 	     ./includes/eti-handling/eti-generator.h
-	     ./includes/eti-handling/viterbi-handler.h
+#	     ./includes/eti-handling/viterbi-handler.h
 	     ./includes/eti-handling/viterbi-spiral/viterbi-spiral.h
 	     ./includes/eti-handling/protection.h
 	     ./includes/eti-handling/uep-protection.h
@@ -170,7 +170,7 @@ endif ()
 	     ./src/ofdm/freq-interleaver.cpp
 	     ./src/eti-handling/semaphore.cpp
 	     ./src/eti-handling/eti-generator.cpp
-	     ./src/eti-handling/viterbi-handler.cpp
+#	     ./src/eti-handling/viterbi-handler.cpp
 	     ./src/eti-handling/viterbi-spiral/viterbi-spiral.cpp
 	     ./src/eti-handling/fic-handler.cpp
 	     ./src/eti-handling/fib-processor.cpp

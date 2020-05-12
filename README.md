@@ -23,9 +23,6 @@ It will start reading after pressing the start button.
 
 Build eti-backend using the qmake/make commands
 
-### eti-cmdline-exp  is a version being experimented with (the name suggests this).
-It will try to insert missing frames as null frames, starting with an error
-code 0 (i.e. non repairable).
 
 ### Syntax
 
