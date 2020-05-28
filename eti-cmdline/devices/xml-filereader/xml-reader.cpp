@@ -94,7 +94,6 @@ void	xml_Reader::stopReader	() {
 static	int cycleCount = 0;
 void	xml_Reader::run () {
 int	samplesRead	= 0;
-int	blockSize	= 2048;
 uint64_t	nextStop;
 int	startPoint	= filePointer;
 
@@ -154,7 +153,7 @@ int	samplesToRead	= 0;
 	   samplesToRead = nrElements;
 
 	fprintf (stderr, "%d samples have to be read, order is %s\n",
-	                 samplesToRead, fd -> iqOrder. toLatin1 (). data ());
+	                 samplesToRead, fd -> iqOrder. c_str ());
 	return samplesToRead;
 }
 

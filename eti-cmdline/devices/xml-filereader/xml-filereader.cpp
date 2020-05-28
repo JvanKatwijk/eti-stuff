@@ -37,12 +37,12 @@
 	xml_fileReader::xml_fileReader (std::string fileName,
 	                                bool	continue_on_eof,
 	                                inputstopped_t inputStopped) {
-	fileName	= f;
+	this -> fileName	= fileName;
 	_I_Buffer	= new RingBuffer<std::complex<float>>(INPUT_FRAMEBUFFERSIZE);
-	theFile	= fopen (f. toUtf8 (). data(), "rb");
+	theFile	= fopen (fileName.c_str (), "rb");
 	if (theFile == nullptr) {
 	   fprintf (stderr, "file %s cannot open\n",
-	                                   f. toUtf8(). data());
+	                                   fileName. c_str ());
 	   perror ("file ?");
 	   delete _I_Buffer;
 	   throw (31);
@@ -52,7 +52,7 @@
 	theDescriptor	= new xmlDescriptor (theFile, &ok);
 	if (!ok) {
 	   fprintf (stderr, "%s probably not an xml file\n",
-	                               f. toUtf8 (). data ());
+	                               fileName. c_str ());
 	   delete _I_Buffer;
 	   throw (32);
 	}
@@ -76,7 +76,7 @@
 bool	xml_fileReader::restartReader (int32_t freq) {
 	(void)freq;
 	if (theReader != nullptr)
-	   return;
+	   return true;
 	theReader	= new xml_Reader (theFile,
 	                                  theDescriptor,
 	                                  5000,

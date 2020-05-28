@@ -70,10 +70,10 @@ if(DEFINED WAVFILES)
    set (objectName eti-cmdline-wavfiles)
 endif ()
 
-#if(DEFINED XMLFILES)
-#   set(XMLFILES true)
-#   set (objectName eti-cmdline-xml)
-#endif ()
+if(DEFINED XMLFILES)
+   set(XMLFILES true)
+   set (objectName eti-cmdline-xml)
+endif ()
 
 if(DEFINED RTL_TCP)
    set(RTL_TCP true)
@@ -479,6 +479,7 @@ endif ()
 
 	   set ($(objectName)_HDRS
 	        ${${objectName}_HDRS}
+	        ./devices/xml-filereader/rapidxml.hpp
 	        ./devices/xml-filereader/xml-filereader.h
 	        ./devices/xml-filereader/xmlreader.h
 	        ./devices/xml-filereader/element-reader.h

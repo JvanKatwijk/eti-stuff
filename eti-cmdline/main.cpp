@@ -584,6 +584,7 @@ void    printOptions (void) {
 "   -C channel  DAB channel to be used (5A ... 13F resp. LA ... LP)\n"
 "   -O filename write output into a file (instead of stdout)\n"
 "   -R filename (if configured) dump to an *.sdr file\n"
+"   -S          be silent during processing\n"
 "   -h          show options and quit\n"; 
 
 #ifdef	HAVE_WAVFILES

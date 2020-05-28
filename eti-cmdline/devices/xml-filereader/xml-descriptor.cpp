@@ -21,6 +21,9 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 #include	"xml-descriptor.h"
+#include	"rapidxml.hpp"
+
+using namespace rapidxml;
 
 	xmlDescriptor::~xmlDescriptor	() {
 }
@@ -40,9 +43,9 @@ void	xmlDescriptor::printDescriptor	() {
 	   fprintf (stderr, ">>>   %d %d %s %d %s\n",
 	                   blockList. at (i). blockNumber,
 	                   blockList. at (i). nrElements,
-	                   blockList. at (i). typeofUnit. toLatin1 (). data (),
+	                   blockList. at (i). typeofUnit. c_str (),
 	                   blockList. at (i). frequency,
-	                   blockList. at (i). modType. toLatin1 (). data ());
+	                   blockList. at (i). modType. c_str ());
 }
 	
 void	xmlDescriptor::setSamplerate	(int sr) {
@@ -93,8 +96,8 @@ void	xmlDescriptor::add_modtoBlock (int blockno, std::string modType) {
 //	Note that after the object is filled, the
 //	file pointer points to where the contents starts
 	xmlDescriptor::xmlDescriptor (FILE *f, bool *ok) {
-QDomDocument xmlDoc;
-QByteArray xmlText;
+xml_document<> doc;
+uint8_t	theBuffer [10000];
 int	zeroCount = 0;
 //
 //	set default values
@@ -105,6 +108,7 @@ int	zeroCount = 0;
 	byteOrder	= std::string ("MSB");
 	iqOrder		="IQ";
 	uint8_t		theChar;
+	int	index	= 0;
 	while (zeroCount < 500) {
 	   theChar = fgetc (f);
 	   if (theChar == 0)
@@ -112,111 +116,175 @@ int	zeroCount = 0;
 	   else 
 	      zeroCount = 0;
 
-	   xmlText. append (theChar);
+	   theBuffer [index++] = theChar;
 	}
 
-	xmlDoc. setContent (xmlText);
-	QDomElement root        = xmlDoc. documentElement ();
-	QDomNodeList nodes = root. childNodes ();
+	*ok	= false;
+	doc. parse <0>((char *)theBuffer);
 
-	fprintf (stderr, "document has %d topnodes\n", nodes. count ());
-	for (int i = 0; i < nodes. count (); i ++) {
-	   if (nodes. at (i). isComment ()) {
-	      continue;
+	xml_node<> *root_node = doc. first_node ();
+	if (root_node == nullptr) {
+	   fprintf (stderr, "failing to extract valid xml text\n");
+	   return;
+	}
+
+	fprintf (stderr, "rootnode %s\n", root_node -> name ());
+	xml_node<> *node = root_node -> first_node ();
+	while (node != nullptr) {
+	   if (std::string (node -> name ()) == "Recorder") {
+	      for (xml_attribute<>*attr = node -> first_attribute ();
+	           attr;attr = attr -> next_attribute ()) {
+	         if (std::string (attr -> name ()) == "Name")
+	            this -> recorderName = std::string (attr -> value ());
+	         if (std::string (attr -> name ()) == "Version")
+	            this -> recorderVersion = std::string (attr -> value ());
+	      }
 	   }
-	   QDomElement component = nodes. at (i). toElement ();
-	   if (component. tagName () == "Recorder") {
-	      this -> recorderName = component. attribute ("Name", "??");
-	      this -> recorderVersion = component. attribute ("Version", "??");
+
+	   if (std::string (node -> name ()) == "Device") {
+	      for (xml_attribute<>*attr = node -> first_attribute ();
+	           attr;attr = attr -> next_attribute ()) {
+	         if (std::string (attr -> name ()) == "Name")
+	            this -> deviceName = std::string (attr -> value ());
+	         if (std::string (attr -> name ()) == "Model")
+	            this ->  deviceModel = std::string (attr -> value ());
+	      }
 	   }
-	   if (component. tagName () == "Device") {
-	      this -> deviceName = component. attribute ("Name", "unknown");
-	      this ->  deviceModel = component. attribute ("Model", "???");
+
+	   if (std::string (node -> name ()) == "Time") {
+	      for (xml_attribute<>*attr = node -> first_attribute ();
+                   attr;attr = attr -> next_attribute ()) {
+                 if (std::string (attr -> name ()) == "Value")
+                    this -> recordingTime = std::string (attr -> value ());
+	      }
 	   }
-	   if (component. tagName () == "Time") 
-	      this -> recordingTime = component. attribute ("Value", "???");
-	   if (component. tagName () == "Sample") {
-	      QDomNodeList childNodes = component. childNodes ();
-	      for (int k = 0; k < childNodes. count (); k ++) {
-	         QDomElement Child = childNodes. at (k). toElement ();
-	         if (Child. tagName () == "Samplerate") {
-	            std::string SR = Child. attribute ("Value", "2048000");
-	            std::string Hz = Child. attribute ("Unit", "Hz");
-	            int factor = Hz == "Hz" ? 1 :
-	                         (Hz == "KHz") || (Hz == "Khz") ? 1000 :
-	                         1000000;
-	            setSamplerate (SR. toInt () * factor);
+
+	   if (std::string (node -> name ()) == "Sample") {
+	      xml_node<>* subNode = node -> first_node ();
+	      while (subNode != nullptr) {
+	         if (std::string (subNode -> name ()) == "Samplerate") {
+	            std::string SR = "2048000";
+	            std::string Hz = "Hz";
+	            for (xml_attribute<>* attr = node -> first_attribute ();
+	                 attr; attr = attr -> next_attribute ()) {
+	               if (std::string (attr -> name ()) == "Value")
+	                  SR = std::string (attr -> value ());
+	               if (std::string (attr -> name ()) == "Unit") {
+	                  Hz = std::string (attr -> value ());
+	                  int factor = Hz == "Hz" ? 1 :
+	                            (Hz == "KHz") || (Hz == "Khz") ? 1000 :
+	                            1000000;
+	                  setSamplerate (std::stoi (SR) * factor);
+	               }
+	            }
 	         }
-	         if (Child. tagName  () == "Channels") {
-	            std::string Amount = Child. attribute ("Amount", "2");
-	            std::string Bits   = Child. attribute ("Bits", "8");
-	            std::string Container   = Child.
-	                                attribute ("Container", "uint8_t");
-	            std::string Ordering   = Child.
-	                                attribute ("Ordering", "N/A");
-	            setChannels (Amount. toInt (),
-	                         Bits. toInt (),
+
+	         if (std::string (subNode -> name ()) == "Channels") {
+	            std::string Amount	= "2";
+	            std::string Bits	= "16";
+	            std::string Container	= "uint8";
+	            std::string Ordering	= "N/A";
+	            for (xml_attribute<>* attr = subNode -> first_attribute ();
+	                 attr; attr = attr -> next_attribute ()) {
+	               if (std::string (attr -> name ()) == "Amount")
+	                  Amount = std::string (attr -> value ());
+	               if (std::string (attr -> name ()) == "Bits")
+	                  Bits   = std::string (attr -> value ());
+	               if (std::string (attr -> name ()) == "Container")
+	                  Container   = std::string (attr -> value ());
+	               if (std::string (attr -> name ()) == "Ordering")
+	                  Ordering   = std::string (attr -> value ());
+	            }
+	            setChannels (std::stoi (Amount),
+	                         std::stoi (Bits),
 	                         Container,
 	                         Ordering);
-	            QDomNodeList subnodes = Child. childNodes ();
+
+	            xml_node <>* subsubNode = subNode -> first_node ();
 	            int channelOrder = 0;
-	            for (int k = 0; k < subnodes.count (); k ++) {
-	               QDomElement subChild = subnodes. at (k).  toElement ();
-	               if (subChild. tagName () == "Channel") {
-	                  std::string Value = subChild. attribute ("Value", "I");
+	            while (subsubNode != nullptr) {
+	               if (std::string (subsubNode -> name ()) == "Channel") {
+	                  std::string Value = "I/Q";
+	                  xml_attribute <>* attr =
+	                                       subsubNode -> first_attribute ();
+	                  if (std::string (attr -> name ()) == "Value")
+	                     Value = std::string (attr -> value ());
 	                  addChannelOrder (channelOrder, Value);
 	                  channelOrder ++;
 	               }
+	               subsubNode = subsubNode -> next_sibling ();
 	            } 
 	         }
+
+	         subNode = subNode -> next_sibling ();
 	      }
 	   }
-	   if (component. tagName () == "Datablocks") {
-//	      std::string Count = component.attribute ("Count", "3");
+
+	   if (std::string (node -> name ()) == "Datablocks") {
 	      this ->  nrBlocks = 0;
 	      int currBlock	= 0;
-	      QDomNodeList nodes = component. childNodes ();
-	      for (int j = 0; j < nodes. count (); j ++) {
-	         if (nodes. at (j). isComment ()) {
-	            continue;
-	         }
+	      xml_node<>* subNode = node -> first_node ();
+	      while (subNode != nullptr) {
+	         if (std::string (subNode -> name ()) == "Datablock") {
+	            fprintf (stderr, "Datablock detected\n");
+	            std::string Count	= "100";
+	            std::string Number	= "10";
+	            std::string Unit	= "Channel";
+	            for (xml_attribute<>* attr = subNode -> first_attribute ();
+	                 attr; attr = attr -> next_attribute ()) {
+	               fprintf (stderr, "attribute %s (%s)\n",
+	                          attr -> name (), attr -> value ());
+	               if (std::string (attr -> name ()) == "Count")
+	                  Count = std::string (attr -> value ());
+	               if (std::string (attr -> name ()) == "Number")
+	                  Number = std::string (attr -> value ());
+	               if (std::string (attr -> name ()) == "Channel")
+	                  Unit = std::string (attr -> value ());
+	            }
+	            add_dataBlock (currBlock, std::stoi (Count),
+	                                      std::stoi (Number), Unit);
 
-	         QDomElement Child = nodes. at (j). toElement ();
-	         if (Child. tagName () == "Datablock") {
-	            fprintf (stderr, "weer een block\n");
-	            int Count = (Child. attribute ("Count", "100")). toInt ();
-	            int Number = (Child. attribute ("Number", "10")). toInt ();
-	            std::string Unit = Child.  attribute ("Channel", "Channel");
-	            add_dataBlock (currBlock, Count, Number, Unit);
-	            QDomNodeList nodeList = Child. childNodes ();
-	            for (int k = 0; k < nodeList. count (); k ++) {
-	               if (nodeList. at (k). isComment ()) {
-//	                  fprintf (stderr, "Comment gevonden\n");
-	                  continue;
-	               }
-	               QDomElement subChild = nodeList. at (k). toElement ();
-	               if (subChild. tagName () == "Frequency") {
-	                  std::string Unit = subChild.
-	                                     attribute ("Unit", "Hz");
-	                  int Value = 
-	                      (subChild. attribute ("Value", "200")). toInt ();
+	            xml_node <>* subsubNode = subNode -> first_node ();
+	            while (subsubNode != nullptr) {
+	               if (std::string (subsubNode -> name ()) == "Frequency") {
+	                  std::string Unit = "Hz";
+	                  std::string Value = "200";
+	                  for (xml_attribute<>* attr =
+	                                       subsubNode -> first_attribute ();
+	                       attr; attr = attr -> next_attribute ()) {
+	                     if (std::string (attr -> name ()) == "Unit")
+	                        Unit = std::string (attr -> value ());
+                             if (std::string (attr -> name ()) == "Value")
+	                        Value = std::string (attr -> value ());
+	                  }
 	                  int Frequency =
-	                       Unit == "Hz" ? Value :
-	                       ((Unit == "KHz") | (Unit == "Khz")) ? Value * 1000 :
-	                       Value * 1000000;
-	                     add_freqtoBlock (currBlock, Frequency);
-	                }
-	                if (subChild. tagName () == "Modulation") {
-	                   std::string Value = subChild.
-	                                      attribute ("Value", "DAB");
-	                   add_modtoBlock (currBlock, Value);
-	                 }
+	                       Unit == "Hz" ? std::stoi (Value) :
+	                                  ((Unit == "KHz") | (Unit == "Khz")) ?
+	                                     std::stoi (Value) * 1000 :
+	                                     std::stoi (Value) * 1000000;
+	                  add_freqtoBlock (currBlock, Frequency);
+	               }
+
+	               if (std::string (subsubNode -> name ()) == "Modulation") {
+	                  for (xml_attribute<>* attr =
+	                                  subsubNode -> first_attribute ();
+	                      attr; attr = attr -> next_attribute ()) {
+	                     if (std::string (attr -> name ()) == "Value") {
+	                        std::string Value = 
+	                                     std::string (attr -> value ());
+	                        add_modtoBlock (currBlock, Value);
+	                     }
+                          }
+	               }
+	               subsubNode = subsubNode -> next_sibling ();
 	            }
 	            currBlock ++;
 	         }
+	         subNode = subNode -> next_sibling ();
 	      }
 	      nrBlocks = currBlock;
 	   }
+	   node	= node -> next_sibling ();
 	}
 	*ok	= nrBlocks > 0;
 	printDescriptor ();

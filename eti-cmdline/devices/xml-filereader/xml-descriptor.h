@@ -24,8 +24,8 @@
 #ifndef	__XML_DESCRIPTOR__
 #define	__XML_DESCRIPTOR__
 
-
-#include	<std::string>
+#include	<string>
+#include	<vector>
 #include	<stdint.h>
 #include	<stdio.h>
 

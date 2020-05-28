@@ -35,7 +35,6 @@ class	xml_fileReader;
 class	xmlDescriptor;
 
 class	xml_Reader {
-Q_OBJECT
 public:
 			xml_Reader (FILE		*f,
 	                            xmlDescriptor	*fd,
