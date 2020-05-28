@@ -44,7 +44,7 @@ rtlsdrHandler	*theStick	= (rtlsdrHandler *)ctx;
 	if ((theStick == NULL) || (len != READLEN_DEFAULT))
 	   return;
 
-	(void) theStick -> _I_Buffer -> putDataIntoBuffer (buf, len);
+	(void) theStick -> _I_Buffer. putDataIntoBuffer (buf, len);
 }
 //
 //	for handling the events in libusb, we need a controlthread
@@ -63,7 +63,8 @@ void	controlThread (rtlsdrHandler *theStick) {
 	                              int16_t	ppmOffset,
 	                              int16_t	gain,
 	                              bool	autogain,
-	                              int16_t	deviceIndex) {
+	                              int16_t	deviceIndex):
+	                                   _I_Buffer (4 * 1024 * 1024) {
 int16_t	deviceCount;
 int32_t	r;
 bool	open;
@@ -76,8 +77,6 @@ bool	open;
 
 	inputRate		= 2048000;
 	open			= false;
-	_I_Buffer		= NULL;
-	gains			= NULL;
 	running. store (false);
 //
 //	Ok, from here we have the library functions accessible
@@ -107,24 +106,24 @@ bool	open;
 
 	gainsCount      = rtlsdr_get_tuner_gains (device, NULL);
         fprintf (stderr, "Supported gain values (%d): ", gainsCount);
-        gains           = new int [gainsCount];
-        gainsCount      = rtlsdr_get_tuner_gains (device, gains);
-        for (int i = 0; i < gainsCount; i ++)
-           fprintf (stderr, "%d.%d ", gains [i] / 10, gains [i] % 10);
-        fprintf (stderr, "\n");
+	{  int gains [gainsCount];
+           gainsCount      = rtlsdr_get_tuner_gains (device, gains);
+           for (int i = 0; i < gainsCount; i ++)
+              fprintf (stderr, "%d.%d ", gains [i] / 10, gains [i] % 10);
+           fprintf (stderr, "\n");
 
-        if (ppmOffset != 0)
-           rtlsdr_set_freq_correction (device, ppmOffset);
+	   if (ppmOffset != 0)
+	      rtlsdr_set_freq_correction (device, ppmOffset);
 
-        if (autogain)
-           rtlsdr_set_agc_mode (device, 1);
+	   if (autogain)
+	      rtlsdr_set_agc_mode (device, 1);
 
-        fprintf (stderr, "effective gain: gain %d.%d\n",
+	   effectiveGain	= gains [theGain * gainsCount / 100];
+	   fprintf (stderr, "effective gain: gain %d.%d\n",
 	                             gains [theGain * gainsCount / 100] / 10,
 	                             gains [theGain * gainsCount / 100] % 10);
-        rtlsdr_set_tuner_gain (device, gains [theGain * gainsCount / 100]);
-
-	_I_Buffer	= new RingBuffer<uint8_t>(1024 * 1024);
+	   rtlsdr_set_tuner_gain (device, gains [theGain * gainsCount / 100]);
+	}
 	return;
 
 err:
@@ -141,10 +140,6 @@ err:
 
 	running. store (false);
 	rtlsdr_close (device);
-	if (_I_Buffer != NULL)
-	   delete _I_Buffer;
-	if (gains != NULL)
-	   delete[] gains;
 }
 //
 bool	rtlsdrHandler::restartReader	(int32_t freqency) {
@@ -153,7 +148,7 @@ int32_t	r;
 	if (running. load ())
 	   return true;
 
-	_I_Buffer	-> FlushRingBuffer ();
+	_I_Buffer. FlushRingBuffer ();
 	r = rtlsdr_reset_buffer (device);
 	if (r < 0)
 	   return false;
@@ -162,7 +157,7 @@ int32_t	r;
 	rtlsdr_set_center_freq		(device, frequency);
 
 	workerHandle = std::thread (controlThread, this);
-	rtlsdr_set_tuner_gain (device, gains [theGain * gainsCount / 100]);
+	rtlsdr_set_tuner_gain (device, effectiveGain);
         if (autogain)
            rtlsdr_set_agc_mode (device, 1);
 
@@ -208,7 +203,7 @@ int32_t	rtlsdrHandler::getSamples (std::complex<float> *V, int32_t size) {
 int32_t	amount, i;
 uint8_t	tempBuffer [2 * size];
 //
-	amount = _I_Buffer	-> getDataFromBuffer (tempBuffer, 2 * size);
+	amount = _I_Buffer. getDataFromBuffer (tempBuffer, 2 * size);
 	for (i = 0; i < amount / 2; i ++)
             V [i] = std::complex<float>
                             (convTable [tempBuffer [2 * i]],
@@ -217,11 +212,11 @@ uint8_t	tempBuffer [2 * size];
 }
 
 int32_t	rtlsdrHandler::Samples	(void) {
-	return _I_Buffer	-> GetRingBufferReadAvailable () / 2;
+	return _I_Buffer. GetRingBufferReadAvailable () / 2;
 }
 
 void	rtlsdrHandler::resetBuffer (void) {
-	_I_Buffer -> FlushRingBuffer ();
+	_I_Buffer. FlushRingBuffer ();
 }
 
 int16_t	rtlsdrHandler::bitDepth	(void) {

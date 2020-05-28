@@ -43,10 +43,10 @@ float	denominator	= p -> denominator;
 	   localBuf [i] = std::complex<float>
 	                             (float (xi [i]) / denominator,
 	                              float (xq [i]) / denominator);
-	if (p -> _I_Buffer -> GetRingBufferWriteAvailable () < (int) numSamples)
+	if (p -> _I_Buffer. GetRingBufferWriteAvailable () < (int) numSamples)
 	   fprintf (stderr, "x");
 	else
-	p -> _I_Buffer -> putDataIntoBuffer (localBuf, numSamples);
+	p ->  _I_Buffer. putDataIntoBuffer (localBuf, numSamples);
 	(void)	firstSampleNum;
 	(void)	grChanged;
 	(void)	rfChanged;
@@ -68,7 +68,8 @@ void	myGainChangeCallback (uint32_t	gRdB,
 	                                 int16_t	lnaState,
 	                                 bool		autoGain,
 	                                 uint16_t	deviceIndex,
-	                                 int16_t	antenna) {
+	                                 int16_t	antenna):
+	                                       _I_Buffer (4 * 1024 * 1024) {
 int	err;
 float	ver;
 mir_sdr_DeviceT devDesc [4];
@@ -85,7 +86,6 @@ mir_sdr_DeviceT devDesc [4];
 
 	if ((this -> GRdB < 20) || (this -> GRdB > 59))
 	   this -> GRdB = 30;
-	_I_Buffer	= NULL;
 	err		= mir_sdr_ApiVersion (&ver);
 	if (!err && (ver < 2.13)) {
 	   fprintf (stderr, "sorry, library too old\n");
@@ -122,8 +122,6 @@ mir_sdr_DeviceT devDesc [4];
            denominator  = 2048.0;
         }
 
-	_I_Buffer	= new RingBuffer<std::complex<float>>(8 * 1024 * 1024);
-//
 	mir_sdr_AgcControl (autoGain ?
                          mir_sdr_AGC_100HZ :
                          mir_sdr_AGC_DISABLE, - GRdB, 0, 0, 0, 0, lnaState);
@@ -136,8 +134,6 @@ mir_sdr_DeviceT devDesc [4];
 	stopReader ();
 	if (numofDevs > 0)
 	   mir_sdr_ReleaseDeviceIdx ();
-	if (_I_Buffer != NULL)
-	   delete _I_Buffer;
 }
 bool	sdrplayHandler::restartReader	(int32_t frequency) {
 int	gRdBSystem;
@@ -184,15 +180,15 @@ void	sdrplayHandler::stopReader	(void) {
 //
 //	Note that the sdrPlay returns 12 bit values
 int32_t	sdrplayHandler::getSamples (std::complex<float> *V, int32_t size) { 
-	return _I_Buffer	-> getDataFromBuffer (V, size);
+	return _I_Buffer. getDataFromBuffer (V, size);
 }
 
 int32_t	sdrplayHandler::Samples	(void) {
-	return _I_Buffer	-> GetRingBufferReadAvailable ();
+	return _I_Buffer. GetRingBufferReadAvailable ();
 }
 
 void	sdrplayHandler::resetBuffer	(void) {
-	_I_Buffer	-> FlushRingBuffer ();
+	_I_Buffer. FlushRingBuffer ();
 }
 
 int16_t	sdrplayHandler::bitDepth	(void) {

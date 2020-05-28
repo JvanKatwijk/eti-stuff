@@ -47,18 +47,18 @@ public:
 	int16_t		bitDepth	(void);
 //
 //	These need to be visible for the separate usb handling thread
-	RingBuffer<uint8_t>	*_I_Buffer;
+	RingBuffer<uint8_t>	_I_Buffer;
 	struct rtlsdr_dev	*device;
 private:
 	int32_t		lastFrequency;
 	int16_t		theGain;
+	float		effectiveGain;
 	bool		autogain;
 	int16_t		ppmOffset;
 	uint16_t	deviceIndex;
 	int32_t		inputRate;
 	int32_t		deviceCount;
 	std::thread	workerHandle;
-	int		*gains;
 	int16_t		gainsCount;
 	std::atomic<bool>	running;
 	int		frequency;

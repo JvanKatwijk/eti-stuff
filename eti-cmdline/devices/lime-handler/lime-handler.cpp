@@ -31,7 +31,8 @@ lms_info_str_t limedevices [10];
 
 	limeHandler::limeHandler (int32_t frequency,
 	                          int16_t gain,
-	                          std::string antenna) {
+	                          std::string antenna):
+	                               _I_Buffer (4 * 1024 * 1024) {
 	this	-> frequency	= frequency;
 	this	-> gain		= gain;
 
@@ -111,7 +112,6 @@ lms_info_str_t limedevices [10];
 
 	LMS_Calibrate (theDevice, LMS_CH_RX, 0, 2500000.0, 0);
 	
-	theBuffer	= new RingBuffer<std::complex<float>> (64 * 32768);
 	running. store (false);
 }
 
@@ -120,7 +120,6 @@ lms_info_str_t limedevices [10];
 	usleep (500000);
 	threadHandle. join ();
 	LMS_Close (theDevice);
-	delete theBuffer;
 }
 
 
@@ -158,15 +157,15 @@ void	limeHandler::stopReader		(void) {
 }
 
 int	limeHandler::getSamples		(std::complex<float> *v, int32_t a) {
-	return theBuffer -> getDataFromBuffer (v, a);
+	return _I_Buffer. getDataFromBuffer (v, a);
 }
 
 int	limeHandler::Samples		(void) {
-	return theBuffer -> GetRingBufferReadAvailable ();
+	return _I_Buffer. GetRingBufferReadAvailable ();
 }
 
 void	limeHandler::resetBuffer	(void) {
-	theBuffer	-> FlushRingBuffer ();
+	_I_Buffer. FlushRingBuffer ();
 }
 
 int16_t	limeHandler::bitDepth		(void) {
@@ -184,7 +183,7 @@ int	amountRead	= 0;
 	   res = LMS_RecvStream (&stream, localBuffer,
 	                                     FIFO_SIZE,  &meta, 1000);
 	   if (res > 0) {
-	      theBuffer -> putDataIntoBuffer (localBuffer, res);
+	      _I_Buffer. putDataIntoBuffer (localBuffer, res);
 	      amountRead	+= res;
 	      res	= LMS_GetStreamStatus (&stream, &streamStatus);
 	   }

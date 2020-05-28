@@ -62,7 +62,7 @@ public:
 	int32_t	Samples			(void);
 	void	resetBuffer		(void);
 	int16_t	bitDepth		(void);
-	RingBuffer<std::complex<float>>	*_I_Buffer;
+	RingBuffer<std::complex<float>>	_I_Buffer;
 	float	denominator;
 private:
 

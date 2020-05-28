@@ -52,7 +52,7 @@ private:
 	int16_t			gain;
 	lms_device_t		*theDevice;
 	lms_name_t		antennas [10];
-	RingBuffer<std::complex<float>> *theBuffer;
+	RingBuffer<std::complex<float>> _I_Buffer;
 	lms_stream_meta_t 	meta;
         lms_stream_t		stream;
         void			run		(void);
