@@ -178,56 +178,56 @@ int		lnaGain		= 40;
 int		vgaGain		= 40;
 int		ppmOffset	= 0;
 bool		ampEnable	= false;
-const char	*optionsString	= "P:D:d:M:B:C:O:R:G:g:Ap:";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:g:Ap:";
 #elif	HAVE_LIME
 int16_t		gain		= 70;
 std::string	antenna		= "Auto";
-const char	*optionsString	= "P:D:d:M:B:C:O:R:G:X:";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:X:";
 #elif	HAVE_SDRPLAY	
 int16_t		GRdB		= 30;
 int16_t		lnaState	= 2;
 bool		autoGain	= false;
 int16_t		ppmOffset	= 0;
-const char	*optionsString	= "P:D:d:M:B:C:O:R:G:L:Qp:";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:L:Qp:";
 #elif	HAVE_SDRPLAY_V3	
 int16_t		GRdB		= 30;
 int16_t		lnaState	= 2;
 bool		autoGain	= false;
 int16_t		ppmOffset	= 0;
-const char	*optionsString	= "P:D:d:M:B:C:O:R:G:L:Qp:";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:L:Qp:";
 #elif	HAVE_AIRSPY
 int16_t		deviceGain	= 20;
 bool		autoGain	= false;
 bool		rf_bias		= false;
-const char	*optionsString	= "P:D:d:M:B:C:O:R:G:p:b";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:p:b";
 #elif	HAVE_RTLSDR
 int16_t		deviceGain	= 50;
 bool		autoGain	= false;
 int16_t		ppmOffset	= 0;
 int		deviceIndex	= 0;
-const char	*optionsString	= "P:D:d:M:B:C:O:R:G:Qp:";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:Qp:";
 #elif	HAVE_WAVFILES
 std::string	fileName;
 bool		repeater	= true;
 bool		continue_on_eof	= false;
-const char	*optionsString	= "P:D:d:M:B:O:F:r";
+const char	*optionsString	= "ShP:D:d:M:B:O:F:r";
 #elif	HAVE_RAWFILES
 std::string	fileName;
 bool		repeater	= true;
 bool		continue_on_eof	= false;
-const char	*optionsString	= "P:D:d:M:B:O:F:r";
+const char	*optionsString	= "ShP:D:d:M:B:O:F:r";
 #elif	HAVE_XML_FILES
 std::string	fileName;
 bool		repeater	= true;
 bool		continue_on_eof	= false;
-const char	*optionsString	= "P:D:d:M:B:O:F:r";
+const char	*optionsString	= "ShP:D:d:M:B:O:F:r";
 #elif	HAVE_RTL_TCP
 int		deviceGain	= 50;
 bool		autoGain	= false;
 int		ppmOffset	= 0;
 std::string	hostname = "127.0.0.1";		// default
 int32_t		basePort = 1234;		// default
-const char	*optionsString	= "P:D:d:M:B:C:O:R:G:Qp:H:I";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:Qp:H:I";
 #endif
 #ifdef	HAVE_DUMPING
 SNDFILE		*dumpFile	= nullptr;

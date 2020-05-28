@@ -109,6 +109,8 @@ For use with one of the physical devices, one may set the following parameters
 6. `-C channel`,  for selecting the channel to be set, e.g. 11C, default 11C
    is chosen
 
+7. `-S', for silent processing, normally, while processing the program
+shows some counting
 
 For device specific settings: run ./eti-cmdline -h
 
