@@ -23,7 +23,7 @@ from a selected DAB input channel. The program is fully command line driven.
 The supported input devices are:
 
 1. Dabsticks (rtlsdr) that are supported by the osmocom driver software
-2. SDRplay devices (RSP1 and RSP2)
+2. SDRplay devices (separate entries for use with the 2.13 or the 3.06 library)
 3. AIRSpy devices
 4. HACKrf devices
 5. Lime  devices
@@ -56,6 +56,14 @@ The "normal" way for configuring and installing is
 where XXX refers to the input device being supported, one of 
 (RTLSDR, SDRPLAY, SDRPLAY_V3, AIRSPY, HACKRF, RAWFILES, WAVFILES)
 
+Note:
+the SDRplay devices RSP 1, RSP II, RSP 1A, and RSP Duo are supported
+by both the 2.13 library and the 3.06 library.
+The RSP-Dx is only supported by the 3.06 library
+
+Use -DSDRPLAY=ON for installing the support software linking to the 2.13 lib
+Use -DSDRPLAY_V3=ON for installing the 3.06 support
+
 If `-DDUMPING=ON` is added, the possibility for dumping the input to an ".sdr" 
 file (note that an sdr-file is a ".wav" file, with a samplerate of 2048000 
 and short int values).
@@ -69,10 +77,6 @@ The resulting program is named `eti-cmdline-XXX`, for XXX see above.
 
 The command `(sudo) make install` will install the created executable in 
 `/usr/local/bin` unless specified differently (note that it requires root permissions)
-
-Note that since ALL subchannels have to be processed,
-running  the program on an RPI 2 or RPI 3 does not work properly
-(buffer overloads).
 
 --------------------------------------------------------------------------
 ## Command line parameters

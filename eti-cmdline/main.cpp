@@ -125,43 +125,40 @@ void	programnameHandler (std::string name, int SId, void *ctx) {
 	fprintf (stderr, "program\t (%2d)\t %s\t %X is in the list\n",
 	                               programCounter ++, name. c_str (), SId);
 	mainLocker. unlock ();
-	}
-	//
-	//	the function ensembleHandler is called when the name of the
-	//	ensemble is detected. The function may be called several times
-	//	(all occurrences with the same name)
-	void	ensemblenameHandler (std::string ensemblename, void *ctx) {
-		(void)ctx;
-		if (ensembleRecognized. load ())
-		   return;
-		mainLocker. lock ();
-		ensembleRecognized. store (true);
-		fprintf (stderr, "ensemble %s detected\n", ensemblename. c_str ());
-		theName = ensemblename;
-		mainLocker. unlock ();
-	}
+}
+//
+//	the function ensembleHandler is called when the name of the
+//	ensemble is detected. The function may be called several times
+//	(all occurrences with the same name)
+void	ensemblenameHandler (std::string ensemblename, void *ctx) {
+	(void)ctx;
+	if (ensembleRecognized. load ())
+	   return;
+	mainLocker. lock ();
+	ensembleRecognized. store (true);
+	fprintf (stderr, "ensemble %s detected\n", ensemblename. c_str ());
+	theName = ensemblename;
+	mainLocker. unlock ();
+}
 
-	//
-	//	The function etiwriteHandler is called each time an eti frame
-	//	is completed. Parameters are the frame and the number of bytes
-	static
-	FILE	*etiFile;
-	static
-	int	cnt	= 0;
-	void	etiwriterHandler (uint8_t *buffer, int32_t amount, void *ctx) {
-		(void)ctx;
-		fwrite (buffer, 1, amount, etiFile);
-		if (!isSilent)
-		   fprintf (stderr, "%d\r", ++cnt);
-	}
+//
+//	The function etiwriteHandler is called each time an eti frame
+//	is completed. Parameters are the frame and the number of bytes
+static FILE	*etiFile;
+static int	cnt	= 0;
+void	etiwriterHandler (uint8_t *buffer, int32_t amount, void *ctx) {
+	(void)ctx;
+	fwrite (buffer, 1, amount, etiFile);
+	if (!isSilent)
+	   fprintf (stderr, "%d\r", ++cnt);
+}
 
-	void	inputStopped	(void) {
-		run. store (false);
-	}
+void	inputStopped	(void) {
+	run. store (false);
+}
 
-
-	void    printOptions (void);
-	//
+void    printOptions (void);
+//
 int	main (int argc, char **argv) {
 // Default values
 int16_t		timeSyncTime	= 5;
@@ -578,6 +575,7 @@ void    printOptions (void) {
         std::cerr << 
 " general eti-cmdline-xxx options are\n"
 "\n"
+"   -P number	number of parallel threads for handling subchannels"
 "   -D number   time (in seconds) to look for a DAB ensemble\n"
 "   -M mode     Mode to be used "
 "   -B Band     select DAB Band (default: BAND_III, or L_BAND)\n"

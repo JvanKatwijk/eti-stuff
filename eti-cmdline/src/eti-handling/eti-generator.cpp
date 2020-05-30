@@ -76,9 +76,10 @@ static uint16_t const crctab_1021[256] = {
   0x6e17, 0x7e36, 0x4e55, 0x5e74, 0x2e93, 0x3eb2, 0x0ed1, 0x1ef0
 };
 
-static uint16_t calc_crc (unsigned char *data,
-	                  int length,
-	                  uint16_t const *crctab, unsigned int crc) { 
+static
+uint16_t calc_crc (unsigned char *data,
+	           int length,
+	           uint16_t const *crctab, unsigned int crc) { 
 int count;
 unsigned int temp;
 
@@ -99,8 +100,8 @@ bool	fibValid  [16];
 //
 //	For each subchannel we create a
 //	deconvoluter and a descramble table up front
-protection *protTable [64];
-uint8_t	*descrambler [64];
+protection *protTable [64]	= {nullptr};
+uint8_t	*descrambler [64]	= {nullptr};
 //
 //	fibvector contains the processed fics, i.e ready for addition
 //	to the eti frame.
@@ -167,7 +168,16 @@ void	etiGenerator::reset	(void) {
 	   running. store (false);
 	   threadHandle. join ();
 	}
-	running. store (false);
+	for (int i = 0; i < 64; i ++) {
+	   if (descrambler [i] != nullptr)
+	      delete descrambler [i];
+	   if (protTable [i] != nullptr)
+	      delete protTable [i];
+
+	   protTable [i]	= nullptr;
+	   descrambler [i]	= nullptr;
+	}
+
 	amount.  store (0);
 	processing. store (false);
 	expected_block		= 2;
