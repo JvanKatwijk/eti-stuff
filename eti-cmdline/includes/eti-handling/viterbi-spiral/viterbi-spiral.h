@@ -42,12 +42,11 @@ struct v {
 
 class	viterbiSpiral {
 public:
-		viterbiSpiral	(int16_t, bool spiral = false);
+		viterbiSpiral	(int16_t);
 		~viterbiSpiral	(void);
 	void	deconvolve	(int16_t *, uint8_t *);
 private:
 
-	bool		spiral;
 	struct v	vp;
 	COMPUTETYPE Branchtab	[NUMSTATES / 2 * RATE] __attribute__ ((aligned (16)));
 //	int	parityb		(uint8_t);

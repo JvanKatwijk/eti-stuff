@@ -25,7 +25,7 @@
 #include	"protection.h"
 
    protection::protection  (int16_t bitRate, int16_t protLevel):
-                                        viterbiSpiral (24 * bitRate, true),
+                                        viterbiSpiral (24 * bitRate),
 	                                viterbiBlock (24 * bitRate * 4 + 24),
 	                                indexTable   (24 * bitRate * 4 + 24) {
 	this    -> bitRate      = bitRate;

@@ -1,22 +1,23 @@
 #
 /*
- *    Copyright (C) 2013
+ *    Copyright (C) 2020
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
- *    This file is part of the Qt-DAB
- *    Qt-DAB is free software; you can redistribute it and/or modify
+ *    This file is part of the eti-cmdline program
+ *
+ *    eti-cmdline is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    Qt-DAB is distributed in the hope that it will be useful,
+ *    eti-cmdline is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with Qt-DAB; if not, write to the Free Software
+ *    along with et-cmdline; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 #include	<stdio.h>
@@ -122,7 +123,7 @@ int32_t	i;
 //	There are (in mode 1) 3 ofdm blocks, giving 4 FIC blocks
 //	There all have a predefined length. In that case we use the
 //	"fast" (i.e. spiral) code, otherwise we use the generic code
-	viterbiSpiral::viterbiSpiral (int16_t wordlength, bool spiral) {
+	viterbiSpiral::viterbiSpiral (int16_t wordlength) {
 int polys [RATE] = POLYS;
 int16_t	i, state;
 #ifdef	__MINGW32__
@@ -130,8 +131,6 @@ uint32_t	size;
 #endif
 
 	frameBits		= wordlength;
-	this	-> spiral	= wordlength <= 768;
-//	this	-> spiral	= spiral;
 //	partab_init	();
 
 // B I G N O T E	The spiral code uses (wordLength + (K - 1) * sizeof ...
@@ -226,13 +225,13 @@ uint32_t	i;
 	init_viterbi (&vp, 0);
 	for (i = 0; i < (uint16_t)(frameBits + (K - 1)) * RATE; i ++) {
 	   int16_t temp = input [i] + 127;
-	   if (temp < 0) temp = 0;
-	   if (temp > 255) temp = 255;
+//	   if (temp < 0) temp = 0;
+//	   if (temp > 255) temp = 255;
 	   symbols [i] = temp;
 	}
-	if (!spiral)
-	   update_viterbi_blk_GENERIC (&vp, symbols, frameBits + (K - 1));
-	else
+//	if (!spiral)
+//	   update_viterbi_blk_GENERIC (&vp, symbols, frameBits + (K - 1));
+//	else
 	   update_viterbi_blk_SPIRAL (&vp, symbols, frameBits + (K - 1));
 
 	chainback_viterbi (&vp, data, frameBits, 0);

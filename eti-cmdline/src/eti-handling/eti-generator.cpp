@@ -35,6 +35,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#define	__PARALLEL__ 1
 //
 #include	"dab-constants.h"
 #include	"eti-generator.h"
@@ -405,19 +406,25 @@ std::vector<parameter *> theParameters;
               }
 //	we need to save a reference to the parameters
 //	since we have to delete the instance later on
+#ifdef	__PARALLEL__
 	      theParameters. push_back (t);
 	      theLocker. wait ();
 	      theThreads . push_back (std::thread (process_subCh, i, t,
 	                                           protTable [i],
 	                                           descrambler [i],
 	                                           &theLocker));
+#else
+	      process_subCh (i, t, protTable [i], descrambler [i], nullptr);
+#endif
 	   }
 	}
+#ifdef	__PARALLEL__
 	for (std::thread &th : theThreads) {
 	   th. join ();
 	}
 	for (parameter*t: theParameters)
 	   delete t;
+#endif
 	return offset;
 }
 
@@ -444,7 +451,9 @@ int	j, k;
 	      temp = (temp << 1) | (outVector [j * 8 + k] & 01);
 	   p -> output [j] = temp;
 	}
+#ifdef	__PARALLEL__
 	locker -> release ();
+#endif
 }
 
 void	etiGenerator::postProcess (uint8_t *theVector, int32_t offset){

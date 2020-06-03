@@ -161,8 +161,8 @@ int			lna_upperBound;
 	chosenDevice	= nullptr;
 	deviceParams	= nullptr;
 
-	denominator		= 2048.0;		// default
-	nrBits			= 12;		// default
+	denominator	= 2048.0;	// default
+	nrBits		= 12;		// default
 	running.  store (false);
 
 //	try to open the API
@@ -247,8 +247,8 @@ int			lna_upperBound;
 	chParams	-> tunerParams. gain.gRdB	= GRdB;
 	chParams	-> tunerParams. gain.LNAstate	= 3;
 	chParams	-> ctrlParams.agc.enable =
-	          autogain ?  sdrplay_api_AGC_100HZ :
-	                      sdrplay_api_AGC_DISABLE;
+	                        autogain ?  sdrplay_api_AGC_100HZ :
+	                                    sdrplay_api_AGC_DISABLE;
 //	assign callback functions
 	cbFns. StreamACbFn	= StreamACallback;
 	cbFns. StreamBCbFn	= StreamBCallback;

@@ -71,7 +71,9 @@ and short int values).
 If `-DX64_DEFINED' is added, SSE instructions will be used in the viterbi decoding.
 
 If `-DRPI_DEFINED' is added and building takes place on an RPI, an attempt
-is made to use neon insrtructions (problems with the toolchain though)
+is made to use neon insrtructions. Note however that there might
+be problems with the toolchain: different toolchains require different
+flags. See the section in the CMakeLists.txt file
 
 The resulting program is named `eti-cmdline-XXX`, for XXX see above.
 
@@ -134,7 +136,7 @@ You can use dablin or dablin_gtk from https://github.com/Opendigitalradio/dablin
      
 	eti-cmdline-xxx -C 11C -G 80 | dablin_gtk -L
      
-where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay`, `airspy`, `hackrf`, `rawfiles`, `wavfiles`).
+where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay`, `airspy`, `hackrf`, `limesdr', `rawfiles`, `wavfiles`).
 
 -----------------------------------------------------------------------------
 ## Copyright
@@ -142,7 +144,7 @@ where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay
 
 	Copyright (C)  2016, 2017, 2018, 2019, 2020
 	Jan van Katwijk (J.vanKatwijk@gmail.com)
-	Lazy Chair Programming
+	Lazy Chair Computing
 
 The eti-cmdline software is made available under the GPL-2.0.
 All SDR-J software is distributed in the hope that it will be useful,
