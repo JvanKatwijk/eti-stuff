@@ -36,15 +36,14 @@
 //
 	xml_fileReader::xml_fileReader (std::string fileName,
 	                                bool	continue_on_eof,
-	                                inputstopped_t inputStopped) {
+	                                inputstopped_t inputStopped):
+	                                  _I_Buffer (INPUT_FRAMEBUFFERS) {
 	this -> fileName	= fileName;
-	_I_Buffer	= new RingBuffer<std::complex<float>>(INPUT_FRAMEBUFFERSIZE);
 	theFile	= fopen (fileName.c_str (), "rb");
 	if (theFile == nullptr) {
 	   fprintf (stderr, "file %s cannot open\n",
 	                                   fileName. c_str ());
 	   perror ("file ?");
-	   delete _I_Buffer;
 	   throw (31);
 	}
 	
@@ -53,7 +52,6 @@
 	if (!ok) {
 	   fprintf (stderr, "%s probably not an xml file\n",
 	                               fileName. c_str ());
-	   delete _I_Buffer;
 	   throw (32);
 	}
 
@@ -69,7 +67,6 @@
 	if (theFile != nullptr)
 	   fclose (theFile);
 
-	delete _I_Buffer;
 	delete	theDescriptor;
 }
 
@@ -80,7 +77,7 @@ bool	xml_fileReader::restartReader (int32_t freq) {
 	theReader	= new xml_Reader (theFile,
 	                                  theDescriptor,
 	                                  5000,
-	                                  _I_Buffer,
+	                                  &_I_Buffer,
 	                                  continue_on_eof);
 	return true;
 }
@@ -98,15 +95,15 @@ int32_t	xml_fileReader::getSamples	(std::complex<float> *V,
 	if (theFile == nullptr)		// should not happen
 	   return 0;
 
-	while ((int32_t)(_I_Buffer -> GetRingBufferReadAvailable()) < size)
+	while ((int32_t)(_I_Buffer. GetRingBufferReadAvailable()) < size)
 	   usleep (1000);
 
-	return _I_Buffer	-> getDataFromBuffer (V, size);
+	return _I_Buffer. getDataFromBuffer (V, size);
 }
 
 int32_t	xml_fileReader::Samples	() {
 	if (theFile == nullptr)
 	   return 0;
-	return _I_Buffer -> GetRingBufferReadAvailable();
+	return _I_Buffer. GetRingBufferReadAvailable();
 }
 

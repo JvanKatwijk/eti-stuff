@@ -41,6 +41,7 @@ public:
 	bool		restartReader	(int32_t);
 	void		stopReader	(void);
 private:
+	RingBuffer<uint8_t>		_I_Buffer;
 	std::string	fileName;
 	bool		continue_on_eof;
 	inputstopped_t	inputStopped;
@@ -48,7 +49,6 @@ private:
 	std::thread	threadHandle;
 	std::atomic<bool> run;
 	int32_t		readBuffer	(uint8_t *, int32_t);
-	RingBuffer<uint8_t>	*_I_Buffer;
 	int32_t		bufferSize;
 	FILE		*filePointer;
 	bool		ThreadFinished;

@@ -29,6 +29,7 @@ The supported input devices are:
 5. Lime  devices
 6. prerecorded RAW input files (in format u8, \*.raw)
 7. prerecorded wave files (in format s16le, \*.sdr)
+8. prerecorded files in xml format (experimental)
 
 ------------------------------------------------------------------------
 ## Installation
@@ -90,23 +91,24 @@ General parameters are
 
 0. `-P number`, where the number indicates the degree of parallellism in the
 processing of the subchannels
-1. `-D number`, where number indicates the number of seconds used to collect information 
-   on the ensemble. The default value is 10. In 9 out of 10 cases, if there is not an 
-   ensemble detected within 10 seconds, it will never be detected.
+1. `-D number`, where number indicates the number of seconds used
+   to collect information on the ensemble. The default value is 10.
+   In 9 out of 10 cases, if no ensemble is detected within 10 seconds,
+   there is none.
    
    Note that as soon as the software detects a DAB like signal, a message
    is printed (which can arrive as fast as in 1 or 2 seconds).
 2. `-d number`, where number indicates the number of seconds used to wait for
     time synchronization. If time synchronization cannot be achieved within
     the specified time (default 5 seconds) it is pretty unlikely that a
-   DAB signal is in the selected channel.
+    DAB signal is in the selected channel.
 3. `-O filename`, for specifying the file onto which the ETI frames are written,
    "-O -" indicates that the output is to be written to stdout. Note that
    not specifying the "-O" option also causes the output to be written
    to stdout.
 
-4. `-R filename`, for dumping the input to a file as mentioned above. This
-   option only makes sense when dumping is configures.
+4. `-R filename`, for dumping the raw input to a file as mentioned above. This
+   option only makes sense when dumping is configured.
 
 For use with one of the physical devices, one may set the following parameters
 
@@ -116,7 +118,7 @@ For use with one of the physical devices, one may set the following parameters
    is chosen
 
 7. `-S', for silent processing, normally, while processing the program
-shows some counting
+shows a count on the amount of packages written on stderr.
 
 For device specific settings: run ./eti-cmdline -h
 

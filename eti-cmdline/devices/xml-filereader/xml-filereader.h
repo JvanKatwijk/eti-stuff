@@ -46,12 +46,12 @@ public:
 	bool			restartReader	(int32_t);
 	void			stopReader	(void);
 private:
+	RingBuffer<std::complex<float>>	_I_Buffer;
 	bool			continue_on_eof;
 	FILE			*theFile;
 	inputstopped_t		inputStopped;
 	std::atomic<bool>	running;
 	std::string		fileName;
-	RingBuffer<std::complex<float>>	*_I_Buffer;
 	uint32_t		filePointer;
 	xmlDescriptor		*theDescriptor;
 	xml_Reader		*theReader;

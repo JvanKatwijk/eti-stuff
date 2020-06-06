@@ -36,11 +36,10 @@ struct timeval	tv;
 	return ((int64_t)tv. tv_sec * 1000000 + (int64_t)tv. tv_usec);
 }
 
-#define	__BUFFERSIZE	8 * 32768
-
 	wavfileHandler::wavfileHandler (std::string filename,
 	                                bool continue_on_eof,
-	                                inputstopped_t inputStopped) {
+	                                inputstopped_t inputStopped):
+	                                     _I_Buffer (16 * 32768) {
 SF_INFO *sf_info;
 
 	sf_info         = (SF_INFO *)alloca (sizeof (SF_INFO));
@@ -61,7 +60,6 @@ SF_INFO *sf_info;
         }
 	this	-> continue_on_eof	= continue_on_eof;
 	this	-> inputStopped		= inputStopped;
-	_I_Buffer	= new RingBuffer<std::complex<float>>(__BUFFERSIZE);
 	currPos		= 0;
 	eof		= false;
 	run. store (false);
@@ -72,13 +70,13 @@ SF_INFO *sf_info;
 	   run. store (false);
 	   threadHandle. join ();
 	}
-	delete _I_Buffer;
 	sf_close (filePointer);
 }
 
-bool	wavfileHandler::restartReader	(void) {
+bool	wavfileHandler::restartReader	(int32_t freq) {
 	if (run. load ())
 	   return true;
+	(void)freq;
 	run. store (true);
         threadHandle    = std::thread (&wavfileHandler::runRead, this);
 	return true;
@@ -94,19 +92,13 @@ void	wavfileHandler::stopReader	(void) {
 //	size is in I/Q pairs
 int32_t	wavfileHandler::getSamples	(std::complex<float> *V,
 	                                 int32_t size) {
-int32_t	amount;
 	if (filePointer == NULL)
 	   return 0;
-
-	while (_I_Buffer -> GetRingBufferReadAvailable () < size)
-	   usleep (100);
-
-	amount = _I_Buffer	-> getDataFromBuffer (V, size);
-	return amount;
+	return _I_Buffer. getDataFromBuffer (V, size);
 }
 
-int32_t	wavfileHandler::Samples (void) {
-	return _I_Buffer -> GetRingBufferReadAvailable ();
+int32_t	wavfileHandler::Samples () {
+	return _I_Buffer. GetRingBufferReadAvailable ();
 }
 
 void	wavfileHandler::runRead (void) {
@@ -115,16 +107,17 @@ int32_t	bufferSize	= 32768;
 std::complex<float> bi [bufferSize];
 int64_t	period;
 int64_t	nextStop;
+	run. store (true);
 
 	period		= (32768 * 1000) / 2048;	// full IQś read
 	fprintf (stderr, "Period = %ld\n", period);
 	nextStop	= getMyTime ();
 	while (run. load ()) {
 
-	   while (_I_Buffer -> WriteSpace () < bufferSize) {
+	   while (_I_Buffer. WriteSpace () < bufferSize) {
 	      if (!run. load ())
 	         break;
-	      usleep (100);
+	      usleep (1000);
 	   }
 
 	   nextStop += period;
@@ -135,11 +128,11 @@ int64_t	nextStop;
 	      t = bufferSize;
 	   }
 
-	   _I_Buffer -> putDataIntoBuffer (bi, bufferSize);
+	   _I_Buffer. putDataIntoBuffer (bi, bufferSize);
 	   if (nextStop - getMyTime () > 0)
 	      usleep (nextStop - getMyTime ());
 	}
-	fprintf (stderr, "taak voor replay eindigt hier\n");
+	fprintf (stderr, "thread stops\n");
 }
 /*
  *	length is number of uints that we read.

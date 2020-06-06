@@ -30,7 +30,8 @@ const	int	EXTIO_BASE_TYPE_SIZE = sizeof (float);
 
 	airspyHandler::airspyHandler (int frequency,
 	                              int16_t gain,
-	                              bool b, bool rf_bias) {
+	                              bool b, bool rf_bias):
+	                                _I_Buffer (2 * 1024 * 1024) { 
 int	result, i;
 int	distance	= 10000000;
 uint32_t myBuffer [20];
@@ -41,7 +42,6 @@ uint32_t samplerate_count;
 	this	-> rf_bias	= rf_bias;
 	device			= 0;
 	serialNumber		= 0;
-	theBuffer		= NULL;
 #ifdef	__MINGW32__
 	const char *libraryString = "airspy.dll";
 	Handle		= LoadLibrary ((wchar_t *)L"airspy.dll");
@@ -144,16 +144,16 @@ uint32_t samplerate_count;
 	}
 
 	convIndex		= 0;
-	convBuffer		= new DSPCOMPLEX [convBufferSize + 1];
+	convBuffer		= new std::complex<float> [convBufferSize + 1];
 
-	theBuffer		= new RingBuffer<DSPCOMPLEX> (512 *1024);
 	running			= false;
 	my_airspy_set_rf_bias (device, rf_bias ? 1 : 0);
 }
 
 	airspyHandler::~airspyHandler (void) {
 	if (Handle == NULL)
-	   goto err;
+	   goto err;		// should not happen
+
 	if (device) {
 	   int result = my_airspy_stop_rx (device);
 	   if (result != AIRSPY_SUCCESS) {
@@ -176,9 +176,8 @@ uint32_t samplerate_count;
 #else
 	   dlclose (Handle);
 #endif
-err:
-	if (theBuffer != NULL)
-	   delete theBuffer;
+	delete [] convBuffer;
+err:;
 }
 
 bool	airspyHandler::restartReader	(int32_t frequency) {
@@ -188,7 +187,7 @@ int32_t	bufSize	= EXTIO_NS * EXTIO_BASE_TYPE_SIZE * 2;
 	if (running)
 	   return true;
 
-	theBuffer	-> FlushRingBuffer ();
+	_I_Buffer. FlushRingBuffer ();
 	result = my_airspy_set_sample_type (device, AIRSPY_SAMPLE_INT16_IQ);
 //	result = my_airspy_set_sample_type (device, AIRSPY_SAMPLE_FLOAT32_IQ);
 	if (result != AIRSPY_SUCCESS) {
@@ -277,12 +276,13 @@ airspyHandler *p;
 int 	airspyHandler::data_available (void *buf, int buf_size) {	
 int16_t	*sbuf	= (int16_t *)buf;
 int nSamples	= buf_size / (sizeof (int16_t) * 2);
-DSPCOMPLEX temp [2048];
+stdLLcomplex<float> temp [2048];
 int32_t  i, j;
 
 	for (i = 0; i < nSamples; i ++) {
-	   convBuffer [convIndex ++] = DSPCOMPLEX (sbuf [2 * i] / (float)2048,
-	                                           sbuf [2 * i + 1] / (float)2048);
+	   convBuffer [convIndex ++] = 
+	                 std::complex<float> (sbuf [2 * i] / (float)2048,
+	                                      sbuf [2 * i + 1] / (float)2048);
 	   if (convIndex > convBufferSize) {
 	      for (j = 0; j < 2048; j ++) {
 	         int16_t  inpBase	= mapTable_int [j];
@@ -291,7 +291,7 @@ int32_t  i, j;
 	                          cmul (convBuffer [inpBase], 1 - inpRatio);
 	      }
 
-	      theBuffer	-> putDataIntoBuffer (temp, 2048);
+	      _I_Buffer. putDataIntoBuffer (temp, 2048);
 //
 //	shift the sample at the end to the beginning, it is needed
 //	as the starting sample for the next time
@@ -335,20 +335,20 @@ int result = my_airspy_open (&device);
 //	These functions are added for the SDR-J interface
 void	airspyHandler::resetBuffer (void) {
 	fprintf (stderr, "going to reset \n");
-	theBuffer	-> FlushRingBuffer ();
+	_I_Buffer. FlushRingBuffer ();
 }
 
 int16_t	airspyHandler::bitDepth (void) {
 	return 13;
 }
 
-int32_t	airspyHandler::getSamples (DSPCOMPLEX *v, int32_t size) {
+int32_t	airspyHandler::getSamples (std::complex<float> *v, int32_t size) {
 
-	return theBuffer	-> getDataFromBuffer (v, size);
+	return _I_Buffer. getDataFromBuffer (v, size);
 }
 
 int32_t	airspyHandler::Samples	(void) {
-	return theBuffer	-> GetRingBufferReadAvailable ();
+	return _I_Buffer. GetRingBufferReadAvailable ();
 }
 //
 

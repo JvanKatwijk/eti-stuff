@@ -37,10 +37,11 @@ public:
 			wavfileHandler	(std::string, bool, inputstopped_t);
 	       		~wavfileHandler	(void);
 	int32_t		getSamples	(std::complex<float> *, int32_t);
-	int32_t		Samples		(void);
-	bool		restartReader	(void);
-	void		stopReader	(void);
+	int32_t		Samples		();
+	bool		restartReader	(int32_t);
+	void		stopReader	();
 private:
+        RingBuffer<std::complex<float>>	_I_Buffer;
         bool            continue_on_eof;
 	SNDFILE		*filePointer;
 	inputstopped_t	inputStopped;
@@ -48,7 +49,6 @@ private:
         std::thread     threadHandle;
         std::atomic<bool> run;
         int32_t         readBuffer      (std::complex<float> *, int32_t);
-        RingBuffer<std::complex<float>>	*_I_Buffer;
         int32_t         bufferSize;
         bool            readerOK;
         bool            readerPausing;

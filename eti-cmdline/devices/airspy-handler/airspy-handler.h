@@ -80,13 +80,14 @@ public:
 			~airspyHandler		(void);
 	bool		restartReader		(int32_t);
 	void		stopReader		(void);
-	int32_t		getSamples		(DSPCOMPLEX *v, int32_t size);
+	int32_t		getSamples		(std::complex<float> *v, int32_t size);
 	int32_t		Samples			(void);
 	void		resetBuffer		(void);
 	int16_t		bitDepth		(void);
 	void		setGain			(int);
 
 private:
+	RingBuffer<std::complex<float>> 	_I_Buffer;
 	bool		load_airspyFunctions	(void);
 //	The functions to be extracted from the dll/.so file
 	pfn_airspy_init		   my_airspy_init;
@@ -123,12 +124,11 @@ const	char*		board_id_name (void);
 	int		frequency;
 	bool		rf_bias;
 	int32_t		selectedRate;
-	DSPCOMPLEX	*convBuffer;
+	std::complex<float>	*convBuffer;
 	int16_t		convBufferSize;
 	int16_t		convIndex;
 	int16_t		mapTable_int   [4 * 512];
 	float		mapTable_float [4 * 512];
-	RingBuffer<DSPCOMPLEX> *theBuffer;
 	int32_t		inputRate;
 	struct airspy_device* device;
 	uint64_t 	serialNumber;

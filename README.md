@@ -2,14 +2,12 @@
 
 "eti-stuff" is an attempt to understand the eti structure as defined in ETS 300 799.
 
-[eti-backend](#eti-backend) is based on [Qt-DAB](https://github.com/JvanKatwijk/qt-dab), with code included from [dabtools](https://github.com/Opendigitalradio/dabtools) to actually decode the eti frames.
-
 [eti-cmdline](#eti-cmdline) is based on the dab-cmdline software  with code
 included from [dabtools](https://github.com/Opendigitalradio/dabtools) to actually decode the eti frames.
 It is - as the name suggests - a command line version.
 
 When constructing, select the input device of choice in the CMake command
-(current supported are SDRplay, AIRspy, DABsticks, ".sdr" and ".iq" files)
+(currently supported are SDRplay (all RSP's using the 3.06 library, all apart from the RSP-Dx using the 2.13 library), AIRspy, DABsticks, Hackrf and Lime devices,  ".sdr" and ".iq" files)
 
 By piping the output from eti-cmdline into eti-backend, a more or less complete DAB receiver exists.
 
@@ -34,9 +32,8 @@ Or you can use dablin or dablin_gtk from https://github.com/Opendigitalradio/dab
       
       eti-cmdline-xxx -C 11C -G 80 | dablin_gtk
       
-where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay`, `airspy`, `rawfiles`, `wavfiles`).
+where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay`, `airspy`, `hackrf', `limesdr', `rawfiles`, `wavfiles`).
       
-
 # Disclaimer
 
 The software is under development and most likely contains errors.

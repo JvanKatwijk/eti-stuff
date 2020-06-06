@@ -5,6 +5,7 @@
  *    Lazy Chair Computing
  *
  *    This file is part of the eti-cmdline program
+ *
  *    eti-cmdline is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
@@ -39,12 +40,11 @@ struct timeval	tv;
 	return ((int64_t)tv. tv_sec * 1000000 + (int64_t)tv. tv_usec);
 }
 
-#define	INPUT_FRAMEBUFFERSIZE	8 * 32768
-//
 //
 	rawfileHandler::rawfileHandler (std::string filename,
 	                                bool  continue_on_eof,
-	                                inputstopped_t inputStopped) {
+	                                inputstopped_t inputStopped):
+	                                   _I_Buffer (16 * 32768) {
 	filePointer	= fopen (filename. c_str (), "rb");
 	if (filePointer == NULL) {
 	   fprintf (stderr, "could not open %s\n", filename. c_str ());
@@ -52,7 +52,6 @@ struct timeval	tv;
 	}
 	this	-> continue_on_eof	= continue_on_eof;
 	this	-> inputStopped		= inputStopped;
-	_I_Buffer	= new RingBuffer<uint8_t>(INPUT_FRAMEBUFFERSIZE);
 	currPos		= 0;
 	eof		= false;
 }
@@ -64,7 +63,6 @@ struct timeval	tv;
 	}
 
 	fclose (filePointer);
-	delete _I_Buffer;
 }
 
 bool	rawfileHandler::restartReader	(int32_t frequency) {
@@ -84,25 +82,25 @@ void	rawfileHandler::stopReader	(void) {
 }
 
 //	size is in I/Q pairs, file contains 8 bits values
-int32_t	rawfileHandler::getSamples	(DSPCOMPLEX *V, int32_t size) {
+int32_t	rawfileHandler::getSamples	(std::complex<float> *V, int32_t size) {
 int32_t	amount, i;
 uint8_t	*temp = (uint8_t *)alloca (2 * size * sizeof (uint8_t));
 
 	if (filePointer == NULL)
 	   return 0;
 
-	while ((int32_t)(_I_Buffer -> GetRingBufferReadAvailable ()) < 2 * size)
+	while ((int32_t)(_I_Buffer. GetRingBufferReadAvailable ()) < 2 * size)
 	   usleep (1000);
 
-	amount = _I_Buffer	-> getDataFromBuffer (temp, 2 * size);
+	amount = _I_Buffer. getDataFromBuffer (temp, 2 * size);
 	for (i = 0; i < amount / 2; i ++)
-	   V [i] = DSPCOMPLEX (float (temp [2 * i] - 128) / 128.0,
-	                       float (temp [2 * i + 1] - 128) / 128.0);
+	   V [i] = std::complex<float> (float (temp [2 * i] - 128) / 128.0,
+	                                float (temp [2 * i + 1] - 128) / 128.0);
 	return amount / 2;
 }
 
 int32_t	rawfileHandler::Samples (void) {
-	return _I_Buffer -> GetRingBufferReadAvailable () / 2;
+	return _I_Buffer. GetRingBufferReadAvailable () / 2;
 }
 
 void	rawfileHandler::runRead (void) {
@@ -120,7 +118,7 @@ int64_t	nextStop;
 	nextStop	= getMyTime ();
 	while (run. load ()) {
 
-	   while (_I_Buffer -> WriteSpace () < bufferSize + 10) {
+	   while (_I_Buffer. WriteSpace () < bufferSize + 10) {
 	      if (!run. load ())
 	         break;
 	      usleep (100);
@@ -133,7 +131,7 @@ int64_t	nextStop;
 	          bi [i] = 0;
 	      t = bufferSize;
 	   }
-	   _I_Buffer -> putDataIntoBuffer (bi, t);
+	   _I_Buffer. putDataIntoBuffer (bi, t);
 	   if (nextStop - getMyTime () > 0)
 	      usleep (nextStop - getMyTime ());
 	}

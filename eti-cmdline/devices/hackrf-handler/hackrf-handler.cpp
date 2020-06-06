@@ -28,7 +28,8 @@
 	                               int16_t	ppm,
 	                               int16_t	lnaGain,
 	                               int16_t	vgaGain,
-	                               bool	ampEnable) {
+	                               bool	ampEnable):
+	                                 _I_Buffer (2 * 1024 * 1024) {
 int	res;
 
 	vfoFrequency		= frequency;
@@ -37,7 +38,6 @@ int	res;
 	this	-> vgaGain	= vgaGain;
 	this	-> ampEnable	= ampEnable;
 	this	-> inputRate	= 2048000;
-	_I_Buffer	= new RingBuffer<std::complex<float>>(1024 * 1024);
 //
 	res	= hackrf_init ();
 	if (res != HACKRF_SUCCESS) {
@@ -96,8 +96,6 @@ int	res;
 
 	hackrfHandler::~hackrfHandler	(void) {
 	stopReader ();
-	if (_I_Buffer != nullptr)
-	   delete _I_Buffer;
 	hackrf_close (theDevice);
 	hackrf_exit ();
 }
@@ -136,7 +134,7 @@ int	callback (hackrf_transfer *transfer) {
 hackrfHandler *ctx = static_cast <hackrfHandler *>(transfer -> rx_ctx);
 int	i;
 uint8_t *p	= transfer -> buffer;
-RingBuffer<std::complex<float> > * q = ctx -> _I_Buffer;
+RingBuffer<std::complex<float> > * q = &(ctx -> _I_Buffer);
 
 	for (i = 0; i < transfer -> valid_length / 2; i ++) {
 	   float re	= (((int8_t *)p) [2 * i]) / 128.0;
@@ -197,15 +195,15 @@ int	res;
 //	The brave old getSamples. For the hackrf, we get
 //	size still in I/Q pairs
 int32_t	hackrfHandler::getSamples (std::complex<float> *V, int32_t size) { 
-	return _I_Buffer	-> getDataFromBuffer (V, size);
+	return _I_Buffer. getDataFromBuffer (V, size);
 }
 
 int32_t	hackrfHandler::Samples	(void) {
-	return _I_Buffer	-> GetRingBufferReadAvailable ();
+	return _I_Buffer. GetRingBufferReadAvailable ();
 }
 
 void	hackrfHandler::resetBuffer	(void) {
-	_I_Buffer	-> FlushRingBuffer ();
+	_I_Buffer. FlushRingBuffer ();
 }
 
 int16_t	hackrfHandler::bitDepth	(void) {
