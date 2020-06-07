@@ -1,4 +1,29 @@
 cmake_minimum_required( VERSION 2.8.11 )
+######################################################################
+#       R E A D T H I S
+#####################################################################
+
+# options can be set from cmake command line, e.g. like this:
+#   cmake ../eti-cmdline -DAIRSPY=ON -DX64_DEFINED=ON
+# alternatives are to use cmake-gui  or  ccmake (for console)
+
+OPTION(AIRSPY      "Input: AirSpy"      OFF)
+OPTION(SDRPLAY     "Input: SDRPlay"     OFF)
+OPTION(SDRPLAY_V3  "Input: SDRPlay V3"  OFF)
+OPTION(RTLSDR      "Input: RTLSDR"      OFF)
+OPTION(HACKRF      "Input: HACKRF"      OFF)
+OPTION(LIMESDR     "Input: LimeSDR"     OFF)
+OPTION(RAWFILES    "Input: RAWFILES"    OFF)
+OPTION(WAVFILES    "Input: WAVFILES"    OFF)
+OPTION(XMLFILES    "Input: XMLFILES"    OFF)
+OPTION(RTL_TCP     "Input: RTL_TCP"     OFF)
+
+OPTION(DUMPING     "Dump to Wave File?"    OFF)
+OPTION(X64_DEFINED "optimize for x64/SSE"  OFF)
+OPTION(RPI_DEFINED "optimize for ARM/NEON" OFF)
+
+#######################################################################
+
 set (objectName eti_cmdline)
 #set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -Wall -std=c++11 -flto -ffast-math")
 #set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flto -ffast-math")
@@ -26,71 +51,74 @@ set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "")
 ### make sure our local CMake Modules path comes first
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
-######################################################################
-#       R E A D T H I S
-#####################################################################
+set(INPUTS)
 
-if(DEFINED AIRSPY)
-   set(AIRSPY true)
-   set (objectName eti-cmdline-airspy)
+if(AIRSPY)
+	set (objectName eti-cmdline-airspy)
+	list (APPEND INPUTS "AIRSPY")
 endif ()
 
-if(DEFINED SDRPLAY)
-   set(SDRPLAY true)
-   set (objectName eti-cmdline-sdrplay)
+if(SDRPLAY)
+	set (objectName eti-cmdline-sdrplay)
+	list (APPEND INPUTS "SDRPLAY")
 endif ()
 
-if(DEFINED SDRPLAY_V3)
-   set(SDRPLAY_V3 true)
-   set (objectName eti-cmdline-sdrplay)
+if(SDRPLAY_V3)
+	set (objectName eti-cmdline-sdrplay)
+	list (APPEND INPUTS "SDRPLAY_V3")
 endif ()
 
-if(DEFINED RTLSDR)
-   set(RTLSDR true)
-   set (objectName eti-cmdline-rtlsdr)
+if(RTLSDR)
+	set (objectName eti-cmdline-rtlsdr)
+	list (APPEND INPUTS "RTLSDR")
 endif ()
 
-if(DEFINED HACKRF)
-   set(HACKRF true)
-   set (objectName eti-cmdline-hackrf)
+if(HACKRF)
+	set (objectName eti-cmdline-hackrf)
+	list (APPEND INPUTS "HACKRF")
 endif ()
 
-if(DEFINED LIMESDR)
-   set(LIMESDR true)
-   set (objectName eti-cmdline-limesdr)
+if(LIMESDR)
+	set (objectName eti-cmdline-limesdr)
+	list (APPEND INPUTS "LIMESDR")
 endif ()
 
-if(DEFINED RAWFILES)
-   set(RAWFILES true)
-   set (objectName eti-cmdline-rawfiles)
+if(RAWFILES)
+	set (objectName eti-cmdline-rawfiles)
+	list (APPEND INPUTS "RAWFILES")
 endif ()
 
-if(DEFINED WAVFILES)
-   set(WAVFILES true)
-   set (objectName eti-cmdline-wavfiles)
+if(WAVFILES)
+	set (objectName eti-cmdline-wavfiles)
+	list (APPEND INPUTS "WAVFILES")
 endif ()
 
-if(DEFINED XMLFILES)
-   set(XMLFILES true)
-   set (objectName eti-cmdline-xml)
+if(XMLFILES)
+	set (objectName eti-cmdline-xml)
+	list (APPEND INPUTS "XMLFILES")
 endif ()
 
-if(DEFINED RTL_TCP)
-   set(RTL_TCP true)
-   set (objectName eti-cmdline-rtl_tcp)
+if(RTL_TCP)
+	set (objectName eti-cmdline-rtl_tcp)
+	list (APPEND INPUTS "RTL_TCP")
 endif ()
 
-if(DEFINED DUMPING)
-   set(DUMPING true)
-endif ()
+list(LENGTH INPUTS NUM_INPUTS)
+message(STATUS "selected input devices:		${INPUTS}")
+message(STATUS "number of selected inputs:	${NUM_INPUTS}")
 
-if(DEFINED X64_DEFINED)
-   set(X64_DEFINED true)
-endif ()
+IF (NUM_INPUTS EQUAL 0)
+	message (FATAL ERROR "please select one input device, e.g. with cmake-gui or ccmake")
+endif()
 
-if(DEFINED RPI_DEFINED)
-   set(RPI_DEFINED true)
-endif ()
+if (NUM_INPUTS GREATER 1)
+	message (FATAL ERROR "please select exactly one input device, e.g. with cmake-gui or ccmake")
+endif()
+
+if (DUMPING)
+	add_definitions (-DHAVE_DUMPING)
+endif()
+
 ########################################################################
 	find_package (PkgConfig)
 
@@ -110,7 +138,6 @@ endif ()
 	   message(FATAL_ERROR "please install libsamplerate")
 	endif ()
 	list(APPEND extraLibs ${LIBSAMPLERATE_LIBRARY})
-	add_definitions (-DHAVE_DUMPING)
 
 	find_library (PTHREADS pthread)
 	if (NOT(PTHREADS))
@@ -124,16 +151,16 @@ endif ()
 #	Here we really start
 
 	include_directories (
-	           ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
-	           .
-	           ./
-	           ./includes
-	           ./includes/ofdm
-	           ./includes/eti-handling
-	           ./includes/eti-handling/viterbi-spiral
-	           ./includes/support
-	           ./devices
-	           /usr/include/
+	     ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
+	    .
+	    ./
+	    ./includes
+	    ./includes/ofdm
+	    ./includes/eti-handling
+	    ./includes/eti-handling/viterbi-spiral
+	    ./includes/support
+	    ./devices
+	    /usr/include/
 	)
 
 	set (${objectName}_HDRS
@@ -205,8 +232,9 @@ endif ()
              ./src/eti-handling/viterbi-spiral/spiral-neon.h
 	   )
    	   add_definitions (-DNEON_AVAILABLE)
-#	   set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4")
-#	   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4")
+	   # compiler options moved below add_executable .. and target specific
+	   #set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4")
+	   #set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4")
 	else (X64_DEFINED)
 	   set (${objectName}_SRCS
                 ${${objectName}_SRCS}

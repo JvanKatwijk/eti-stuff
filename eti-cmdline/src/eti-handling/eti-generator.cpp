@@ -14,7 +14,7 @@
  *	functions are - apart from naming - a verbatim copy. Thanks
  *	for the nice work
  *
- *    Copyright (C) 2016
+ *    Copyright (C) 2016 .. 2020
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
