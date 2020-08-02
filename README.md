@@ -6,8 +6,17 @@
 included from [dabtools](https://github.com/Opendigitalradio/dabtools) to actually decode the eti frames.
 It is - as the name suggests - a command line version.
 
+eti-cmdline now supports a whole range of devices,
+
+ - RTLSDR 2832 based dabsticks,
+ - AIRspy devices,
+ - SDRPlay RSP devices using the 2.13 SDRplay library,
+ - SDRPlay RSP devices using the 3.06/7 SDRplay library,
+ - Adalm Pluto devices,
+ - HACKRF devices,
+ - LIMESDR devices
+
 When constructing, select the input device of choice in the CMake command
-(currently supported are SDRplay (all RSP's using the 3.06 library, all apart from the RSP-Dx using the 2.13 library), AIRspy, DABsticks, Hackrf and Lime devices,  ".sdr" and ".iq" files)
 
 By piping the output from eti-cmdline into eti-backend, a more or less complete DAB receiver exists.
 

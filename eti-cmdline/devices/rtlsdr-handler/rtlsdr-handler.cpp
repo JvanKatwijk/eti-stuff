@@ -112,13 +112,19 @@ bool	open;
               fprintf (stderr, "%d.%d ", gains [i] / 10, gains [i] % 10);
            fprintf (stderr, "\n");
 
-	   if (ppmOffset != 0)
-	      rtlsdr_set_freq_correction (device, ppmOffset);
-
+	   if (ppmOffset != 0) {
+	      r = rtlsdr_set_freq_correction (device, ppmOffset);
+	      if (r == 0) {
+	         r = rtlsdr_get_freq_correction (device);
+	         fprintf (stderr, "Frequency correction set to %d ppm\n", r);
+	      }
+	      else
+	         fprintf (stderr, "Setting frequency correction failed\n");
+	   }
 	   if (autogain)
 	      rtlsdr_set_agc_mode (device, 1);
 
-	   effectiveGain	= gains [theGain * gainsCount / 100];
+	   effectiveGain	= gains [theGain * (gainsCount - 1) / 100];
 	   fprintf (stderr, "effective gain: gain %d.%d\n",
 	                             gains [theGain * gainsCount / 100] / 10,
 	                             gains [theGain * gainsCount / 100] % 10);

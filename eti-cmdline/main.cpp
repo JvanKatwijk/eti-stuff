@@ -50,6 +50,8 @@ using std::endl;
 #include	"airspy-handler.h"
 #elif	HAVE_HACKRF
 #include	"hackrf-handler.h"
+#elif	HAVE_PLUTO
+#include	"pluto-handler.h"
 #elif	HAVE_LIME
 #include	"lime-handler.h"
 #elif	HAVE_RAWFILES
@@ -176,6 +178,10 @@ int		vgaGain		= 40;
 int		ppmOffset	= 0;
 bool		ampEnable	= false;
 const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:g:Ap:";
+#elif	HAVE_PLUTO
+int		plutoGain	= 50;
+bool		pluto_agc	= false;
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:Q";
 #elif	HAVE_LIME
 int16_t		gain		= 70;
 std::string	antenna		= "Auto";
@@ -374,10 +380,27 @@ struct sigaction sigact;
 	         ampEnable	= true;
 	         break;
 
-#elif defined (HAVE_RTLSDR)
-	      case 'G':
-	         deviceGain	= atoi (optarg);
+#elif defined (HAVE_PLUTO)
+	      case 'G':	
+	         plutoGain	= atoi (optarg);
 	         break;
+
+	      case 'Q':
+	         pluto_agc	= true;
+	         break;
+#elif defined (HAVE_RTLSDR)
+	      case 'G': 
+	      {
+	         int deviceGainArg	= atoi (optarg);
+	         if ((deviceGain >= 0) && (deviceGain <= 100))
+	            deviceGain = deviceGainArg;
+	         }
+	         else {
+	           fprintf (stderr, "Invalid gain value, using default %d\n",
+	                                                     deviceGainArg);
+	         }
+	         break;
+	      }
 	      case 'p':
 	         ppmOffset	= atoi (optarg);
 	         break;
@@ -456,6 +479,9 @@ struct sigaction sigact;
 	                                     lnaGain,
 	                                     vgaGain,
 	                                     ampEnable);
+#elif	HAVE_PLUTO
+	   inputDevice	= new plutoHandler (tunedFrequency,
+	                                    plutoGain, pluto_agc);
 #elif	HAVE_AIRSPY
 	   inputDevice	= new airspyHandler (tunedFrequency,
 	                                     deviceGain, autoGain, rf_bias);

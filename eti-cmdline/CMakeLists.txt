@@ -12,6 +12,7 @@ OPTION(SDRPLAY     "Input: SDRPlay"     OFF)
 OPTION(SDRPLAY_V3  "Input: SDRPlay V3"  OFF)
 OPTION(RTLSDR      "Input: RTLSDR"      OFF)
 OPTION(HACKRF      "Input: HACKRF"      OFF)
+OPTION(PLUTO       "Input: PLUTO"       OFF)
 OPTION(LIMESDR     "Input: LimeSDR"     OFF)
 OPTION(RAWFILES    "Input: RAWFILES"    OFF)
 OPTION(WAVFILES    "Input: WAVFILES"    OFF)
@@ -76,6 +77,11 @@ endif ()
 if(HACKRF)
 	set (objectName eti-cmdline-hackrf)
 	list (APPEND INPUTS "HACKRF")
+endif ()
+
+if(PLUTO)
+	set (objectName eti-cmdline-pluto)
+	list (APPEND INPUTS "PLUTO")
 endif ()
 
 if(LIMESDR)
@@ -367,6 +373,32 @@ endif()
 
            add_definitions (-DHAVE_HACKRF)
         endif (HACKRF)
+
+	if (PLUTO)
+           find_library (PLUTOLIB iio)
+           if(NOT(PLUTOLIB))
+              message(FATAL_ERROR "please install libiio")
+           else(NOT(PLUTOLIB))
+              list (APPEND extraLibs ${PLUTOLIB})
+           endif(NOT(PLUTOLIB))
+
+	   include_directories (
+	     ./devices/pluto
+	   )
+
+	   set ($(objectName)_HDRS
+	        ${${objectName}_HDRS}
+	        ./devices/pluto/dabFilter.h
+	        ./devices/pluto/pluto-handler.h
+           )
+
+	   set (${objectName}_SRCS
+	        ${${objectName}_SRCS}
+	        ./devices/pluto/pluto-handler.cpp
+	   )
+
+	 add_definitions (-DHAVE_PLUTO)
+	endif (PLUTO)
 
 	if (LIMESDR)
            find_library (LIMELIB LimeSuite)

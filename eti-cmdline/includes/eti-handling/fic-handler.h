@@ -56,8 +56,6 @@ private:
 	fib_processor	fibProcessor;
 	void		process_ficInput	(int16_t *,
 	                                         int16_t, uint8_t *, bool *);
-	int8_t		*PI_15;
-	int8_t		*PI_16;
 	uint8_t		bitBuffer_out	[768];
 	int16_t		ofdm_input	[2304];
 	bool		punctureTable	[3072 + 24];
@@ -68,7 +66,6 @@ private:
 	int16_t		ficBlocks;
 	int16_t		ficMissed;
 	int16_t		ficRatio;
-	uint16_t	convState;
 	int16_t		ficErrors;
 	int16_t		ficSuccess;
 };

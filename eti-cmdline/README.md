@@ -27,9 +27,10 @@ The supported input devices are:
 3. AIRSpy devices
 4. HACKrf devices
 5. Lime  devices
-6. prerecorded RAW input files (in format u8, \*.raw)
-7. prerecorded wave files (in format s16le, \*.sdr)
-8. prerecorded files in xml format (experimental)
+6. Pluto devices
+7. prerecorded RAW input files (in format u8, \*.raw)
+8. prerecorded wave files (in format s16le, \*.sdr)
+9. prerecorded files in xml format (experimental)
 
 ------------------------------------------------------------------------
 ## Installation
@@ -55,7 +56,7 @@ The "normal" way for configuring and installing is
    	make
 
 where XXX refers to the input device being supported, one of 
-(RTLSDR, SDRPLAY, SDRPLAY_V3, AIRSPY, HACKRF, RAWFILES, WAVFILES)
+(RTLSDR, SDRPLAY, SDRPLAY_V3, AIRSPY, HACKRF, PLUTO, LIMESDR, RAWFILES, WAVFILES)
 
 Note:
 the SDRplay devices RSP 1, RSP II, RSP 1A, and RSP Duo are supported
