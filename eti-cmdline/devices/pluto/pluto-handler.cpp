@@ -22,7 +22,7 @@
 
 #include	"pluto-handler.h"
 #include	<unistd.h>
-#include	"dabFilter.h"
+#include	"ad9361.h"
 
 /* static scratch mem for strings */
 static char tmpstr[64];
@@ -79,7 +79,8 @@ bool value;
 
 	plutoHandler::plutoHandler  (int32_t	frequency,
 	                             int	gainValue,
-	                             bool	agcMode):
+	                             bool	agcMode,
+	                             bool	filter_on):
 	                               _I_Buffer (4 * 1024 * 1024) {
 struct iio_channel *chn = nullptr;
 
@@ -239,17 +240,15 @@ struct iio_channel *chn = nullptr;
         convIndex       = 0;
 
 	int enabled;
-//	go for the filter
-	ad9361_get_trx_fir_enable (phys_dev, &enabled);
-	if (enabled)
-	   ad9361_set_trx_fir_enable (phys_dev, 0);
-	int ret = iio_device_attr_write_raw (phys_dev,
-	                                     "filter_fir_config",
-	                                     dabFilter, strlen (dabFilter));
-	if (ret < 0)
-	   fprintf (stderr, "filter mislukt");
-//	and enable it
-	ad9361_set_trx_fir_enable (phys_dev, 1);
+	int ret = ad9361_set_bb_rate_custom_filter_manual (phys_dev,
+                                                           PLUTO_RATE,
+                                                           1540000 / 2,
+                                                           1.1 * 1540000 / 2,
+                                                           1536000,
+                                                           1536000);
+        if (ret < 0)
+           fprintf (stderr, "creating filter failed");
+
 	running. store (false);
 }
 

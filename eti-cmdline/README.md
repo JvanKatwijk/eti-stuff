@@ -44,6 +44,10 @@ Required libraries - apart from those needed to support the device - are:
 * libsndfile
 * libsamplerate
 
+Note that for use of pluto both "libiio" and "libad9361" need to be
+installed. Note further that older systems (e.g. Ubuntu 16.04) do not
+have the correct implementations of these packages in their repositories
+
 ------------------------------------------------------------------------
 ## Configuring
 ------------------------------------------------------------------------

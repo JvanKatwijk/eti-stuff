@@ -38,7 +38,7 @@ class	plutoHandler: public deviceHandler {
 public:
 			plutoHandler		(int	frequency,
 	                                         int	gain,
-	                                         bool	agc);
+	                                         bool	agc, bool filter_on);
 	    		~plutoHandler		();
 	int32_t		defaultFrequency	();
 	bool		restartReader		(int32_t);

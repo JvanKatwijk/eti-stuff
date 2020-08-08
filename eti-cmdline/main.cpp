@@ -181,7 +181,8 @@ const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:g:Ap:";
 #elif	HAVE_PLUTO
 int		plutoGain	= 50;
 bool		pluto_agc	= false;
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:Q";
+bool		filter_on	= true;
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:QF";
 #elif	HAVE_LIME
 int16_t		gain		= 70;
 std::string	antenna		= "Auto";
@@ -387,6 +388,10 @@ struct sigaction sigact;
 
 	      case 'Q':
 	         pluto_agc	= true;
+	         break;
+
+	      case 'F':
+	         filter_on	= false;
 	         break;
 #elif defined (HAVE_RTLSDR)
 	      case 'G': 
@@ -642,6 +647,11 @@ void    printOptions (void) {
 	std::cerr << 
 "   -G number gain setting \n"
 "   -X string antenna setting\n";
+#elif	HAVE_PLUTO
+	std::cerr <<
+	"-G number gain setting"
+	"-Q audiogain of (default off)"
+	"-F filter off (default on)"
 #elif	HAVE_RTLTCP
 	std::cerr <<
 "    -G number gain setting \n"
