@@ -397,7 +397,7 @@ struct sigaction sigact;
 	      case 'G': 
 	      {
 	         int deviceGainArg	= atoi (optarg);
-	         if ((deviceGain >= 0) && (deviceGain <= 100))
+	         if ((deviceGainArg >= 0) && (deviceGainArg <= 100)) {
 	            deviceGain = deviceGainArg;
 	         }
 	         else {
@@ -412,6 +412,7 @@ struct sigaction sigact;
 	      case 'Q':
 	         autoGain	= true;
 	         break;
+
 #elif	defined (HAVE_AIRSPY)
 	      case 'G':
 	         deviceGain	= atoi (optarg);
