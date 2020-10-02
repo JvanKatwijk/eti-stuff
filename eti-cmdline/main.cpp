@@ -231,7 +231,7 @@ bool		autoGain	= false;
 int		ppmOffset	= 0;
 std::string	hostname = "127.0.0.1";		// default
 int32_t		basePort = 1234;		// default
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:Qp:H:I";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:Qp:H:I:";
 #endif
 #ifdef	HAVE_DUMPING
 SNDFILE		*dumpFile	= nullptr;
@@ -320,7 +320,7 @@ struct sigaction sigact;
 	      case 'I':
 	         basePort	= atoi (optarg);
 	         break;
-#else
+#endif
 	      case 'B':
 	         theBand = std::string (optarg) == std::string ("L_BAND") ?
 	                                     L_BAND : BAND_III;
@@ -393,8 +393,8 @@ struct sigaction sigact;
 	      case 'F':
 	         filter_on	= false;
 	         break;
-#elif defined (HAVE_RTLSDR)
-	      case 'G': 
+#elif defined (HAVE_RTLSDR) || defined (HAVE_RTL_TCP)
+	      case 'G':
 	      {
 	         int deviceGainArg	= atoi (optarg);
 	         if ((deviceGainArg >= 0) && (deviceGainArg <= 100)) {
@@ -431,7 +431,6 @@ struct sigaction sigact;
               case 'X':
                  antenna        = std::string (optarg);
                  break;
-#endif
 #endif
 	      case 'S':
 	         isSilent	= true;
@@ -653,13 +652,13 @@ void    printOptions (void) {
 	"-G number gain setting"
 	"-Q audiogain of (default off)"
 	"-F filter off (default on)"
-#elif	HAVE_RTLTCP
+#elif	HAVE_RTL_TCP
 	std::cerr <<
-"    -G number gain setting \n"
-"    -Q autogain on \n"
-"    -p number ppm correction \n"
-"    -H string hostname \n"
-"    -I number baseport\n";
+"   -G number gain setting \n"
+"   -Q autogain on \n"
+"   -p number ppm correction \n"
+"   -H string hostname \n"
+"   -I number baseport\n";
 #endif
 }
 
