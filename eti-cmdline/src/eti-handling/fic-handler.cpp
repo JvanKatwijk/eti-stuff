@@ -48,20 +48,17 @@ uint8_t PI_X [24] = {
   *	The data is sent through to the fic processor
   */
 		ficHandler::ficHandler (dabParams	*p,
-	                                void		*userData,
-	                                ensemblename_t	ensembleName,
-	                                programname_t	programName,
-	                                fibquality_t	set_fibQuality):
+	                                callbacks	*the_callBacks,
+	                                void		*userData):
 	                                             viterbiSpiral (768),
-	                                             fibProcessor (userData,
-	                                                           ensembleName,
-	                                                           programName) {
+	                                             fibProcessor (the_callBacks,
+	                                                           userData) {
 int16_t	i, j, k;
 int	local	= 0;
 int16_t shiftRegister [9] = {1, 1, 1, 1, 1, 1, 1, 1, 1};
 
+	this	-> set_fibQuality	= the_callBacks -> theFibQuality;
 	this	-> userData		= userData;
-	this	-> set_fibQuality	= set_fibQuality;
 	index				= 0;
 	BitsperBlock			= 2 * p -> get_carriers ();
 	ficBlocks			= 0;

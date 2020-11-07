@@ -87,9 +87,8 @@
 
 class	fib_processor {
 public:
-		fib_processor		(void		*userData,
-	                                 ensemblename_t	ensembleName,
-	                                 programname_t	programName);
+		fib_processor		(callbacks	*,
+	                                 void		*);
 		~fib_processor		(void);
 	void	process_FIB		(uint8_t *, uint16_t);
 

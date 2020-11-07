@@ -76,11 +76,8 @@ class etiGenerator {
 public:
 		etiGenerator	(uint8_t,
 	                         int,
-	                         void	*,
-	                         ensemblename_t,
-	                         programname_t,
-	                         fibquality_t,
-	                         etiwriter_t);
+	                         callbacks	*,
+	                         void		*);
 		~etiGenerator	(void);
 	void	newFrame	(void);
 	void	processBlock	(int16_t *fbits, int16_t blkno);

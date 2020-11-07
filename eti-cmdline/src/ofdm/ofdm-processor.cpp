@@ -53,13 +53,11 @@ int16_t	res	= 1;
 	                                 SNDFILE	*dumpFile,
 #endif
 	                                 uint8_t	dabMode,
-	                                 void		*userData,
-	                                 syncsignal_t	set_syncSignal,
-	                                 snrsignal_t	set_snrSignal,
+	                                 callbacks	*the_callBacks,
 	                                 etiGenerator	*eti,
 	                                 int16_t	threshold_1,
 	                                 int16_t	threshold_2,
-	                                 uint8_t	freqsyncMethod):
+	                                 void		*userData):
 	                                    params (dabMode),
 	                                    myMapper (&params),
 	                                    phaseSynchronizer (&params,
@@ -69,10 +67,9 @@ int32_t	i;
 #ifdef	HAVE_DUMPING
 	this	-> dumpFile		= dumpFile;
 #endif
+	this	-> set_syncSignal	= the_callBacks -> theSyncSignal;
+	this	-> show_snr		= the_callBacks -> theSnrSignal;
 	this	-> userData		= userData;
-	this	-> set_syncSignal	= set_syncSignal;
-	this	-> show_snr		= set_snrSignal;
-	this	-> freqSyncMethod	= freqsyncMethod;
 	this	-> T_null		= params. get_T_null ();
 	this	-> T_s			= params. get_T_s    ();
 	this	-> T_u			= params. get_T_u    ();

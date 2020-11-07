@@ -18,30 +18,14 @@ eti-cmdline now supports a whole range of devices,
 
 When constructing, select the input device of choice in the CMake command
 
-By piping the output from eti-cmdline into eti-backend, a more or less complete DAB receiver exists.
+By piping the output from eti-cmdline into dablib_gtk, a more or less complete DAB receiver exists.
 
-## eti-backend
-
-which is a stripped Qt-DAB version that takes eti-frames as input. A command line option (`-s`) can be used to specify an input file or stdinput. If none is specified, the program will show a widget for selecting an input file.
-   
-The GUI is simple, it will show the name of the ensemble and the names of programs. Selecting a program is as in the Qt-DAB software. 
-
-It will start reading after pressing the start button.
-
-Build eti-backend using the qmake/make commands
-
-
-### Syntax
-
-If you want to emulate a full DAB receiver, then run
-
-      eti-cmdline-xxx -C 11C -G 80 | eti-backend -s -
       
-Or you can use dablin or dablin_gtk from https://github.com/Opendigitalradio/dablin by running
+You can use dablin or dablin_gtk from https://github.com/Opendigitalradio/dablin by running
       
       eti-cmdline-xxx -C 11C -G 80 | dablin_gtk
       
-where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay`, `airspy`, `hackrf', `limesdr', `rawfiles`, `wavfiles`).
+where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay`, `sdrplay-v3', `pluto', `airspy`, `hackrf', `limesdr', `rawfiles`, `wavfiles`).
       
 # Disclaimer
 

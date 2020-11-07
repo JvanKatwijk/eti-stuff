@@ -59,13 +59,11 @@ public:
 	                         SNDFILE       *,
 #endif
 	                         uint8_t,
-	                         void		*,
-	                         syncsignal_t,
-	                         snrsignal_t,
+	                         callbacks	*,
 	                         etiGenerator	*,
 	                         int16_t,
 	                         int16_t,
-	                         uint8_t);
+	                         void		*);
 	virtual ~ofdmProcessor	(void);
 	void	reset			(void);
 	void	stop			(void);
@@ -109,7 +107,6 @@ private:
 	int16_t		fineCorrector;
 	int32_t		coarseCorrector;
 
-	uint8_t		freqSyncMethod;
 	bool		f2Correction;
 	DSPCOMPLEX	*ofdmBuffer;
 	uint32_t	ofdmBufferIndex;

@@ -39,11 +39,9 @@ class	dabParams;
 //class ficHandler:public viterbi {
 class ficHandler:public viterbiSpiral {
 public:
-			ficHandler		(dabParams  *,
-	                                         void	    *,
-	                                         ensemblename_t,
-	                                         programname_t,
-	                                         fibquality_t);
+			ficHandler		(dabParams	*,
+	                                         callbacks	*,
+	                                         void	    *);
 			~ficHandler		(void);
 	void		process_ficBlock	(int16_t *, uint8_t *, bool *);
 	void		clearEnsemble		(void);
@@ -51,8 +49,8 @@ public:
 	void		get_channelInfo		(channel_data *, int);
 	void		get_CIFCount		(int16_t *, int16_t *);
 private:
-	void		*userData;
 	fibquality_t	set_fibQuality;
+	void		*userData;
 	fib_processor	fibProcessor;
 	void		process_ficInput	(int16_t *,
 	                                         int16_t, uint8_t *, bool *);

@@ -35,31 +35,22 @@
 	                         SNDFILE	*dumpFile,
 #endif
 //      The callbacks
-	                         syncsignal_t    syncsignalHandler,
-	                         snrsignal_t     snrsignalHandler,
-	                         ensemblename_t  ensemblenameHandler,
-	                         programname_t   programnameHandler,
-	                         fibquality_t    fibqualityHandler,
-	                         etiwriter_t     etiwriterHandler,
+	                         callbacks	*the_callBacks,
 //
 	                         void		*userData
 	                        ): my_etiGenerator (theMode,
 	                                            nrProcessors,
-	                                            userData,
-	                                            ensemblenameHandler,
-	                                            programnameHandler,
-	                                            fibqualityHandler,
-	                                            etiwriterHandler),
+	                                            the_callBacks,
+	                                            userData),
 	                           my_ofdmProcessor (inputDevice,
 #ifdef	HAVE_DUMPING
 	                                             dumpFile,
 #endif
 	                                             theMode,
-	                                             userData,
-	                                             syncsignalHandler,
-	                                             snrsignalHandler,
+	                                             the_callBacks,
 	                                             &my_etiGenerator,
-	                                             2, 5, 2) {
+	                                             2, 5, 
+	                                             userData) {
 }
 
 	etiClass::~etiClass		(void) {

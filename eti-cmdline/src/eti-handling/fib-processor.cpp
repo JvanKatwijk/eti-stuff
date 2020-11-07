@@ -95,12 +95,11 @@
                                    {416,1,384}};
 
 //
-	fib_processor::fib_processor (void		*userData,
-	                              ensemblename_t	ensembleName,
-	                              programname_t	programName) {
+	fib_processor::fib_processor (callbacks	*the_callBacks,
+	                              void		*userData) {
+	this	-> ensembleName	= the_callBacks -> theEnsemble;
+	this	-> programName	= the_callBacks -> theProgram;
 	this	-> userData	= userData;
-	this	-> ensembleName	= ensembleName;
-	this	-> programName	= programName;
 	memset (dateTime, 0, sizeof (dateTime));
 	dateFlag	= false;
 	selectedService		= -1;

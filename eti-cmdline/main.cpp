@@ -155,12 +155,14 @@ void	etiwriterHandler (uint8_t *buffer, int32_t amount, void *ctx) {
 	   fprintf (stderr, "%d\r", ++cnt);
 }
 
-void	inputStopped	(void) {
+void	inputStoppedHandler	(void) {
 	run. store (false);
 }
 
 void    printOptions (void);
-//
+
+callbacks	the_callBacks;
+
 int	main (int argc, char **argv) {
 // Default values
 int16_t		timeSyncTime	= 5;
@@ -246,7 +248,7 @@ struct sigaction sigact;
 	timesyncSet.		store (false);
 	ensembleRecognized.	store (false);
 	run.			store (false);
-//
+
 //	for file input some command line parameters are meeaningless
 	while ((opt = getopt (argc, argv, optionsString)) != -1) {
 	   switch (opt) {
@@ -446,6 +448,14 @@ struct sigaction sigact;
 	   }
 	}
 
+	the_callBacks. theWriter	= etiwriterHandler;
+	the_callBacks. theEnsemble	= ensemblenameHandler;
+	the_callBacks. theProgram	= programnameHandler;
+	the_callBacks. theSyncSignal	= syncsignalHandler;
+	the_callBacks. theSnrSignal	= snrsignalHandler;
+	the_callBacks. theFibQuality	= fibqualityHandler;
+	the_callBacks. theInputStopped	= inputStoppedHandler;
+
 #if defined(HAVE_RAWFILES) || defined(HAVE_WAVFILES) || defined (HAVE_XML_FILES)
 //	check on name ??
 #else
@@ -495,15 +505,15 @@ struct sigaction sigact;
 #elif	HAVE_RAWFILES
 	   inputDevice	= new rawfileHandler (fileName,
 	                                      continue_on_eof, 
-	                                      inputStopped);
+	                                      inputStoppedHandler);
 #elif	HAVE_WAVFILES
 	   inputDevice	= new wavfileHandler (fileName,
 	                                      continue_on_eof,
-	                                      inputStopped);
+	                                      inputStoppedHandler);
 #elif	HAVE_XML_FILES
 	   inputDevice	= new xml_fileReader (fileName,
 	                                      continue_on_eof,
-	                                      inputStopped);
+	                                      inputStoppedHandler);
 #elif	HAVE_RTL_TCP
 	   inputDevice = new rtl_tcp_client (hostname,
 	                                     basePort,
@@ -534,12 +544,7 @@ struct sigaction sigact;
 #ifdef	HAVE_DUMPING
 	                    dumpFile,
 #endif
-	                    &syncsignalHandler,
-	                    &snrsignalHandler,
-	                    &ensemblenameHandler,
-	                    &programnameHandler,
-	                    &fibqualityHandler,
-	                    &etiwriterHandler,
+	                    &the_callBacks,
 	                    nullptr);
 
 	inputDevice	-> restartReader (tunedFrequency);

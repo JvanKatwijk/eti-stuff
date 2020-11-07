@@ -44,23 +44,6 @@
 //	the etiGenerator class. The latter does the interpretation
 //	and the translation to eti format.
 //
-//	Communication with the "outside" world is through some callbacks
-//	a. the syncsignal_t syncsignalHandler is called (once) to
-//	indicate whether or not the software could time synchronize
-//	in which case it is assumed there is a DAB signal
-//	b. the snrsignal_t snrsignalHandler  is called app once a second
-//	it tells a rought SNR.
-//	c. the ensemblename_t ensembleHandler is called whenever the
-//	name of an ensemble is detected. The general idea is that when
-//	such a name is detected, the frequency synchronization is OK
-//	and the process of update frequency synchronization can be stopped.
-//	The function migh be called several times.
-//	d. the programname_t programNameHandler is called whenever the
-//	name of a program in the ensemble is detected.
-//	e. the fibquality_t fibqualityHandler tells the percentage of
-//	fib blocks that successfully passed the crc test.
-//	the etiwriter_t	etiwriterHandler is called whever the eti processing
-//	is on, it just hands over the eti frames. The current setup is unbuffered.
 
 class	etiClass {
 public:
@@ -73,12 +56,7 @@ public:
 	                                SNDFILE		*dumpFile,
 #endif
 //	The callbacks
-		  			syncsignal_t	syncsignalHandler,
-	          	                snrsignal_t	snrsignalHandler,
-		  	                ensemblename_t	ensembleHandler,
-	          	                programname_t	programNameHandler,
-	          	                fibquality_t	fibqualityHandler,
-	          	                etiwriter_t	etiwriterHandler,
+	                                callbacks	*the_callBacks,
 //	context or other user data
 	                                void		*userData
 	         	               );

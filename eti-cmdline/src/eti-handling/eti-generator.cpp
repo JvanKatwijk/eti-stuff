@@ -117,20 +117,15 @@ uint8_t	*descrambler [64]	= {nullptr};
 //
 		etiGenerator::etiGenerator	(uint8_t	dabMode,
 	                                         int		nrProcs,
-	                                         void		*userData,
-	                                         ensemblename_t ensembleName,
-	                                         programname_t	programName,
-	                                         fibquality_t	set_fibQuality,
-	                                         etiwriter_t	etiWriter):
+	                                         callbacks	*the_callBacks,
+	                                         void		*userData) :
 	                                            theLocker (nrProcs),
 	                                            params (dabMode),
 	                                            my_ficHandler (&params,
-	                                                           userData,
-	                                                           ensembleName,
-	                                                           programName,
-	                                                           set_fibQuality) {
+	                                                           the_callBacks,
+	                                                           userData) {
+	this	-> etiWriter	= the_callBacks -> theWriter;
 	this	-> userData	= userData;
-	this	-> etiWriter	= etiWriter;
 	
 	fibInput		.resize (3 * 2 * params. get_carriers ());
 	dataBuffer		= new RingBuffer<bufferElement> (512);
