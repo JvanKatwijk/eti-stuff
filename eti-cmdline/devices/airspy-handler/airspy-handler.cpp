@@ -276,7 +276,7 @@ airspyHandler *p;
 int 	airspyHandler::data_available (void *buf, int buf_size) {	
 int16_t	*sbuf	= (int16_t *)buf;
 int nSamples	= buf_size / (sizeof (int16_t) * 2);
-stdLLcomplex<float> temp [2048];
+std::complex<float> temp [2048];
 int32_t  i, j;
 
 	for (i = 0; i < nSamples; i ++) {
