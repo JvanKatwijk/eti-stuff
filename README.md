@@ -1,23 +1,32 @@
 # eti-stuff
 
-"eti-stuff" is an attempt to understand the eti structure as defined in ETS 300 799.
+"eti-stuff" is an attempt to understand the eti structure as defined in ETS 300 799 for Digital Audio Broadcasting (DAB and DAB+).
 
 [eti-cmdline](#eti-cmdline) is based on the dab-cmdline software  with code
 included from [dabtools](https://github.com/Opendigitalradio/dabtools) to actually decode the eti frames.
 It is - as the name suggests - a command line version.
 
-eti-cmdline now supports a whole range of devices,
+eti-cmdline now supports a whole range of device (the device is for cmake command, see below):
 
- - RTLSDR 2832 based dabsticks,
- - AIRspy devices,
- - SDRPlay RSP devices using the 2.13 SDRplay library,
- - SDRPlay RSP devices using the 3.06/7 SDRplay library,
- - Adalm Pluto devices,
- - HACKRF devices,
- - LIMESDR devices
+ - RTLSDR: for DABStickes based on Realtek 2832 chipset,
+ - AIRSPY: for Airspy R2 and Airspy mini devices (not for Airspy HF+),
+ - SDRPLAY: for SDRPlay RSP devices using the 2.13 SDRplay library,
+ - SDRPLAY_V3: for SDRPlay RSP devices using the 3.06/7 SDRplay library,
+ - PLUTO: for Adalm Pluto devices,
+ - HACKRF: for HackRF devices,
+ - LIMESDR: for LimeSDR devices
+ - RTL_TCP: for rtl_tcp input (and multiple DABsticks support),
+ - RAWFILES: for 8bit unsigned raw files
+ - WAVFILES: for 16bit wave files
+ - XML_FILES: for uff and xml files, created by Qt-DAB or Qirx
 
-When constructing, select the input device of choice in the CMake command
+When constructing, select the input device of choice in the CMake command, for example
 
+      cmake -DRTLSDR=ON  # for DABSticks
+      cmake -DRAWFILES=ON # for u8 raw files
+      make
+      sudo make install
+     
 By piping the output from eti-cmdline into dablib_gtk, a more or less complete DAB receiver exists.
 
       
@@ -25,7 +34,7 @@ You can use dablin or dablin_gtk from https://github.com/Opendigitalradio/dablin
       
       eti-cmdline-xxx -C 11C -G 80 | dablin_gtk
       
-where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay`, `sdrplay-v3', `pluto', `airspy`, `hackrf', `limesdr', `rawfiles`, `wavfiles`).
+where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay`, `sdrplay-v3`, `pluto`, `airspy`, `hackrf`, `limesdr`, `rawfiles`, `wavfiles`, `xml_files`, `rtl_tcp`).
       
 # Disclaimer
 
