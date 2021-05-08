@@ -611,9 +611,9 @@ void    printOptions (void) {
         std::cerr << 
 " general eti-cmdline-xxx options are\n"
 "\n"
-"   -P number	number of parallel threads for handling subchannels"
+"   -P number	number of parallel threads for handling subchannels\n"
 "   -D number   time (in seconds) to look for a DAB ensemble\n"
-"   -M mode     Mode to be used "
+"   -M mode     Mode to be used \n"
 "   -B Band     select DAB Band (default: BAND_III, or L_BAND)\n"
 "   -C channel  DAB channel to be used (5A ... 13F resp. LA ... LP)\n"
 "   -O filename write output into a file (instead of stdout)\n"
@@ -654,9 +654,9 @@ void    printOptions (void) {
 "   -X string antenna setting\n";
 #elif	HAVE_PLUTO
 	std::cerr <<
-	"-G number gain setting"
-	"-Q audiogain of (default off)"
-	"-F filter off (default on)"
+	"-G number gain setting\n"
+	"-Q audiogain of (default off)\n"
+	"-F filter off (default on)\n"
 #elif	HAVE_RTL_TCP
 	std::cerr <<
 "   -G number gain setting \n"
