@@ -31,6 +31,7 @@ struct dabFrequencies {
 
 static
 struct dabFrequencies bandIII_frequencies [] = {
+{"other",    0},
 {"5A",	174928},
 {"5B",	176640},
 {"5C",	178352},
