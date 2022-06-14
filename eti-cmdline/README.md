@@ -56,7 +56,7 @@ The "normal" way for configuring and installing is
 
    	mkdir build
   	cd build
-   	cmake .. -DXXX=ON  [-DDUMPING=ON] [-DX64_DEFINED|-DRPI_DEFINED]
+   	cmake .. -DXXX=ON  [-DDUMPING=ON] [-DX64_DEFINED=ON|-DRPI_DEFINED=ON]
    	make
 
 where XXX refers to the input device being supported, one of 
@@ -74,9 +74,9 @@ If `-DDUMPING=ON` is added, the possibility for dumping the input to an ".sdr"
 file (note that an sdr-file is a ".wav" file, with a samplerate of 2048000 
 and short int values).
 
-If `-DX64_DEFINED' is added, SSE instructions will be used in the viterbi decoding.
+If `-DX64_DEFINED=ON' is added, SSE instructions will be used in the viterbi decoding.
 
-If `-DRPI_DEFINED' is added and building takes place on an RPI, an attempt
+If `-DRPI_DEFINED=ON' is added and building takes place on an RPI, an attempt
 is made to use neon insrtructions. Note however that there might
 be problems with the toolchain: different toolchains require different
 flags. See the section in the CMakeLists.txt file
