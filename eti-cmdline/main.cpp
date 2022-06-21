@@ -330,6 +330,7 @@ struct sigaction sigact;
 
 	      case 'C':
 	         theChannel	= std::string (optarg);
+			   for (auto & c: theChannel) c = toupper(c);
 	         break;
 
 #if defined (HAVE_SDRPLAY)
