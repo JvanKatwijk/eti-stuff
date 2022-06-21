@@ -144,6 +144,7 @@ void	motHandler::processSegment	(int16_t	transportId,
 	                                 bool		lastFlag) {
 int16_t	i;
 
+	fprintf (stderr, "processing segment %d\n", segmentNumber);
 	motElement *handle = getHandle (transportId);
 	if (handle == NULL) 	// cannot happen
 	  return;

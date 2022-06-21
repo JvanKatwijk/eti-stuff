@@ -99,7 +99,7 @@ struct dabFrequencies Lband_frequencies [] = {
 
 //	find the frequency for a given channel in a given band
 int32_t	bandHandler::Frequency (uint8_t dabBand, std::string Channel) {
-int32_t	tunedFrequency		= 0;
+int32_t	tunedFrequency		= -1;
 struct dabFrequencies	*finger;
 int	i;
 
@@ -114,9 +114,6 @@ int	i;
 	      break;
 	   }
 	}
-
-	if (tunedFrequency == 0)
-	   tunedFrequency = KHz (finger [0]. fKHz);
 
 	return tunedFrequency;
 }

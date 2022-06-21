@@ -226,8 +226,8 @@ int32_t		tmp;
 	      au_start [1] = outVector [3] * 16 + (outVector [4] >> 4);
 	      au_start [2] = (outVector [4] & 0xf) * 256 + outVector [5];
 	      au_start [3] = 110 * (bitRate / 8);
-	      fprintf (stderr, "%d, %d, %d, %d\n",
-	                       au_start [0], au_start [1], au_start [2], au_start [3]);
+//	      fprintf (stderr, "%d, %d, %d, %d\n",
+//	                       au_start [0], au_start [1], au_start [2], au_start [3]);
 	      break;
 	}
 
@@ -237,7 +237,7 @@ int32_t		tmp;
   *	lengthy for conversion to PCM samples
   */
 
-	fprintf (stderr, "num_aus = %d\n", num_aus);
+//	fprintf (stderr, "num_aus = %d\n", num_aus);
 	for (i = 0; i < num_aus; i ++) {
 	   int16_t	aac_frame_length;
 

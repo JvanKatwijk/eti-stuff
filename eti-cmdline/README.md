@@ -23,7 +23,7 @@ from a selected DAB input channel. The program is fully command line driven.
 The supported input devices are:
 
 1. Dabsticks (rtlsdr) that are supported by the osmocom driver software
-2. SDRplay devices (separate entries for use with the 2.13 or the 3.06 library)
+2. SDRplay devices (separate entries for use with the 2.13 or the 3.0x library)
 3. AIRSpy devices
 4. HACKrf devices
 5. Lime  devices
@@ -31,6 +31,8 @@ The supported input devices are:
 7. prerecorded RAW input files (in format u8, \*.raw)
 8. prerecorded wave files (in format s16le, \*.sdr)
 9. prerecorded files in xml format (experimental)
+
+Of course one needs to have the library for device support installed.
 
 ------------------------------------------------------------------------
 ## Installation

@@ -2,6 +2,15 @@
 
 "eti-stuff" is an attempt to understand the eti structure as defined in ETS 300 799 for Digital Audio Broadcasting (DAB and DAB+).
 
+The software consists of 2 programs, eti-cmdline and eti-backend.
+eti-cmdline is a DAB decoder that translates an incoming DAB transmission
+into an ETI sequence.
+eti-backend, merely built to test somethings, reads in
+an ETI sequence and interprets the data, allowing
+selection of a service. If decoding an ETI stream is required, 
+one is advised to use dablin rather than eti-backend.
+
+
 [eti-cmdline](#eti-cmdline) is based on the dab-cmdline software  with code
 included from [dabtools](https://github.com/Opendigitalradio/dabtools) to actually decode the eti frames.
 It is - as the name suggests - a command line version.
@@ -23,7 +32,7 @@ eti-cmdline now supports a whole range of device (the device is for cmake comman
 When constructing, select the input device of choice in the CMake command, for example
 
       cmake -DRTLSDR=ON  # for DABSticks
-      cmake -DRAWFILES=ON # for u8 raw files
+or    cmake -DRAWFILES=ON # for u8 raw files
       make
       sudo make install
      

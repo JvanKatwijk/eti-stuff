@@ -157,6 +157,8 @@ QByteArray data;		// for the local addition
 	   int16_t length	= lengthTable [CI_table [i] >> 5];
 	   if (appType == 1) {
 	      dataGroupLength = ((b [base] & 077) << 8) | b [base - 1];
+	      fprintf (stderr, "Handling appType 1, ");
+	      fprintf (stderr, "dataGroupLength gezet op %d\n", dataGroupLength);
 	      base -= 4;
 	      last_appType = 1;
 	      continue;
@@ -168,6 +170,7 @@ QByteArray data;		// for the local addition
 	      data [j] = b [base - j];
 
 //	Dispatch the appType
+	   fprintf (stderr, "Handling apptype %d\n", appType);
 	   switch (appType) {
 	      default:
 	         return;	// sorry, we do not handle this
@@ -179,6 +182,8 @@ QByteArray data;		// for the local addition
 	         break;
 
 	      case 12:
+	         fprintf (stderr, "appType 12, dataGroupLength %d\n",
+	                                  dataGroupLength);
 	         new_MSC_element (data, dataGroupLength);
 	         break;
 
@@ -289,6 +294,7 @@ void	padHandler::new_MSC_element (QByteArray data, int msc_length) {
 	msc_dataGroupBuffer. clear ();
 	msc_dataGroupBuffer	= data;
 	msc_dataGroupLength	= msc_length;
+	fprintf (stderr, "mscLength %d\n", msc_length);
 	show_motHandling (true);
 }
 
@@ -303,6 +309,9 @@ int16_t	currentLength = msc_dataGroupBuffer. length ();
 	   return;
 
 	msc_dataGroupBuffer. append (data);
+//	fprintf (stderr, "msc_dataGroupBuffer lengt %d, max is %d\n",
+//	         msc_dataGroupBuffer. length (), msc_dataGroupLength);
+	                      
 	if (msc_dataGroupBuffer. length () >= msc_dataGroupLength) {
 	   build_MSC_segment (msc_dataGroupBuffer, msc_dataGroupLength);
 	   msc_dataGroupBuffer. clear ();
@@ -331,11 +340,11 @@ int16_t	size	= mscdataGroup. length ();
 	if ((data [0] & 0x40) != 0) {
 	   bool res	= check_crc_bytes (data, msc_length - 2);
 	   if (!res) {
-//	      fprintf (stderr, "crc failed\n");
+	      fprintf (stderr, "crc failed\n");
 	      return;
 	   }
-//	   else
-//	      fprintf (stderr, "crc success\n");
+	   else
+	      fprintf (stderr, "crc success\n");
 	}
 
 	if ((groupType != 3) && (groupType != 4))
