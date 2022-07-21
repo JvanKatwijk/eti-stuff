@@ -23,9 +23,12 @@
  *	This is an example main program, just to show how the software
  *	is to be used. Feel free to adapt to your needs
  */
-#include	<unistd.h>
-#include	<signal.h>
+#if !(defined(__MINGW32__) || defined(_WIN32))
+#include        <unistd.h>
 #include	<getopt.h>
+#endif
+
+#include	<signal.h>
 #include	<atomic>
 #include        <cstdio>
 #include        <iostream>
@@ -37,6 +40,84 @@
 #include	"sndfile.h"
 #endif
 
+
+#if (defined(__MINGW32__) || defined(_WIN32))
+#include <string.h>
+#include <stdio.h>
+
+int     opterr = 1,             /* if error message should be printed */
+        optind = 1,             /* index into parent argv vector */
+        optopt,                 /* character checked for validity */
+        optreset;               /* reset getopt */
+char    *optarg;                /* argument associated with option */
+
+#define BADCH   (int)'?'
+#define BADARG  (int)':'
+#define EMSG    ""
+
+/*
+ * getopt --
+ *      Parse argc/argv argument vector.
+ */
+int getopt (int nargc, char * const nargv[], const char *ostr) {
+static char *place = EMSG;	/* option letter processing */
+const char *oli; 		/* option letter list index */
+
+	if (optreset || !*place) {              /* update scanning pointer */
+	   optreset = 0;
+	   if (optind >= nargc || *(place = nargv[optind]) != '-') {
+	      place = EMSG;
+	      return (-1);
+	   }
+
+	   if (place[1] && *++place == '-') {      /* found "--" */
+	      ++optind;
+	      place = EMSG;
+	      return (-1);
+	   }
+	}                                       /* option letter okay? */
+
+	if ((optopt = (int)*place++) == (int)':' ||
+	                   !(oli = strchr(ostr, optopt))) {
+/*
+ * if the user didn't specify '-' as an option,
+ * assume it means -1.
+ */
+	   if (optopt == (int)'-')
+	      return (-1);
+	   if (!*place)
+	      ++optind;
+	   if (opterr && *ostr != ':')
+	      (void)printf ("illegal option -- %c\n", optopt);
+	   return (BADCH);
+	}
+
+	if (*++oli != ':') {	// single letter without additionals
+	   optarg = NULL;
+	   if (!*place)
+	      ++optind;
+	}
+	else { 			// optarg is following
+	   if (*place)           /* no white space */
+	      optarg = place;
+	   else
+	   if (nargc <= ++optind) {   /* no arg */
+	      place = EMSG;
+	      if (*ostr == ':')
+	         return (BADARG);
+	      if (opterr)
+	         (void)printf ("option requires an argument -- %c\n", optopt);
+	      return (BADCH);
+	   }
+	   else                      /* white space */
+	      optarg = nargv[optind];
+	   place = EMSG;
+	   ++optind;
+	}
+	return (optopt);                        /* dump back option letter */
+}
+
+#endif
 using std::cerr;
 using std::endl;
 //
@@ -87,10 +168,22 @@ bool	isSilent	= false;
 std::string	theName;
 std::mutex	mainLocker;
 
+#if defined(__MINGW32) || defined( _WIN32)
+BOOL WINAPI
+sighandler (int signum) {
+	if (CTRL_C_EVENT == signum) {
+	   fprintf(stderr, "Signal caught, exiting!\n");
+	   run. store (false);
+	   return TRUE;
+	}
+	return FALSE;
+}
+#else
 static void sighandler (int signum) {
         fprintf (stderr, "\n\nSignal %d caught, terminating!\n", signum);
 	run. store (false);
 }
+#endif
 //
 //
 //	The signal from the ofdmprocessor about believing that there
@@ -174,72 +267,75 @@ uint8_t		theBand		= BAND_III;
 deviceHandler	*inputDevice	= nullptr;
 bandHandler	the_bandHandler;
 int32_t		tunedFrequency	= 220000000;	// just a setting
+int		recordTime	= -1;
 #ifdef	HAVE_HACKRF
 int		lnaGain		= 40;
 int		vgaGain		= 40;
 int		ppmOffset	= 0;
 bool		ampEnable	= false;
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:g:Ap:";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:g:Ap:";
 #elif	HAVE_PLUTO
 int		plutoGain	= 50;
 bool		pluto_agc	= false;
 bool		filter_on	= true;
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:QF";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:QF";
 #elif	HAVE_LIME
 int16_t		gain		= 70;
 std::string	antenna		= "Auto";
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:X:";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:X:";
 #elif	HAVE_SDRPLAY	
 int16_t		GRdB		= 30;
 int16_t		lnaState	= 2;
 bool		autoGain	= false;
 int16_t		ppmOffset	= 0;
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:L:Qp:";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:L:Qp:";
 #elif	HAVE_SDRPLAY_V3	
 int16_t		GRdB		= 30;
 int16_t		lnaState	= 2;
 bool		autoGain	= false;
 int16_t		ppmOffset	= 0;
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:L:Qp:";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:L:Qp:";
 #elif	HAVE_AIRSPY
 int16_t		deviceGain	= 20;
 bool		autoGain	= false;
 bool		rf_bias		= false;
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:p:b";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:p:b";
 #elif	HAVE_RTLSDR
 int16_t		deviceGain	= 50;
 bool		autoGain	= false;
 int16_t		ppmOffset	= 0;
 int		deviceIndex	= 0;
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:Qp:";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:Qp:";
 #elif	HAVE_WAVFILES
 std::string	fileName;
 bool		repeater	= true;
 bool		continue_on_eof	= false;
-const char	*optionsString	= "ShP:D:d:M:B:O:F:r";
+const char	*optionsString	= "ShP:D:d:M:B:O:F:rt:";
 #elif	HAVE_RAWFILES
 std::string	fileName;
 bool		repeater	= true;
 bool		continue_on_eof	= false;
-const char	*optionsString	= "ShP:D:d:M:B:O:F:r";
+const char	*optionsString	= "ShP:D:d:M:B:O:F:rt:";
 #elif	HAVE_XML_FILES
 std::string	fileName;
 bool		repeater	= true;
 bool		continue_on_eof	= false;
-const char	*optionsString	= "ShP:D:d:M:B:O:F:r";
+const char	*optionsString	= "ShP:D:d:M:B:O:F:rt:";
 #elif	HAVE_RTL_TCP
 int		deviceGain	= 50;
 bool		autoGain	= false;
 int		ppmOffset	= 0;
 std::string	hostname = "127.0.0.1";		// default
 int32_t		basePort = 1234;		// default
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:G:Qp:H:I:";
+const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:Qp:H:I:";
 #endif
 #ifdef	HAVE_DUMPING
 SNDFILE		*dumpFile	= nullptr;
 #endif
 int	opt;
+#if !(defined(__MINGW32) || defined(_WIN32))
 struct sigaction sigact;
+#endif
 //
 //	default
 	etiFile		= stdout;
@@ -279,6 +375,10 @@ struct sigaction sigact;
 	         }
 
 	         fprintf (stderr, "outputfile = %s\n", optarg);
+	         break;
+
+		  case 't':
+	         recordTime	= atoi (optarg);
 	         break;
 
 	      case 'R': 
@@ -530,13 +630,16 @@ struct sigaction sigact;
 	}
 //
 //	OK, it seems we have a device
+#if defined( __MINGW32) || defined(_WIN32)
+	SetConsoleCtrlHandler((PHANDLER_ROUTINE)sighandler, TRUE);
+#else
 	sigact.sa_handler = sighandler;
 	sigemptyset(&sigact.sa_mask);
 	sigact.sa_flags = 0;
 	sigaction(SIGINT, &sigact, nullptr);
 //	sigaction(SIGTERM, &sigact, nullptr);
 //	sigaction(SIGQUIT, &sigact, nullptr);
-
+#endif
 //
 //	do_process (channel);
 	etiClass theWorker (theMode,
@@ -584,11 +687,13 @@ struct sigaction sigact;
 	   cerr << "Handling ensemble " << theName. c_str () <<
 	                    "until you quit" << endl;
 	   run. store (true);
-	   while (run. load ()) {
+	   while (run. load () && ((recordTime == -1) || recordTime > 0)) {
 	      if (!isSilent)
 	         fprintf (stderr, "\t\testimated snr: %2d, fibquality %3d\r",
 	                            signalnoise. load (), ficSuccess. load ());
 	      sleep (1);
+	      if (recordTime != -1)
+	         recordTime -= 1;
 	   }
 	}
 
@@ -620,6 +725,7 @@ void    printOptions (void) {
 "   -O filename write output into a file (instead of stdout)\n"
 "   -R filename (if configured) dump to an *.sdr file\n"
 "   -S          be silent during processing\n"
+"   -t          set record time\n"
 "   -h          show options and quit\n"; 
 
 #ifdef	HAVE_WAVFILES

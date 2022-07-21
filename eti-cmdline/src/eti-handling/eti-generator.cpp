@@ -1,4 +1,4 @@
-#
+
 /*
  * ## Copyright
  *
@@ -35,8 +35,9 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#define	__PARALLEL__ 1
+#define	__PARALLEL__ 0
 //
+#include	<iostream>
 #include	"dab-constants.h"
 #include	"eti-generator.h"
 #include	"eep-protection.h"
@@ -426,14 +427,21 @@ std::vector<parameter *> theParameters;
 static void	process_subCh (int nr, parameter *p,
 	                       protection *prot,
 	                       uint8_t *desc, semaphore *locker) {
-uint8_t outVector [24 * p -> bitRate];
+	// ERROR CORRECTION
+	// uint8_t outVector [24 * p -> bitRate];
+	std::unique_ptr<uint8_t[]> outVector{ new uint8_t[24 * p->bitRate] };
+	if (!outVector) {
+		std::cerr << "process_subCh - alloc fail";
+		return;
+	}
+	// END ERROR CORRECTION
 int	j, k;
 
-	memset (outVector, 0, 24 * p -> bitRate);
+	memset (outVector.get(), 0, sizeof(uint8_t) * 24 * p -> bitRate);
 
 	prot -> deconvolve (&p -> input [p -> start_cu * CUSize],
 	                                 p -> size * CUSize,
-	                                 outVector);
+	                                 outVector.get());
 //
 	for (j = 0; j < 24 *p -> bitRate; j ++) {
 	   outVector [j] ^= desc [j];
@@ -446,6 +454,7 @@ int	j, k;
 	      temp = (temp << 1) | (outVector [j * 8 + k] & 01);
 	   p -> output [j] = temp;
 	}
+
 #ifdef	__PARALLEL__
 	locker -> release ();
 #endif

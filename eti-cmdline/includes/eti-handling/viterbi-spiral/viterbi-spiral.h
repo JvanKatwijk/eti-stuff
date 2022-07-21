@@ -1,4 +1,4 @@
-#
+
 #ifndef	__VITERBI_SPIRAL__
 #define	__VITERBI_SPIRAL__
 /*
@@ -16,6 +16,20 @@
 #define COMPUTETYPE uint32_t
 
 //decision_t is a BIT vector
+#if defined(MSVC) || defined(_WIN32)
+//__declspec(align(16))
+typedef union {
+	DECISIONTYPE t[NUMSTATES/DECISIONTYPE_BITSIZE];
+	uint32_t w[NUMSTATES/32];
+	uint16_t s[NUMSTATES/16];
+	uint8_t c[NUMSTATES/8];
+} decision_t;
+
+//__declspec(align(16))
+typedef union {
+	COMPUTETYPE t[NUMSTATES];
+} metric_t;
+#else
 typedef union {
 	DECISIONTYPE t[NUMSTATES/DECISIONTYPE_BITSIZE];
 	uint32_t w[NUMSTATES/32];
@@ -26,15 +40,24 @@ typedef union {
 typedef union {
 	COMPUTETYPE t[NUMSTATES];
 } metric_t __attribute__ ((aligned (16)));
-
+#endif
 /* State info for instance of Viterbi decoder
  */
 
 struct v {
+#if defined(MSVC) || defined(_WIN32)
+	/* path metric buffer 1 */
+	//__declspec(align(16)) 
+		metric_t metrics1;
+	/* path metric buffer 2 */
+	//__declspec(align(16)) 
+		metric_t metrics2;
+#else
 /* path metric buffer 1 */
 	__attribute__ ((aligned (16))) metric_t metrics1;
 /* path metric buffer 2 */
 	__attribute__ ((aligned (16))) metric_t metrics2;
+#endif
 /* Pointers to path metrics, swapped on every bit */
 	metric_t *old_metrics,*new_metrics;
 	decision_t *decisions;   /* decisions */
@@ -48,7 +71,12 @@ public:
 private:
 
 	struct v	vp;
+#if defined(MSVC) || defined(_WIN32)
+	//__declspec(align(16)) 
+		COMPUTETYPE Branchtab[NUMSTATES / 2 * RATE];
+#else
 	COMPUTETYPE Branchtab	[NUMSTATES / 2 * RATE] __attribute__ ((aligned (16)));
+#endif
 //	int	parityb		(uint8_t);
 	int	parity		(int);
 	void	partab_init	(void);

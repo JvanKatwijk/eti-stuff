@@ -32,14 +32,14 @@
 
 class	deviceHandler {
 public:
-			deviceHandler 	(void);
-virtual			~deviceHandler 	(void);
+			deviceHandler 	();
+virtual			~deviceHandler 	();
 virtual		bool	restartReader	(int32_t);
-virtual		void	stopReader	(void);
+virtual		void	stopReader	();
 virtual		int32_t	getSamples	(std::complex<float> *, int32_t);
-virtual		int32_t	Samples		(void);
-virtual		void	resetBuffer	(void);
-virtual		int16_t	bitDepth	(void) { return 10;}
+virtual		int32_t	Samples		();
+virtual		void	resetBuffer	();
+virtual		int16_t	bitDepth	() { return 10;}
 //
 protected:
 		int32_t	lastFrequency;

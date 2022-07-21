@@ -2,6 +2,10 @@
 
 "eti-stuff" is an attempt to understand the eti structure as defined in ETS 300 799 for Digital Audio Broadcasting (DAB and DAB+).
 
+----------------------------------------------------------------------
+New: eti-cmdline can be comoiled using MSVC
+----------------------------------------------------------------------
+
 The software consists of 2 programs, eti-cmdline and eti-backend.
 eti-cmdline is a DAB decoder that translates an incoming DAB transmission
 into an ETI sequence.
@@ -29,7 +33,15 @@ eti-cmdline now supports a whole range of device (the device is for cmake comman
  - WAVFILES: for 16bit wave files
  - XML_FILES: for uff and xml files, created by Qt-DAB or Qirx
 
-When constructing, select the input device of choice in the CMake command, for example
+eti-cmdline now can be compiled for Windows using
+msvc (thanks to Andreas Gorsak). The directory contains a folder
+"nuild-for-msvc" that contains the required files for MSVC to tun.
+The configuration file (eti-cmdline.vcxproj) is configured for SDRplay
+(with the 2.13 library).
+Modify the eti-cmdline.vcxproj for your device.
+
+When building for Linux, you can use CMake to have a makefile generated.
+Select the input device of choice in the CMake command, for example
 
       cmake -DRTLSDR=ON  # for DABSticks
 or    cmake -DRAWFILES=ON # for u8 raw files
@@ -38,7 +50,6 @@ or    cmake -DRAWFILES=ON # for u8 raw files
      
 By piping the output from eti-cmdline into dablib_gtk, a more or less complete DAB receiver exists.
 
-      
 You can use dablin or dablin_gtk from https://github.com/Opendigitalradio/dablin by running
       
       eti-cmdline-xxx -C 11C -G 80 | dablin_gtk

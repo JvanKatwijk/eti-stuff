@@ -37,7 +37,14 @@ void myStreamCallback (int16_t		*xi,
 	               void		*cbContext) {
 int16_t	i;
 sdrplayHandler	*p	= static_cast<sdrplayHandler *> (cbContext);
+
+#if (defined(__MINGW32__) || defined(_WIN32))
+std::complex<float> *localBuf  =
+	                (std::complex<float> *)
+	                   _alloca (numSamples * sizeof (std::complex<float>));
+#else
 std::complex<float> localBuf [numSamples];
+#endif
 float	denominator	= p -> denominator;
 	for (i = 0; i <  (int)numSamples; i ++)
 	   localBuf [i] = std::complex<float>

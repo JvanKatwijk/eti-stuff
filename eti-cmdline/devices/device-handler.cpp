@@ -25,11 +25,11 @@
  */
 #include	"device-handler.h"
 
-	deviceHandler::deviceHandler (void) {
+	deviceHandler::deviceHandler	() {
 	lastFrequency	= 100000;
 }
 
-	deviceHandler::~deviceHandler (void) {
+	deviceHandler::~deviceHandler	() {
 }
 
 bool	deviceHandler::restartReader	(int32_t frequency) {
@@ -37,7 +37,7 @@ bool	deviceHandler::restartReader	(int32_t frequency) {
 	return true;
 }
 
-void	deviceHandler::stopReader	(void) {
+void	deviceHandler::stopReader	() {
 }
 
 int32_t	deviceHandler::getSamples	(DSPCOMPLEX *v, int32_t amount) {
@@ -46,10 +46,10 @@ int32_t	deviceHandler::getSamples	(DSPCOMPLEX *v, int32_t amount) {
 	return 0;
 }
 
-int32_t	deviceHandler::Samples		(void) {
+int32_t	deviceHandler::Samples		() {
 	return 0;
 }
 
-void	deviceHandler::resetBuffer	(void) {
+void	deviceHandler::resetBuffer	() {
 }
 

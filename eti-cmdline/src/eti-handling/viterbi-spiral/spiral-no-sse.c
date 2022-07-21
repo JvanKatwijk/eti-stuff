@@ -20,9 +20,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************/
 #include	"spiral-no-sse.h"
 
-void init_FULL_SPIRAL() {
-}
-
+//void init_FULL_SPIRAL() {
+//}
+//
 void FULL_SPIRAL_no_sse (int amount, unsigned int  *Y, unsigned int  *X, unsigned int  *syms, unsigned int  *dec, unsigned int  *Branchtab) {
 int i3;
     for(i3 = 0; i3 < amount; i3++) {

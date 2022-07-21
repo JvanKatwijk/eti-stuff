@@ -11,8 +11,9 @@ from a selected DAB input channel. The program is fully command line driven.
 --------------------------------------------------------------------
 
 * [Supported Devices](#supported-input-devices)
-* [Installation](#installation)
-* [Configuring](#configuring)
+* [Installation under Windows](#installation-under-windows)
+* [Installation Linux](#installation-Linux)
+* [Configuring CMake](#configuring-CMake)
 * [Command line parameters](#command-line-parameters)
 * [Copyright](#copyright)
 
@@ -33,25 +34,30 @@ The supported input devices are:
 9. prerecorded files in xml format (experimental)
 
 Of course one needs to have the library for device support installed.
+Note that in the current version, no link to fftw libraries is needed,
+the current version uses Kiss_fft.
 
 ------------------------------------------------------------------------
-## Installation
+## Installation under Windows
 ------------------------------------------------------------------------
 
-For compiling and installing the software `cmake` needs to be installed. 
+The directory contains a subdirectory "build-for-msvc" with the required
+configuration files for compilation using MSVC. The configuration file
+"eti-cmdline.vcxproj" is configured for the SDRplay device (using the 2.13
+library). Change to your needs.
 
-Required libraries - apart from those needed to support the device - are:
+------------------------------------------------------------------------
+## Installation Linux
+------------------------------------------------------------------------
 
-* fftw3
-* libsndfile
-* libsamplerate
+For compiling and installing under Linux `cmake` needs to be installed. 
 
 Note that for use of pluto both "libiio" and "libad9361" need to be
 installed. Note further that older systems (e.g. Ubuntu 16.04) do not
 have the correct implementations of these packages in their repositories
 
 ------------------------------------------------------------------------
-## Configuring
+## Configuring CMake
 ------------------------------------------------------------------------
 
 The "normal" way for configuring and installing is 
@@ -66,11 +72,11 @@ where XXX refers to the input device being supported, one of
 
 Note:
 the SDRplay devices RSP 1, RSP II, RSP 1A, and RSP Duo are supported
-by both the 2.13 library and the 3.06 library.
-The RSP-Dx is only supported by the 3.06 library
+by both the 2.13 library and the 3.0x library.
+The RSP-Dx is only supported by the 3.0x library
 
 Use -DSDRPLAY=ON for installing the support software linking to the 2.13 lib
-Use -DSDRPLAY_V3=ON for installing the 3.06 support
+Use -DSDRPLAY_V3=ON for installing the 3.0x support
 
 If `-DDUMPING=ON` is added, the possibility for dumping the input to an ".sdr" 
 file (note that an sdr-file is a ".wav" file, with a samplerate of 2048000 

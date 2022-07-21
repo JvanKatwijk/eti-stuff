@@ -1,4 +1,4 @@
-#
+
 /*
  * ## Copyright
  *
@@ -35,7 +35,7 @@
  *
  * 	eti generator
  */
-#
+
 #ifndef	__ETI_GENERATOR__
 #define	__ETI_GENERATOR__
 #include	<stdio.h>

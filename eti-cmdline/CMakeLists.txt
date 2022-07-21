@@ -165,6 +165,7 @@ endif()
 	    ./includes/eti-handling
 	    ./includes/eti-handling/viterbi-spiral
 	    ./includes/support
+	    ./includes/support/fft
 	    ./devices
 	    /usr/include/
 	)
@@ -187,9 +188,12 @@ endif()
 	     ./includes/eti-handling/protTables.h
 	     ./includes/eti-handling/charsets.h
 	     ./includes/support/ringbuffer.h
-	     ./includes/support/fft.h
 	     ./includes/support/band-handler.h
 	     ./includes/support/dab-params.h
+	     ./includes/support/fft/fft.h
+	     ./includes/support/fft/kiss_fft.h 
+	     ./includes/support/fft/_kiss_fft_guts.h 
+	     ./includes/support/fft/_kiss_fftr.h 
 	     ./devices/device-handler.h
 	)
 
@@ -212,9 +216,11 @@ endif()
 	     ./src/eti-handling/uep-protection.cpp
 	     ./src/eti-handling/protTables.cpp
 	     ./src/eti-handling/charsets.cpp
-	     ./src/support/fft.cpp
 	     ./src/support/band-handler.cpp
 	     ./src/support/dab-params.cpp
+	     ./src/support/fft/fft.cpp
+	     ./src/support/fft/kiss_fft.c
+	     ./src/support/fft/kiss_fftr.c
 	     ./devices/device-handler.cpp
 	)
 
@@ -556,7 +562,7 @@ endif()
 
 	include_directories (
 	          ${SDRPLAY_INCLUDES}
-	          ${FFTW_INCLUDE_DIRS}
+#	          ${FFTW_INCLUDE_DIRS}
 	          ${PORTAUDIO_INCLUDE_DIRS}
 	          ${FAAD_INCLUDE_DIRS}
 	          ${SNDFILES_INCLUDE_DIRS}
@@ -574,7 +580,7 @@ endif()
 	   target_compile_options(${objectName}  PRIVATE -march=armv7-a -mfloat-abi=hard -mfpu=neon-vfpv4 )
 	endif()
 	target_link_libraries (${objectName}
-	                       ${FFTW3F_LIBRARIES}
+#	                       ${FFTW3F_LIBRARIES}
 	                       ${extraLibs}
 	                       ${CMAKE_DL_LIBS}
 	)

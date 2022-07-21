@@ -1,4 +1,3 @@
-#
 /*
  *    Copyright (C) 2016, 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
@@ -25,6 +24,7 @@
 #include	"device-handler.h"
 #include	"eti-generator.h"
 #include	"fft.h"
+#include	<iostream>
 //
 /**
   *	\brief ofdmProcessor
@@ -234,7 +234,15 @@ int32_t		counter;
 float		currentStrength;
 int32_t		syncBufferSize	= 32768;
 int32_t		syncBufferMask	= syncBufferSize - 1;
-float		envBuffer	[syncBufferSize];
+// ERROR CORRECTION
+//float		envBuffer	[syncBufferSize];
+std::unique_ptr<float[]> envBuffer{new float[syncBufferSize]};
+if (!envBuffer) {
+	std::cerr << "ofdmProcessor::run - alloc fail";
+	return;
+}
+//END ERROR CORRECTION
+
 int16_t		attempts	= 0;
 
 	try {
@@ -283,7 +291,7 @@ notSynced:
 	      syncBufferIndex = (syncBufferIndex + 1) & syncBufferMask;
 	      counter ++;
 	      if ((counter > T_F) && (++attempts >= 5)) { // hopeless
-//	         set_syncSignal (false, userData);
+	         set_syncSignal (false, userData);
 	         attempts	= 0;
 	         goto notSynced;
 	      }

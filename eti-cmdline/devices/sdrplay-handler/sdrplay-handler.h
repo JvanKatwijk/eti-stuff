@@ -24,7 +24,7 @@
 #ifndef __SDRPLAY_HANDLER__
 #define	__SDRPLAY_HANDLER__
 
-#include	<dlfcn.h>
+//#include	<dlfcn.h>
 #include	<atomic>
 #include	"ringbuffer.h"
 #include	"device-handler.h"

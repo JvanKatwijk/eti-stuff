@@ -1,4 +1,4 @@
-#
+
 /*
  *    Copyright (C) 2016 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
@@ -25,7 +25,7 @@
 
 #ifndef	__DAB_CONSTANTS__
 #define	__DAB_CONSTANTS__
-#
+#define _USE_MATH_DEFINES
 #include	<math.h>
 #include	<stdint.h>
 #include	<stdlib.h>
@@ -33,11 +33,13 @@
 #include	<complex>
 #include	<limits>
 #include	<cstring>
-#include	<unistd.h>
 
-#ifdef	__MINGW32__
+#if defined(__MINGW32__) || defined(_WIN32)
 #include	"windows.h"
+static inline void sleep(int s) { Sleep(s * 1000); }
+static inline void usleep(int u) { Sleep(u / 1000); }
 #else
+#include	<unistd.h>
 #include	"alloca.h"
 #include	"dlfcn.h"
 typedef	void	*HINSTANCE;

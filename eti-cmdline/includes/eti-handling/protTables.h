@@ -1,4 +1,4 @@
-#
+
 /*
  *    Copyright (C) 2016 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
@@ -20,7 +20,7 @@
  *    along with eti library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-#
+
 #ifndef	__PROTTABLES__
 #define	__PROTTABLES__
 #include	<stdint.h>

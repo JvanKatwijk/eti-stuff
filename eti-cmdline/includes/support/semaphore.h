@@ -1,4 +1,4 @@
-#
+
 #ifndef	__SEMAPHORE
 #define	__SEMAPHORE
 

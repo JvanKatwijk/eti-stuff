@@ -1,4 +1,4 @@
-#
+
 /*
  * $Id: pa_ringbuffer.c 1738 2011-08-18 11:47:28Z rossb $
  * Portable Audio I/O Library
@@ -110,6 +110,23 @@
 #         error Memory barriers are not defined on this system. You can still compile by defining ALLOW_SMP_DANGERS, but SMP safety will not be guaranteed.
 #      endif
 #   endif
+#elif (_MSC_VER >= 1400) && !defined(_WIN32_WCE)
+#   include <intrin.h>
+#   pragma intrinsic(_ReadWriteBarrier)
+#   pragma intrinsic(_ReadBarrier)
+#   pragma intrinsic(_WriteBarrier)
+ /* note that MSVC intrinsics _ReadWriteBarrier(), _ReadBarrier(), _WriteBarrier() are just compiler barriers *not* memory barriers */
+#   define PaUtil_FullMemoryBarrier()  _ReadWriteBarrier()
+#   define PaUtil_ReadMemoryBarrier()  _ReadBarrier()
+#   define PaUtil_WriteMemoryBarrier() _WriteBarrier()
+#elif defined(_WIN32_WCE)
+#   define PaUtil_FullMemoryBarrier()
+#   define PaUtil_ReadMemoryBarrier()
+#   define PaUtil_WriteMemoryBarrier()
+#elif defined(_MSC_VER) || defined(__BORLANDC__)
+#   define PaUtil_FullMemoryBarrier()  _asm { lock add    [esp], 0 }
+#   define PaUtil_ReadMemoryBarrier()  _asm { lock add    [esp], 0 }
+#   define PaUtil_WriteMemoryBarrier() _asm { lock add    [esp], 0 }
 #else
 #   ifdef ALLOW_SMP_DANGERS
 #      warning Memory barriers not defined on this system or system unknown

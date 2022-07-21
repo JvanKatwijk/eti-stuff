@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemDefinitionGroup>
+	<Link>
+	<AdditionalDependencies> ..\mir_sdr_api.lib</AdditionalDependencies>
+	</Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\devices\device-handler.cpp" />
+    <ClCompile Include="..\devices\sdrplay-handler\sdrplay-handler.cpp" />
+    <ClCompile Include="..\eti-class.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\src\eti-handling\charsets.cpp" />
+    <ClCompile Include="..\src\eti-handling\eep-protection.cpp" />
+    <ClCompile Include="..\src\eti-handling\eti-generator.cpp" />
+    <ClCompile Include="..\src\eti-handling\fib-processor.cpp" />
+    <ClCompile Include="..\src\eti-handling\fic-handler.cpp" />
+    <ClCompile Include="..\src\eti-handling\protection.cpp" />
+    <ClCompile Include="..\src\eti-handling\protTables.cpp" />
+    <ClCompile Include="..\src\eti-handling\semaphore.cpp" />
+    <ClCompile Include="..\src\eti-handling\uep-protection.cpp" />
+    <ClCompile Include="..\src\eti-handling\viterbi-handler.cpp" />
+    <ClCompile Include="..\src\eti-handling\viterbi-spiral\spiral-no-sse.c" />
+    <ClCompile Include="..\src\eti-handling\viterbi-spiral\spiral-sse.c" />
+    <ClCompile Include="..\src\eti-handling\viterbi-spiral\viterbi-spiral.cpp" />
+    <ClCompile Include="..\src\ofdm\freq-interleaver.cpp" />
+    <ClCompile Include="..\src\ofdm\ofdm-processor.cpp" />
+    <ClCompile Include="..\src\ofdm\phasereference.cpp" />
+    <ClCompile Include="..\src\ofdm\phasetable.cpp" />
+    <ClCompile Include="..\src\support\band-handler.cpp" />
+    <ClCompile Include="..\src\support\dab-params.cpp" />
+    <ClCompile Include="..\src\support\fft\fft.cpp" />
+    <ClCompile Include="..\src\support\fft\kiss_fft.c" />
+    <ClCompile Include="..\src\support\fft\kiss_fftr.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\callback-types.h" />
+    <ClInclude Include="..\devices\device-handler.h" />
+    <ClInclude Include="..\devices\sdrplay-handler\mirsdrapi-rsp.h" />
+    <ClInclude Include="..\devices\sdrplay-handler\sdrplay-handler.h" />
+    <ClInclude Include="..\eti-class.h" />
+    <ClInclude Include="..\includes\dab-constants.h" />
+    <ClInclude Include="..\includes\eti-handling\charsets.h" />
+    <ClInclude Include="..\includes\eti-handling\dab_tables.h" />
+    <ClInclude Include="..\includes\eti-handling\eep-protection.h" />
+    <ClInclude Include="..\includes\eti-handling\eti-generator.h" />
+    <ClInclude Include="..\includes\eti-handling\fib-processor.h" />
+    <ClInclude Include="..\includes\eti-handling\fic-handler.h" />
+    <ClInclude Include="..\includes\eti-handling\mm_malloc.h" />
+    <ClInclude Include="..\includes\eti-handling\parity.h" />
+    <ClInclude Include="..\includes\eti-handling\protection.h" />
+    <ClInclude Include="..\includes\eti-handling\protTables.h" />
+    <ClInclude Include="..\includes\eti-handling\semaphore.h" />
+    <ClInclude Include="..\includes\eti-handling\uep-protection.h" />
+    <ClInclude Include="..\includes\eti-handling\viterbi-handler.h" />
+    <ClInclude Include="..\includes\eti-handling\viterbi-spiral\viterbi-spiral.h" />
+    <ClInclude Include="..\includes\ofdm\freq-interleaver.h" />
+    <ClInclude Include="..\includes\ofdm\ofdm-processor.h" />
+    <ClInclude Include="..\includes\ofdm\phasereference.h" />
+    <ClInclude Include="..\includes\ofdm\phasetable.h" />
+    <ClInclude Include="..\includes\support\band-handler.h" />
+    <ClInclude Include="..\includes\support\dab-params.h" />
+    <ClInclude Include="..\includes\support\fft\fft.h" />
+    <ClInclude Include="..\includes\support\ringbuffer.h" />
+    <ClInclude Include="..\includes\support\semaphore.h" />
+    <ClInclude Include="..\includes\support\fft\kiss_fft.h" />
+    <ClInclude Include="..\includes\support\fft\_kiss_fft_guts.h" />
+    <ClInclude Include="..\includes\support\fft\kiss_fftr.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{888cbb45-77bb-40a1-b056-60d12d3841aa}</ProjectGuid>
+    <RootNamespace>eticmdlinertlsdr</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level1</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>X64_DEFINED;HAVE_SDRPLAY;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>Default</ConformanceMode>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..;$(SolutionDir)..\includes;$(SolutionDir)..\devices;$(SolutionDir)..\devices\sdrplay-handler;$(SolutionDir)..\includes\eti-handling;$(SolutionDir)..\includes\ofdm;$(SolutionDir)..\includes\support;$(SolutionDir)..\includes\support\fft;$(SolutionDir)..\includes\eti-handling\viterbi-spiral;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level1</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>X64_DEFINED;HAVE_SDRPLAY;_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>Default</ConformanceMode>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..;$(SolutionDir)..\includes;$(SolutionDir)..\devices;$)SolutionDir)..\devices\sdrplay-handler;$(SolutionDir)..\includes\eti-handling;$(SolutionDir)..\includes\ofdm;$(SolutionDir)..\includes\support;$(SolutionDir)..\includes\support\fft;$(SolutionDir)..\includes\eti-handling\viterbi-spiral;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <DebugInformationFormat>None</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
