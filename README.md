@@ -3,7 +3,7 @@
 "eti-stuff" is an attempt to understand the eti structure as defined in ETS 300 799 for Digital Audio Broadcasting (DAB and DAB+).
 
 ----------------------------------------------------------------------
-New: eti-cmdline can be comoiled using MSVC
+New: eti-cmdline can be compiled using MSVC
 ----------------------------------------------------------------------
 
 The software consists of 2 programs, eti-cmdline and eti-backend.
