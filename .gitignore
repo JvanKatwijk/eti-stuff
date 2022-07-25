@@ -3,6 +3,7 @@ eti-cmdline/Makefile
 eti-cmdline/build
 eti-cmdline/build-for-mvs/Debug
 eti-cmdline/build-for-mvs/x64/Debug
+eti-cmdline/build-for-mvs/.vs
 
 
 

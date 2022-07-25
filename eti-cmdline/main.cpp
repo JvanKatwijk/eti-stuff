@@ -122,7 +122,7 @@ using std::cerr;
 using std::endl;
 //
 #ifdef	HAVE_RTLSDR
-#include	"rtlsdr-handler.h"
+#include	"rtlsdr-handler/rtlsdr-handler.h"
 #elif	HAVE_SDRPLAY
 #include	"sdrplay-handler.h"
 #elif	HAVE_SDRPLAY_V3

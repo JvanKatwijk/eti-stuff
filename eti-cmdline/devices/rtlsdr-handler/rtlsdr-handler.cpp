@@ -1,4 +1,3 @@
-#
 /*
  *    Copyright (C) 2010, 2011, 2012, 2013
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
@@ -26,9 +25,11 @@
  * 	are greatly acknowledged
  */
 
-
 #include	"rtl-sdr.h"
 #include	"rtlsdr-handler.h"
+#include<memory>
+
+using namespace std;
 
 #define	READLEN_DEFAULT	8192
 //
@@ -106,8 +107,8 @@ bool	open;
 
 	gainsCount      = rtlsdr_get_tuner_gains (device, NULL);
         fprintf (stderr, "Supported gain values (%d): ", gainsCount);
-	{  int gains [gainsCount];
-           gainsCount      = rtlsdr_get_tuner_gains (device, gains);
+		{  unique_ptr<int[]> gains { new int[gainsCount] };
+           gainsCount      = rtlsdr_get_tuner_gains (device, gains.get());
            for (int i = 0; i < gainsCount; i ++)
               fprintf (stderr, "%d.%d ", gains [i] / 10, gains [i] % 10);
            fprintf (stderr, "\n");
@@ -207,9 +208,9 @@ float convTable [] = {
 //	uint8_t to std::complex<float> *
 int32_t	rtlsdrHandler::getSamples (std::complex<float> *V, int32_t size) { 
 int32_t	amount, i;
-uint8_t	tempBuffer [2 * size];
+unique_ptr<uint8_t[]>	tempBuffer{ new uint8_t [2 * size] };
 //
-	amount = _I_Buffer. getDataFromBuffer (tempBuffer, 2 * size);
+	amount = _I_Buffer. getDataFromBuffer (tempBuffer.get(), 2 * size);
 	for (i = 0; i < amount / 2; i ++)
             V [i] = std::complex<float>
                             (convTable [tempBuffer [2 * i]],
