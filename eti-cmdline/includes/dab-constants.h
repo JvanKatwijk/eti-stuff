@@ -42,6 +42,10 @@ static inline void usleep(int u) { Sleep(u / 1000); }
 #include	<unistd.h>
 #include	"alloca.h"
 #include	"dlfcn.h"
+#include	<thread>
+#include	<chrono>
+static inline void sleep(int s) { std::this_thread::sleep_for(std::chrono::seconds(s)); }
+static inline void usleep(int u) { std::this_thread::sleep_for(std::chrono::microseconds(u)); }
 typedef	void	*HINSTANCE;
 #endif
 
