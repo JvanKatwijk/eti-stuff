@@ -655,7 +655,7 @@ struct sigaction sigact;
 	timesyncSet. store (false);
 	theWorker. start_ofdmProcessing ();
 	while (!timeSynced. load () && (--timeSyncTime >= 0)) 
-	   sleep (1);
+	   special_sleep (1);
 
 	if (!timeSynced. load ()) {
 	   cerr << "There does not seem to be a DAB signal here" << endl;
@@ -668,7 +668,7 @@ struct sigaction sigact;
 //
 	while (--freqSyncTime > 0) {
 	   cerr << "still at most " << freqSyncTime <<  "seconds to wait\r";
-	   sleep (1);
+	   special_sleep (1);
 	   if (ensembleRecognized. load ()) {
 	      theWorker. set_syncReached ();
 	      break;
@@ -691,7 +691,7 @@ struct sigaction sigact;
 	      if (!isSilent)
 	         fprintf (stderr, "\t\testimated snr: %2d, fibquality %3d\r",
 	                            signalnoise. load (), ficSuccess. load ());
-	      sleep (1);
+	      special_sleep (1);
 	      if (recordTime != -1)
 	         recordTime -= 1;
 	   }
@@ -700,7 +700,7 @@ struct sigaction sigact;
 //	we started the "worker", so we also stop it here
 	theWorker. stop ();
 	fprintf (stderr, "\n\nterminating\n");
-	usleep (1000);
+	special_usleep (1000);
 
 	inputDevice	-> stopReader ();
 	delete	inputDevice;

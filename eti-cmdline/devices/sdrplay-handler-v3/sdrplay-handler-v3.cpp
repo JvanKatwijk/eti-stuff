@@ -90,7 +90,7 @@ void    StreamACallback (short *xi, short *xq,
                          void *cbContext) {
 sdrplayHandler_v3 *p	= static_cast<sdrplayHandler_v3 *> (cbContext);
 float	denominator	= (float)(p -> denominator);
-std::complex<float> localBuf [numSamples];
+unique_ptr<std::complex<float>[]> localBuf {new std::complex<float> [numSamples]};
 
 	(void)params;
 	if (reset)
@@ -103,7 +103,7 @@ std::complex<float> localBuf [numSamples];
 	                                         ((float)xq [i]) / denominator);
 	int n = (int)(p -> _I_Buffer. GetRingBufferWriteAvailable ());
 	if (n >= (int)numSamples) 
-	   p -> _I_Buffer. putDataIntoBuffer (localBuf, numSamples);
+	   p -> _I_Buffer. putDataIntoBuffer (localBuf. get (), numSamples);
 }
 
 static

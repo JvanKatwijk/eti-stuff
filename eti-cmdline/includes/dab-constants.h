@@ -44,8 +44,14 @@ static inline void usleep(int u) { Sleep(u / 1000); }
 #include	"dlfcn.h"
 #include	<thread>
 #include	<chrono>
-static inline void sleep(int s) { std::this_thread::sleep_for(std::chrono::seconds(s)); }
-static inline void usleep(int u) { std::this_thread::sleep_for(std::chrono::microseconds(u)); }
+static inline
+void	special_sleep (int s) {
+	std::this_thread::sleep_for(std::chrono::seconds(s));
+}
+static inline
+void	special_usleep (int u) {
+	std::this_thread::sleep_for(std::chrono::microseconds(u));
+}
 typedef	void	*HINSTANCE;
 #endif
 

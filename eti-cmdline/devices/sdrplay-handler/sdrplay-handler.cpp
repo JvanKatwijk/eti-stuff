@@ -22,7 +22,7 @@
  */
 
 #include	"sdrplay-handler.h"
-
+#include	<memory>
 
 static
 void myStreamCallback (int16_t		*xi,
@@ -38,22 +38,17 @@ void myStreamCallback (int16_t		*xi,
 int16_t	i;
 sdrplayHandler	*p	= static_cast<sdrplayHandler *> (cbContext);
 
-#if (defined(__MINGW32__) || defined(_WIN32))
-std::complex<float> *localBuf  =
-	                (std::complex<float> *)
-	                   _alloca (numSamples * sizeof (std::complex<float>));
-#else
-std::complex<float> localBuf [numSamples];
-#endif
+unique_ptr<std::complex<float> []> localBuf {new std::complex<float>[numSamples]};
 float	denominator	= p -> denominator;
 	for (i = 0; i <  (int)numSamples; i ++)
+	
 	   localBuf [i] = std::complex<float>
 	                             (float (xi [i]) / denominator,
 	                              float (xq [i]) / denominator);
 	if (p -> _I_Buffer. GetRingBufferWriteAvailable () < (int) numSamples)
 	   fprintf (stderr, "x");
 	else
-	p ->  _I_Buffer. putDataIntoBuffer (localBuf, numSamples);
+	p ->  _I_Buffer. putDataIntoBuffer (localBuf. get (), numSamples);
 	(void)	firstSampleNum;
 	(void)	grChanged;
 	(void)	rfChanged;
