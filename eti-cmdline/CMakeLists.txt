@@ -575,9 +575,13 @@ endif()
 	)
 
 	if (RPI_DEFINED)
-	   # compiler options seem changed with gcc versions. gcc 8.3.0 on Raspbian didn't accept -mcpu ..
+	   # detect Raspbian system architecture and set proper options 
 	   # test options with "make VERBOSE=1"
-	   target_compile_options(${objectName}  PRIVATE -march=armv7-a -mfloat-abi=hard -mfpu=neon-vfpv4 )
+	   if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL aarch64)
+	      target_compile_options(${objectName}  PRIVATE -mcpu=native )
+	   else()
+	      target_compile_options(${objectName}  PRIVATE -march=armv7-a -mfloat-abi=hard -mfpu=neon-vfpv4 )
+	   endif()	
 	endif()
 	target_link_libraries (${objectName}
 #	                       ${FFTW3F_LIBRARIES}
