@@ -31,6 +31,8 @@
 #include	"xml-descriptor.h"
 #include	"xml-reader.h"
 
+#include	"dab-constants.h"
+
 #define	INPUT_FRAMEBUFFERSIZE	8 * 32768
 //
 //
@@ -96,7 +98,7 @@ int32_t	xml_fileReader::getSamples	(std::complex<float> *V,
 	   return 0;
 
 	while ((int32_t)(_I_Buffer. GetRingBufferReadAvailable()) < size)
-	   usleep (1000);
+	   special_usleep (1000);
 
 	return _I_Buffer. getDataFromBuffer (V, size);
 }

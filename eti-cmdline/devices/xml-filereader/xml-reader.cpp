@@ -25,6 +25,7 @@
 #include	"xml-filereader.h"
 #include	<sys/time.h>
 #include	<stdio.h>
+#include	"dab-constants.h"
 
 static	int shift (int a) {
 int r	= 1;
@@ -128,7 +129,7 @@ int	startPoint	= filePointer;
 //	         nextStop = nextStop + ((uint64_t)blockSize * 1000) / 2048;
 	         nextStop = nextStop + (uint64_t)1000;
 	         if (nextStop > currentTime ())
-	            usleep ( nextStop - currentTime ());
+	            special_usleep ( nextStop - currentTime ());
 	      }
 	      filePointer = startPoint;
 	      fseek (file, filePointer, SEEK_SET);

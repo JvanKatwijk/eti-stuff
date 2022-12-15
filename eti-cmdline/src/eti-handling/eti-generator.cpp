@@ -192,7 +192,7 @@ bufferElement s;
 	memcpy (s. data, softbits,
 	                 2 * params. get_carriers () * sizeof (int16_t));
 	while (dataBuffer ->  GetRingBufferWriteAvailable () < 1) 
-	   usleep (1000);
+	   special_usleep (1000);
 	dataBuffer -> putDataIntoBuffer (&s, 1);
 }
 
@@ -209,7 +209,7 @@ const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 	while (running. load ()) {
 	   while (running. load () &&
 	             (dataBuffer -> GetRingBufferReadAvailable () < 1)) 
-	      usleep (1000);
+	      special_usleep (1000);
 	   if (!running. load ())
 	      break;
 

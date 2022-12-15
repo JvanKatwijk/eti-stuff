@@ -23,6 +23,7 @@
 
 #include	"lime-handler.h"
 #include	<unistd.h>
+#include	"dab-cpnstants.h"
 
 #define	FIFO_SIZE	32768
 static
@@ -117,7 +118,7 @@ lms_info_str_t limedevices [10];
 
 	limeHandler::~limeHandler	(void) {
 	running. store (false);
-	usleep (500000);
+	special_usleep (500000);
 	threadHandle. join ();
 	LMS_Close (theDevice);
 }
@@ -152,7 +153,7 @@ void	limeHandler::stopReader		(void) {
 	if (!running. load ())
 	   return;
 	running. store (false);
-	usleep (500000);
+	special_usleep (500000);
 	threadHandle. join ();
 }
 

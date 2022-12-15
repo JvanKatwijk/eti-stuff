@@ -32,6 +32,7 @@
 #include	<sys/time.h>
 #include	<time.h>
 
+#include	"dab-constants.h"
 static inline
 int64_t		getMyTime	(void) {
 struct timeval	tv;
@@ -90,7 +91,7 @@ uint8_t	*temp = (uint8_t *)alloca (2 * size * sizeof (uint8_t));
 	   return 0;
 
 	while ((int32_t)(_I_Buffer. GetRingBufferReadAvailable ()) < 2 * size)
-	   usleep (1000);
+	   special_usleep (1000);
 
 	amount = _I_Buffer. getDataFromBuffer (temp, 2 * size);
 	for (i = 0; i < amount / 2; i ++)
@@ -121,7 +122,7 @@ int64_t	nextStop;
 	   while (_I_Buffer. WriteSpace () < bufferSize + 10) {
 	      if (!run. load ())
 	         break;
-	      usleep (100);
+	      special_usleep (100);
 	   }
 
 	   nextStop += period;
@@ -133,7 +134,7 @@ int64_t	nextStop;
 	   }
 	   _I_Buffer. putDataIntoBuffer (bi, t);
 	   if (nextStop - getMyTime () > 0)
-	      usleep (nextStop - getMyTime ());
+	      special_usleep (nextStop - getMyTime ());
 	}
 
 	fprintf (stderr, "taak voor replay eindigt hier\n");

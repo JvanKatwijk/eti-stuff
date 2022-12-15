@@ -28,6 +28,7 @@
 #include	<time.h>
 #include	"wavfile-handler.h"
 
+#include	"dab-constants.h"
 static inline
 int64_t		getMyTime	(void) {
 struct timeval	tv;
@@ -117,7 +118,7 @@ int64_t	nextStop;
 	   while (_I_Buffer. WriteSpace () < bufferSize) {
 	      if (!run. load ())
 	         break;
-	      usleep (1000);
+	      special_usleep (1000);
 	   }
 
 	   nextStop += period;
@@ -130,7 +131,7 @@ int64_t	nextStop;
 
 	   _I_Buffer. putDataIntoBuffer (bi, bufferSize);
 	   if (nextStop - getMyTime () > 0)
-	      usleep (nextStop - getMyTime ());
+	      special_usleep (nextStop - getMyTime ());
 	}
 	fprintf (stderr, "thread stops\n");
 }

@@ -25,6 +25,8 @@
 #include	"eti-generator.h"
 #include	"fft.h"
 #include	<iostream>
+
+#include	"dab-constants.h"
 //
 /**
   *	\brief ofdmProcessor
@@ -139,7 +141,7 @@ std::complex<float> temp;
 	if (bufferContent == 0) {
 	   bufferContent = inputDevice -> Samples ();
 	   while ((bufferContent == 0) && running. load ()) {
-	      usleep (1000);
+	      special_usleep (1000);
 	      bufferContent = inputDevice -> Samples (); 
 	   }
 	}
@@ -186,7 +188,7 @@ int32_t		i;
 	if (n > bufferContent) {
 	   bufferContent = inputDevice -> Samples ();
 	   while ((bufferContent < n) && running. load ()) {
-	      usleep (1000);
+	      special_usleep (1000);
 	      bufferContent = inputDevice -> Samples ();
 	   }
 	}

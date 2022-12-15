@@ -21,7 +21,7 @@
  */
 
 #include	"sdrplay-handler-v3.h"
-
+#include	"dab-constants.h"
 
 	sdrplayHandler_v3::sdrplayHandler_v3  (uint32_t	frequency,
 	                                       int16_t	ppmCorrection,
@@ -40,7 +40,7 @@
 	running. store	(false);
 	threadHandle		= std::thread (&sdrplayHandler_v3::run, this);
 	while (!failFlag && !running. load ()) 
-	   usleep (1000);
+	   special_usleep (1000);
 	if (failFlag) {
            threadHandle. join ();
 	   throw (21);
@@ -311,7 +311,7 @@ int			lna_upperBound;
 
 //	Now run the loop "listening" to commands
 	while (running. load ()) {
-	   usleep (500000);
+	   special_usleep (500000);
 	}
 
 	running. store (false);
