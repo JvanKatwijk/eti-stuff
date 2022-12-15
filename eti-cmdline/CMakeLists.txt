@@ -26,10 +26,10 @@ OPTION(RPI_DEFINED "optimize for ARM/NEON" OFF)
 #######################################################################
 
 set (objectName eti_cmdline)
-#set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -Wall -std=c++11 -flto -ffast-math")
-#set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flto -ffast-math")
-set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -Wall -std=c++11 -pg -ffast-math")
-set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg -ffast-math")
+set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -Wall -std=c++11 -flto -ffast-math")
+set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flto -ffast-math")
+#set (CMAKE_CXX_FLAGS "${CMAKE_XCC_FLAGS} -Wall -std=c++11 -pg -ffast-math")
+#set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg -ffast-math")
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set (CMAKE_INSTALL_PREFIX "/usr/local/bin" CACHE PATH "default install path" FORCE )
 endif()
@@ -575,9 +575,13 @@ endif()
 	)
 
 	if (RPI_DEFINED)
-	   # compiler options seem changed with gcc versions. gcc 8.3.0 on Raspbian didn't accept -mcpu ..
+	   # detect Raspbian system architecture and set proper options 
 	   # test options with "make VERBOSE=1"
-	   target_compile_options(${objectName}  PRIVATE -march=armv7-a -mfloat-abi=hard -mfpu=neon-vfpv4 )
+	   if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL aarch64)
+	      target_compile_options(${objectName}  PRIVATE -mcpu=native )
+	   else()
+	      target_compile_options(${objectName}  PRIVATE -march=armv7-a -mfloat-abi=hard -mfpu=neon-vfpv4 )
+	   endif()	
 	endif()
 	target_link_libraries (${objectName}
 #	                       ${FFTW3F_LIBRARIES}
