@@ -39,7 +39,7 @@
 	xml_fileReader::xml_fileReader (std::string fileName,
 	                                bool	continue_on_eof,
 	                                inputstopped_t inputStopped):
-	                                  _I_Buffer (INPUT_FRAMEBUFFERS) {
+	                                  _I_Buffer (INPUT_FRAMEBUFFERSIZE) {
 	this -> fileName	= fileName;
 	theFile	= fopen (fileName.c_str (), "rb");
 	if (theFile == nullptr) {
