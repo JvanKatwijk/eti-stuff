@@ -60,6 +60,7 @@
 	fprintf (stderr, "nrElements = %d\n",
 	             theDescriptor -> blockList [0].nrElements);
 	theReader	= nullptr;
+	this	-> continue_on_eof	= continue_on_eof;
 }
 
 	xml_fileReader::~xml_fileReader	() {

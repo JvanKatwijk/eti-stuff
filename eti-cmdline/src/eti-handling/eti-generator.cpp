@@ -183,7 +183,7 @@ void	etiGenerator::reset	(void) {
 	start ();
 }
 
-void	etiGenerator::newFrame		(void) {
+void	etiGenerator::newFrame		() {
 }
 
 void	etiGenerator::processBlock	(int16_t *softbits, int16_t blkno) { 

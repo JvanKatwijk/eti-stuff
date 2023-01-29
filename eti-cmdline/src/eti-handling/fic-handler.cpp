@@ -115,7 +115,7 @@ int16_t shiftRegister [9] = {1, 1, 1, 1, 1, 1, 1, 1, 1};
 	ficSuccess			= 0;
 }
 
-		ficHandler::~ficHandler (void) {
+		ficHandler::~ficHandler () {
 }
 
 /**
@@ -220,7 +220,7 @@ int16_t inputCount	= 0;
 	memcpy (&fib_bytes [ficno * 768], bitBuffer_out, 768);
 }
 
-void	ficHandler::clearEnsemble (void) {
+void	ficHandler::clearEnsemble () {
 	fibProcessor. clearEnsemble ();
 }
 
@@ -228,7 +228,7 @@ void	ficHandler::get_channelInfo (channel_data *s, int n) {
 	fibProcessor. get_channelInfo (s, n);
 }
 
-int16_t	ficHandler::get_ficRatio (void) {
+int16_t	ficHandler::get_ficRatio () {
 	return ficRatio;
 }
 

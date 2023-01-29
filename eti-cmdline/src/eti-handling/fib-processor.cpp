@@ -108,7 +108,7 @@
 	CIFCount_lo	= -1;
 }
 	
-	fib_processor::~fib_processor (void) {
+	fib_processor::~fib_processor () {
 }
 //
 //	FIB's are segments of 256 bits. When here, we already
@@ -1048,7 +1048,7 @@ void    fib_processor::nameofEnsemble  (int id, const std::string &s) {
         isSynced        = true;
 }
 
-void    fib_processor::changeinConfiguration (void) {
+void    fib_processor::changeinConfiguration () {
 }
 
 

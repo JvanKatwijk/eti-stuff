@@ -131,6 +131,7 @@ int	startPoint	= filePointer;
 	         if (nextStop > currentTime ())
 	            special_usleep ( nextStop - currentTime ());
 	      }
+	      fprintf (stderr, "reached end of file, cont = %d\n", continue_on_eof);
 	      filePointer = startPoint;
 	      fseek (file, filePointer, SEEK_SET);
 	      samplesRead		= 0;

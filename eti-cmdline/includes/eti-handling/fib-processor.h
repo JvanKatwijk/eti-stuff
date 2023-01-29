@@ -89,10 +89,10 @@ class	fib_processor {
 public:
 		fib_processor		(callbacks	*,
 	                                 void		*);
-		~fib_processor		(void);
+		~fib_processor		();
 	void	process_FIB		(uint8_t *, uint16_t);
 
-	void	clearEnsemble		(void);
+	void	clearEnsemble		();
 	void	printActions		(int16_t);
 	void	get_channelInfo		(channel_data *, int);
 	void	get_CIFCount		(int16_t *, int16_t *);
