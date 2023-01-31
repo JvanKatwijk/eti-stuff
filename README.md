@@ -44,7 +44,10 @@ When building for Linux, you can use CMake to have a makefile generated.
 Select the input device of choice in the CMake command, for example
 
       cmake -DRTLSDR=ON  # for DABSticks
-or    cmake -DRAWFILES=ON # for u8 raw files
+
+or    
+
+      cmake -DRAWFILES=ON # for u8 raw files
       make
       sudo make install
      
