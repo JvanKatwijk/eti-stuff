@@ -141,7 +141,7 @@ using std::endl;
 #include	"wavfile-handler.h"
 #elif	HAVE_RTL_TCP
 #include	"rtl_tcp-client.h"
-#elif	HAVE_XML_FILES
+#elif	HAVE_XMLFILES
 #include	"xml-filereader.h"	// does not work yet
 #endif
 //
@@ -316,7 +316,7 @@ std::string	fileName;
 bool		repeater	= true;
 bool		continue_on_eof	= false;
 const char	*optionsString	= "ShP:D:d:M:B:O:F:rt:";
-#elif	HAVE_XML_FILES
+#elif	HAVE_XMLFILES
 std::string	fileName;
 bool		repeater	= true;
 bool		continue_on_eof	= false;
@@ -405,7 +405,7 @@ struct sigaction sigact;
 	            theMode = 1; 
 	         break;
 
-#if	defined (HAVE_RAWFILES) || defined (HAVE_WAVFILES) || defined (HAVE_XML_FILES)
+#if	defined (HAVE_RAWFILES) || defined (HAVE_WAVFILES) || defined (HAVE_XMLFILES)
 	      case 'F':
 	         fileName	= std::string (optarg);
 	         break;
@@ -557,7 +557,7 @@ struct sigaction sigact;
 	the_callBacks. theFibQuality	= fibqualityHandler;
 	the_callBacks. theInputStopped	= inputStoppedHandler;
 
-#if defined(HAVE_RAWFILES) || defined(HAVE_WAVFILES) || defined (HAVE_XML_FILES)
+#if defined(HAVE_RAWFILES) || defined(HAVE_WAVFILES) || defined (HAVE_XMLFILES)
 //	check on name ??
 #else
 	tunedFrequency	=  the_bandHandler. Frequency (theBand, theChannel);
@@ -611,7 +611,7 @@ struct sigaction sigact;
 	   inputDevice	= new wavfileHandler (fileName,
 	                                      continue_on_eof,
 	                                      inputStoppedHandler);
-#elif	HAVE_XML_FILES
+#elif	HAVE_XMLFILES
 	   inputDevice	= new xml_fileReader (fileName,
 	                                      continue_on_eof,
 	                                      inputStoppedHandler);
@@ -715,62 +715,97 @@ struct sigaction sigact;
 
 void    printOptions (void) {
         std::cerr << 
-" general eti-cmdline-xxx options are\n"
-"\n"
-"   -P number	number of parallel threads for handling subchannels\n"
-"   -D number   time (in seconds) to look for a DAB ensemble\n"
-"   -M mode     Mode to be used \n"
-"   -B Band     select DAB Band (default: BAND_III, or L_BAND)\n"
-"   -C channel  DAB channel to be used (5A ... 13F resp. LA ... LP)\n"
-"   -O filename write output into a file (instead of stdout)\n"
-"   -R filename (if configured) dump to an *.sdr file\n"
-"   -S          be silent during processing\n"
-"   -t          set record time\n"
-"   -h          show options and quit\n"; 
-
+"\n eti-cmdline-";
 #ifdef	HAVE_WAVFILES
-	std::cerr << 
-"   -F filename, -r repeat after reaching eof\n";
+	std::cerr << "wavfiles";
+#elif	HAVE_XMLFILES
+	std::cerr << "xmlfiles";
 #elif	HAVE_RAWFILES
-	std::cerr << 
-"   -F filename, -r repeat after reaching eof\n";
+	std::cerr << "rawfiles";
+#elif	HAVE_SDRPLAY
+	std::cerr << "sdrplay";
+#elif	HAVE_AIRSPY
+	std::cerr << "airspy";
+#elif	HAVE_HACKRF
+	std::cerr << "hackrf";
+#elif	HAVE_RTLSDR
+	std::cerr << "rtlsdr";
+#elif	HAVE_LIME
+	std::cerr << "limesdr";
+#elif	HAVE_PLUTO
+	std::cerr << "pluto";
+#elif	HAVE_RTL_TCP
+	std::cerr << "rtl_tcp";
+#endif
+	std::cerr <<
+" was compiled from \n"
+" https://github.com/JvanKatwijk/eti-stuff/\n\n"
+" It is an experimental program for creating a\n"
+" stream of ETI frames from a selected DAB input channel.\n\n"
+" The options are\n\n"
+"   -P number   number of parallel threads for handling subchannels\n"
+"   -D number   time (in seconds) to look for a DAB ensemble\n"
+"   -M mode     mode to be used \n"
+"   -O filename write output into a file (instead of stdout)\n";
+
+#if !(defined(HAVE_XMLFILES) || defined(HAVE_WAVFILES) || defined(HAVE_RAWFILES))
+	std::cerr <<
+"   -B Band     select DAB Band (default: BAND_III, or L_BAND)\n"
+"   -C channel  DAB channel to be used (5A ... 13F resp. LA ... LP)\n";
+#endif
+
+#ifdef	HAVE_DUMPFILE
+	std::cerr <<
+"   -R filename dump to an *.sdr file\n";
+#endif
+	std::cerr <<
+"   -S          be silent during processing\n"
+"   -t          set record time\n";
+
+#if defined(HAVE_RAWFILES) || defined(HAVE_WAVFILES) || defined (HAVE_XMLFILES)
+	std::cerr <<
+"   -F filename\n"
+"   -r          repeat after reaching eof\n";
+
 #elif	HAVE_SDRPLAY
 	std::cerr <<
-"   -G number ifgain reduction (20 .. 59), \n"
-"   -L number lna state selection \n"
-"   -Q autogain on \n"
-"   -p number ppm correction \n";
+"   -G number   ifgain reduction (20 .. 59), \n"
+"   -L number   lna state selection \n"
+"   -Q          autogain on \n"
+"   -p number   ppm correction \n";
 #elif	HAVE_AIRSPY
 	std::cerr <<
-"   -G number Gain (combined gain in the range 1 .. 21) \n"
-"   -b bias on\n";
+"   -G number   gain (combined gain in the range 1 .. 21) \n"
+"   -b          bias on\n";
 #elif	HAVE_HACKRF
 	std::cerr <<
-"   -G number lna gain \n"
-"   -g number vga gain \n"
-"   -A ampEnable on\n"
-"   -p number ppm correction\n";
+"   -G number   lna gain \n"
+"   -g number   vga gain \n"
+"   -A          ampEnable on\n"
+"   -p number   ppm correction\n";
 #elif	HAVE_RTLSDR
 	std::cerr <<
-"   -G number gain setting, depending on the version of the stick \n"
-"   -p number ppm setting \n"
-"   -Q autogain on\n";
+"   -G number   gain setting, depending on the version of the stick \n"
+"   -p number   ppm setting \n"
+"   -Q          autogain on\n";
 #elif	HAVE_LIME
 	std::cerr << 
-"   -G number gain setting \n"
-"   -X string antenna setting\n";
+"   -G number   gain setting \n"
+"   -X string   antenna setting\n";
 #elif	HAVE_PLUTO
 	std::cerr <<
-	"-G number gain setting\n"
-	"-Q audiogain of (default off)\n"
-	"-F filter off (default on)\n"
+"   -G number   gain setting\n"
+"   -Q          autogain on (default off)\n"
+"   -F          filter off (default on)\n"
 #elif	HAVE_RTL_TCP
 	std::cerr <<
-"   -G number gain setting \n"
-"   -Q autogain on \n"
-"   -p number ppm correction \n"
-"   -H string hostname \n"
-"   -I number baseport\n";
+"   -G number   gain setting \n"
+"   -Q          autogain on \n"
+"   -p number   ppm correction \n"
+"   -H string   hostname \n"
+"   -I number   baseport\n";
 #endif
+	std::cerr <<
+"\n   -h          show options and quit\n\n";
 }
 
