@@ -109,16 +109,26 @@ int	zeroCount = 0;
 	iqOrder		="IQ";
 	uint8_t		theChar;
 	int	index	= 0;
-	while (zeroCount < 500) {
+	int 	charCount = 0;
+	while (zeroCount <= 500) {
 	   theChar = fgetc (f);
-	   if (theChar == 0)
+	   if (theChar == 0)  
 	      zeroCount ++;
 	   else 
 	      zeroCount = 0;
-
 	   theBuffer [index++] = theChar;
 	}
-
+	for (int i = index - zeroCount - 5; i < index - zeroCount + 4; i ++) {
+	   if ((theBuffer [i] == 'D') && (theBuffer [i + 1] == 'R')) {
+	      if (theBuffer [i + 2] == '>')
+	         break;
+	      else {
+	         theBuffer [i + 2] = '>';
+	         for (int j = i + 3; j < i + 10; j ++)
+	            theBuffer [j] = 0;
+	      }
+	   }
+	}
 	*ok	= false;
 	doc. parse <0>((char *)theBuffer);
 

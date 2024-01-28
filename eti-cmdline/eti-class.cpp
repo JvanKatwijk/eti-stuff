@@ -53,34 +53,34 @@
 	                                             userData) {
 }
 
-	etiClass::~etiClass		(void) {
+	etiClass::~etiClass		() {
 	my_ofdmProcessor. stop ();
 	my_etiGenerator.  stop ();
 }
 
-void	etiClass::stop		(void) {
+void	etiClass::stop		() {
         my_ofdmProcessor. stop ();
         my_etiGenerator.  stop ();
 }
 
-void	etiClass::start_ofdmProcessing	(void) {
+void	etiClass::start_ofdmProcessing	() {
 	my_ofdmProcessor. start ();
 }
 
-void	etiClass::start_etiProcessing	(void) {
+void	etiClass::start_etiProcessing	() {
 	my_etiGenerator. startProcessing ();
 }
 
-void	etiClass::reset			(void) {
+void	etiClass::reset			() {
 	my_ofdmProcessor. stop ();
 	my_etiGenerator.  reset ();
 }
 
-void	etiClass::set_syncReached	(void) {
+void	etiClass::set_syncReached	() {
 	my_ofdmProcessor. syncReached ();
 }
 
-bool	etiClass::Working		(void) {
+bool	etiClass::Working		() {
 	return my_ofdmProcessor. isRunning ();
 }
 

@@ -206,7 +206,8 @@ int16_t inputCount	= 0;
 	      ficErrors ++;
 	      continue;
 	   }
-	      else ficSuccess ++;
+	   else
+	      ficSuccess ++;
 	   fibProcessor. process_FIB (p, ficno);
 	}
 

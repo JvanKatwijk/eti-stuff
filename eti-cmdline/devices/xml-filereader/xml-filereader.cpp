@@ -41,6 +41,7 @@
 	                                inputstopped_t inputStopped):
 	                                  _I_Buffer (INPUT_FRAMEBUFFERSIZE) {
 	this -> fileName	= fileName;
+	fprintf (stderr, "trying to open %s\n", fileName. c_str ());
 	theFile	= fopen (fileName.c_str (), "rb");
 	if (theFile == nullptr) {
 	   fprintf (stderr, "file %s cannot open\n",
