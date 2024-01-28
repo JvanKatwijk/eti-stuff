@@ -100,7 +100,7 @@ if(WAVFILES)
 endif ()
 
 if(XMLFILES)
-	set (objectName eti-cmdline-xml)
+	set (objectName eti-cmdline-xmlfiles)
 	list (APPEND INPUTS "XMLFILES")
 endif ()
 
@@ -557,7 +557,7 @@ endif()
 	        ./devices/xml-filereader/xml-descriptor.cpp
 	   )
 
-	   add_definitions (-DHAVE_XML_FILES)
+	   add_definitions (-DHAVE_XMLFILES)
 	endif (XMLFILES)
 
 	include_directories (

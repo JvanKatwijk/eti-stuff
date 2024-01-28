@@ -31,7 +31,7 @@ eti-cmdline now supports a whole range of device (the device is for cmake comman
  - RTL_TCP: for rtl_tcp input (and multiple DABsticks support),
  - RAWFILES: for 8bit unsigned raw files
  - WAVFILES: for 16bit wave files
- - XML_FILES: for uff and xml files, created by Qt-DAB or Qirx
+ - XMLFILES: for uff and xml files, created by Qt-DAB or Qirx
 
 eti-cmdline now can be compiled for Windows using
 msvc (thanks to Andreas Gorsak). The directory contains a folder
@@ -44,7 +44,10 @@ When building for Linux, you can use CMake to have a makefile generated.
 Select the input device of choice in the CMake command, for example
 
       cmake -DRTLSDR=ON  # for DABSticks
-or    cmake -DRAWFILES=ON # for u8 raw files
+
+or    
+
+      cmake -DRAWFILES=ON # for u8 raw files
       make
       sudo make install
      
@@ -54,7 +57,7 @@ You can use dablin or dablin_gtk from https://github.com/Opendigitalradio/dablin
       
       eti-cmdline-xxx -C 11C -G 80 | dablin_gtk
       
-where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay`, `sdrplay-v3`, `pluto`, `airspy`, `hackrf`, `limesdr`, `rawfiles`, `wavfiles`, `xml_files`, `rtl_tcp`).
+where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay`, `sdrplay-v3`, `pluto`, `airspy`, `hackrf`, `limesdr`, `rawfiles`, `wavfiles`, `xmlfiles`, `rtl_tcp`).
       
 # Disclaimer
 

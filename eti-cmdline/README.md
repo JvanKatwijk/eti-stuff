@@ -1,54 +1,54 @@
 
--------------------------------------------------------------------
+
 # eti-cmdline
---------------------------------------------------------------------
 
 eti-cmdline is an experimental program for creating a stream of ETI frames 
 from a selected DAB input channel. The program is fully command line driven.
 
---------------------------------------------------------------------
+
 ## Table of Contents
---------------------------------------------------------------------
 
 * [Supported Devices](#supported-input-devices)
 * [Installation under Windows](#installation-under-windows)
-* [Installation Linux](#installation-Linux)
-* [Configuring CMake](#configuring-CMake)
+* [Installation Linux](#installation-under-linux)
+* [Configuring CMake](#configuring-cmake)
 * [Command line parameters](#command-line-parameters)
+* [Writing to eti files](#writing-to-eti-files)
+* [Piping to DABlin](#piping-to-dablin)
 * [Copyright](#copyright)
 
-----------------------------------------------------------------------
+
 ## Supported input devices
-----------------------------------------------------------------------
 
-The supported input devices are:
+eti-cmdline now supports a whole range of device (the device is for cmake command, see below):
 
-1. Dabsticks (rtlsdr) that are supported by the osmocom driver software
-2. SDRplay devices (separate entries for use with the 2.13 or the 3.0x library)
-3. AIRSpy devices
-4. HACKrf devices
-5. Lime  devices
-6. Pluto devices
-7. prerecorded RAW input files (in format u8, \*.raw)
-8. prerecorded wave files (in format s16le, \*.sdr)
-9. prerecorded files in xml format (experimental)
+    RTLSDR: for DABStickes based on Realtek 2832 chipset,
+    AIRSPY: for Airspy R2 and Airspy mini devices (not for Airspy HF+),
+    SDRPLAY: for SDRPlay RSP devices using the 2.13 SDRplay library,
+    SDRPLAY_V3: for SDRPlay RSP devices using the 3.06/7 SDRplay library,
+    PLUTO: for Adalm Pluto devices,
+    HACKRF: for HackRF devices,
+    LIMESDR: for LimeSDR devices
+    RTL_TCP: for rtl_tcp input (and multiple DABsticks support),
+    RAWFILES: for 8bit unsigned raw files
+    WAVFILES: for 16bit wave files
+    XMLFILES: for uff and xml files, created by Qt-DAB or Qirx
+
 
 Of course one needs to have the library for device support installed.
 Note that in the current version, no link to fftw libraries is needed,
 the current version uses Kiss_fft.
 
-------------------------------------------------------------------------
+
 ## Installation under Windows
-------------------------------------------------------------------------
 
 The directory contains a subdirectory "build-for-msvc" with the required
 configuration files for compilation using MSVC. The configuration file
 "eti-cmdline.vcxproj" is configured for the SDRplay device (using the 2.13
 library). Change to your needs.
 
-------------------------------------------------------------------------
-## Installation Linux
-------------------------------------------------------------------------
+
+## Installation under Linux
 
 For compiling and installing under Linux `cmake` needs to be installed. 
 
@@ -56,9 +56,8 @@ Note that for use of pluto both "libiio" and "libad9361" need to be
 installed. Note further that older systems (e.g. Ubuntu 16.04) do not
 have the correct implementations of these packages in their repositories
 
-------------------------------------------------------------------------
+
 ## Configuring CMake
-------------------------------------------------------------------------
 
 The "normal" way for configuring and installing is 
 
@@ -75,28 +74,27 @@ the SDRplay devices RSP 1, RSP II, RSP 1A, and RSP Duo are supported
 by both the 2.13 library and the 3.0x library.
 The RSP-Dx is only supported by the 3.0x library
 
-Use -DSDRPLAY=ON for installing the support software linking to the 2.13 lib
-Use -DSDRPLAY_V3=ON for installing the 3.0x support
+Use `-DSDRPLAY=ON` for installing the support software linking to the 2.13 lib
+Use `-DSDRPLAY_V3=ON` for installing the 3.0x support
 
 If `-DDUMPING=ON` is added, the possibility for dumping the input to an ".sdr" 
 file (note that an sdr-file is a ".wav" file, with a samplerate of 2048000 
 and short int values).
 
-If `-DX64_DEFINED=ON' is added, SSE instructions will be used in the viterbi decoding.
+If `-DX64_DEFINED=ON` is added, SSE instructions will be used in the viterbi decoding.
 
-If `-DRPI_DEFINED=ON' is added and building takes place on an RPI, an attempt
+If `-DRPI_DEFINED=ON` is added and building takes place on an RPI, an attempt
 is made to use neon insrtructions. Note however that there might
 be problems with the toolchain: different toolchains require different
-flags. See the section in the CMakeLists.txt file
+flags. See the section in the `CMakeLists.txt` file
 
 The resulting program is named `eti-cmdline-XXX`, for XXX see above.
 
 The command `(sudo) make install` will install the created executable in 
 `/usr/local/bin` unless specified differently (note that it requires root permissions)
 
---------------------------------------------------------------------------
+
 ## Command line parameters
---------------------------------------------------------------------------
 
 Once the executable is created, it needs to be told what channel you want to be read in and converted.
 
@@ -130,14 +128,13 @@ For use with one of the physical devices, one may set the following parameters
 6. `-C channel`,  for selecting the channel to be set, e.g. 11C, default 11C
    is chosen
 
-7. `-S', for silent processing, normally, while processing the program
+7. `-S`, for silent processing, normally, while processing the program
 shows a count on the amount of packages written on stderr.
 
-For device specific settings: run ./eti-cmdline -h
+For device specific settings: run `./eti-cmdline-xxx -h`
 
--------------------------------------------------------------------------
+
 ### Writing to eti files
---------------------------------------------------------------------------
 
 Example:
 
@@ -153,9 +150,8 @@ You can use dablin or dablin_gtk from https://github.com/Opendigitalradio/dablin
      
 where xxx refers to the input device being supported, one of (`rtlsdr`, `sdrplay`, `airspy`, `hackrf`, `limesdr', `rawfiles`, `wavfiles`).
 
------------------------------------------------------------------------------
+
 ## Copyright
------------------------------------------------------------------------------
 
 	Copyright (C)  2016, 2017, 2018, 2019, 2020
 	Jan van Katwijk (J.vanKatwijk@gmail.com)
