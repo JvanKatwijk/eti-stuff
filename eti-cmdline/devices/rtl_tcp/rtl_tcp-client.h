@@ -1,6 +1,6 @@
 #
 /*
- *    Copyright (C) 2016, 2017
+ *    Copyright (C) 2016 .. 2025
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Programming
  *
@@ -19,11 +19,9 @@
  *    You should have received a copy of the GNU General Public License
  *    along with eti-cmdline; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
  */
 
-#ifndef	__RTL_TCP_CLIENT
-#define	__RTL_TCP_CLIENT
+#pragma once
 #include	<iostream>
 #include	<sstream>
 #include	<errno.h>
@@ -57,13 +55,13 @@ public:
 	                                bool		autogain,
 		                        int16_t		ppm);
 
-			~rtl_tcp_client	(void);
-	void		stopReader	(void);
+			~rtl_tcp_client	();
+	void		stopReader	();
 	int32_t		getSamples	(std::complex<float> *V, int32_t size);
-	int32_t		Samples		(void);
-	int16_t		bitDepth	(void);
+	int32_t		Samples		();
+	int16_t		bitDepth	();
 private:
-virtual	void		run		(void);
+virtual	void		run		();
 	std::string	hostname;
 	int32_t		basePort;
 	int32_t		vfoFrequency;
@@ -80,6 +78,4 @@ virtual	void		run		(void);
 
 	void		sendCommand (uint8_t cmd, uint32_t param);
 };
-
-#endif
 

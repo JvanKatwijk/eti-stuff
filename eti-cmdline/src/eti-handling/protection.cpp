@@ -32,7 +32,7 @@
 	this    -> outSize      = 24 * bitRate;
 }
 
-        protection::~protection (void) {
+        protection::~protection () {
 }
 
 bool    protection::deconvolve  (int16_t *a, int32_t b, uint8_t *c) {

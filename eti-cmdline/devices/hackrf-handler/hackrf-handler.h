@@ -1,6 +1,6 @@
 #
 /*
- *    Copyright (C) 2017 .. 2018
+ *    Copyright (C) 2017 .. 2025
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
@@ -21,8 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __HACKRF_HANDLER__
-#define	__HACKRF_HANDLER__
+#pragma once
 
 #include	"ringbuffer.h"
 #include	<atomic>
@@ -40,14 +39,14 @@ public:
                                                  int16_t  lnaGain,
                                                  int16_t  vgaGain,
 	                                         bool	ampEnable);
-			~hackrfHandler		(void);
+			~hackrfHandler		();
 	bool		restartReader		(int32_t);
-	void		stopReader		(void);
+	void		stopReader		();
 	int32_t		getSamples		(std::complex<float> *,
 	                                                          int32_t);
-	int32_t		Samples			(void);
-	void		resetBuffer		(void);
-	int16_t		bitDepth		(void);
+	int32_t		Samples			();
+	void		resetBuffer		();
+	int16_t		bitDepth		();
 //
 //	The buffer should be visible by the callback function
 	RingBuffer<std::complex<float>>	_I_Buffer;
@@ -64,5 +63,4 @@ private:
 	void		setLNAGain		(int);
 	void		setVGAGain		(int);
 };
-#endif
 

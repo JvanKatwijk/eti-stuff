@@ -1,4 +1,4 @@
-
+#
 /*
  *    Copyright (C) 2016, 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
@@ -21,8 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef	__PHASEREFERENCE__
-#define	__PHASEREFERENCE__
+#pragma once
 
 #include	"fft.h"
 #include	<stdio.h>
@@ -48,5 +47,5 @@ private:
 	std::complex<float>	*phasedifferences;
 	int32_t		fft_counter;
 };
-#endif
+
 

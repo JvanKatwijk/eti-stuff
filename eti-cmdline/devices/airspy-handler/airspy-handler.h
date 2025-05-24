@@ -14,8 +14,7 @@
  *	jan van Katwijk
  *	Lazy Chair Computing
  */
-#ifndef __AIRSPY_HANDLER__
-#define	__AIRSPY_HANDLER__
+#pragma once
 
 #include	"dab-constants.h"
 #include	"ringbuffer.h"
@@ -27,8 +26,8 @@
 #endif
 
 extern "C"  {
-typedef	int (*pfn_airspy_init) (void);
-typedef int (*pfn_airspy_exit) (void);
+typedef	int (*pfn_airspy_init) ();
+typedef int (*pfn_airspy_exit) ();
 typedef int (*pfn_airspy_open) (struct airspy_device**);
 typedef int (*pfn_airspy_close) (struct airspy_device*);
 typedef int (*pfn_airspy_get_samplerates) (struct airspy_device* device,
@@ -77,18 +76,18 @@ typedef int (*pfn_airspy_set_sensitivity_gain)(struct airspy_device* device, uin
 class airspyHandler: public deviceHandler {
 public:
 			airspyHandler		(int, int16_t, bool, bool);
-			~airspyHandler		(void);
+			~airspyHandler		();
 	bool		restartReader		(int32_t);
-	void		stopReader		(void);
+	void		stopReader		();
 	int32_t		getSamples		(std::complex<float> *v, int32_t size);
-	int32_t		Samples			(void);
-	void		resetBuffer		(void);
-	int16_t		bitDepth		(void);
+	int32_t		Samples			();
+	void		resetBuffer		();
+	int16_t		bitDepth		();
 	void		setGain			(int);
 
 private:
 	RingBuffer<std::complex<float>> 	_I_Buffer;
-	bool		load_airspyFunctions	(void);
+	bool		load_airspyFunctions	();
 //	The functions to be extracted from the dll/.so file
 	pfn_airspy_init		   my_airspy_init;
 	pfn_airspy_exit		   my_airspy_exit;
@@ -119,7 +118,7 @@ private:
 	bool		libraryLoaded;
 	bool		success;
 	bool		running;
-const	char*		board_id_name (void);
+const	char*		board_id_name ();
 	int		gain;
 	int		frequency;
 	bool		rf_bias;
@@ -140,8 +139,7 @@ const	char*		board_id_name (void);
 static
 	int		callback(airspy_transfer_t *);
 	int		data_available (void *buf, int buf_size);
-const	char *		getSerial (void);
-	int	open (void);
+const	char *		getSerial ();
+	int		open ();
 };
 
-#endif

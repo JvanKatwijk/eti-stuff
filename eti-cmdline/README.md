@@ -71,8 +71,8 @@ where XXX refers to the input device being supported, one of
 
 Note:
 the SDRplay devices RSP 1, RSP II, RSP 1A, and RSP Duo are supported
-by both the 2.13 library and the 3.0x library.
-The RSP-Dx is only supported by the 3.0x library
+by both the 2.13 library and the 3.XX library.
+The RSP-Dx, RSP-1B and RSP-DX2 are only supported by the 3.XX library
 
 Use `-DSDRPLAY=ON` for installing the support software linking to the 2.13 lib
 Use `-DSDRPLAY_V3=ON` for installing the 3.0x support
@@ -92,7 +92,6 @@ The resulting program is named `eti-cmdline-XXX`, for XXX see above.
 
 The command `(sudo) make install` will install the created executable in 
 `/usr/local/bin` unless specified differently (note that it requires root permissions)
-
 
 ## Command line parameters
 

@@ -4,15 +4,14 @@
 //	different readers, with one "mother" reader.
 //	Note that the cardreader is quite different here
 //	and its code is elsewhere
-#ifndef	__COMMON_READERS
-#define	__COMMON_READERS
+#pragma once
 
 #include	"virtual-reader.h"
 
 class	reader_16: public virtualReader {
 public:
 	reader_16	(RingBuffer<DSPCOMPLEX> *p, int32_t, int32_t);
-	~reader_16	(void);
+	~reader_16	();
 void	processData	(float IQoffs, void *data, int cnt);
 int16_t bitDepth	(void);
 };
@@ -20,17 +19,17 @@ int16_t bitDepth	(void);
 class	reader_24: public virtualReader {
 public:
 	reader_24	(RingBuffer<DSPCOMPLEX> *p, int32_t, int32_t);
-	~reader_24	(void);
+	~reader_24	();
 void	processData	(float IQoffs, void *data, int cnt);
-int16_t bitDepth	(void);
+int16_t bitDepth	();
 };
 
 class	reader_32: public virtualReader {
 public:
 	reader_32	(RingBuffer<DSPCOMPLEX> *p, int32_t, int32_t);
-	~reader_32	(void);
+	~reader_32	();
 void	processData	(float IQoffs, void *data, int cnt);
-int16_t	bitDepth	(void);
+int16_t	bitDepth	();
 };
 
 //
@@ -49,5 +48,4 @@ private:
 	int16_t		convIndex;
 };
 
-#endif
 

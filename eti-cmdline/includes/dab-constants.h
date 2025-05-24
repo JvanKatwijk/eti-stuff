@@ -23,8 +23,8 @@
 //	Common definitions and includes for
 //	the DAB decoder
 
-#ifndef	__DAB_CONSTANTS__
-#define	__DAB_CONSTANTS__
+#pragma once
+
 #define _USE_MATH_DEFINES
 #include	<math.h>
 #include	<stdint.h>
@@ -355,5 +355,4 @@ uint16_t	genpoly		= 0x1021;
 	crc	= ~((msg [len] << 8) | msg [len + 1]) & 0xFFFF;
 	return (crc ^ accumulator) == 0;
 }
-#endif
 

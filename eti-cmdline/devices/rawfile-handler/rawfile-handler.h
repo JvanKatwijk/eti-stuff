@@ -20,8 +20,8 @@
  *    along with eti-cmdline; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-#ifndef	__RAWFILE_HANDLER__
-#define	__RAWFILE_HANDLER__
+
+#pragma once
 
 #include	<string>
 #include	<atomic>
@@ -35,17 +35,17 @@
 class	rawfileHandler: public deviceHandler {
 public:
 			rawfileHandler	(std::string, bool, inputstopped_t);
-	       		~rawfileHandler	(void);
+	       		~rawfileHandler	();
 	int32_t		getSamples	(std::complex<float> *, int32_t);
-	int32_t		Samples		(void);
+	int32_t		Samples		();
 	bool		restartReader	(int32_t);
-	void		stopReader	(void);
+	void		stopReader	();
 private:
 	RingBuffer<uint8_t>		_I_Buffer;
 	std::string	fileName;
 	bool		continue_on_eof;
 	inputstopped_t	inputStopped;
-	void		runRead		(void);
+	void		runRead		();
 	std::thread	threadHandle;
 	std::atomic<bool> run;
 	int32_t		readBuffer	(uint8_t *, int32_t);
@@ -56,5 +56,4 @@ private:
 	bool		eof;
 };
 
-#endif
 

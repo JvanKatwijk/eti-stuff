@@ -1,6 +1,6 @@
 #
 /*
- *    Copyright (C) 2010, 2011, 2012, 2013
+ *    Copyright (C) 2016 .. 2025
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
@@ -21,8 +21,8 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __RTLSDR_HANDLER__
-#define	__RTLSDR_HANDLER__
+#pragma once
+
 #include	"dab-constants.h"
 #include	"ringbuffer.h"
 #include	"device-handler.h"
@@ -38,13 +38,13 @@ class	rtlsdrHandler: public deviceHandler {
 public:
 			rtlsdrHandler	(int32_t, int16_t,
 	                                 int16_t, bool, int16_t);
-			~rtlsdrHandler	(void);
+			~rtlsdrHandler	();
 	bool		restartReader	(int32_t);
-	void		stopReader	(void);
+	void		stopReader	();
 	int32_t		getSamples	(std::complex<float> *, int32_t);
-	int32_t		Samples		(void);
-	void		resetBuffer	(void);
-	int16_t		bitDepth	(void);
+	int32_t		Samples		();
+	void		resetBuffer	();
+	int16_t		bitDepth	();
 //
 //	These need to be visible for the separate usb handling thread
 	RingBuffer<uint8_t>	_I_Buffer;
@@ -63,5 +63,4 @@ private:
 	std::atomic<bool>	running;
 	int		frequency;
 };
-#endif
 

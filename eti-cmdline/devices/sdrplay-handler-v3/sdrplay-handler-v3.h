@@ -1,6 +1,6 @@
 #
 /*
- *    Copyright (C) 2014 .. 2019
+ *    Copyright (C) 2018 .. 2025
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
@@ -21,8 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __SDRPLAY_HANDLER_V3__
-#define	__SDRPLAY_HANDLER_V3__
+#pragma once
 
 #include	<stdio.h>
 #include        <thread>
@@ -48,11 +47,11 @@ public:
 
 		~sdrplayHandler_v3	();
 	bool    restartReader           (int32_t);
-        void    stopReader              (void);
+        void    stopReader		();
         int32_t getSamples              (std::complex<float> *, int32_t);
-        int32_t Samples                 (void);
-        void    resetBuffer             (void);
-        int16_t bitDepth                (void);
+        int32_t Samples			();
+        void    resetBuffer		();
+        int16_t bitDepth		();
 //	The following items should be visible from outsize
 //      the callback functions refer to them
         RingBuffer<std::complex<float>> _I_Buffer;
@@ -78,5 +77,4 @@ private:
 	int16_t			antenna;
 	int16_t			nrBits;
 };
-#endif
 

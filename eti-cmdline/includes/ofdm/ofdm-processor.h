@@ -1,4 +1,4 @@
-
+#
 /*
  *    Copyright (C) 2016, 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
@@ -21,8 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef	__OFDM_PROCESSOR__
-#define	__OFDM_PROCESSOR__
+#pragma once
 /*
  */
 #include	"dab-constants.h"
@@ -131,5 +130,5 @@ virtual	void		run		(void);
 	fftHandler	*fft_handler;
 	std::complex<float>	*fft_buffer;
 };
-#endif
+
 

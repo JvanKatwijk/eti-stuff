@@ -36,7 +36,6 @@
 #endif
 //      The callbacks
 	                         callbacks	*the_callBacks,
-//
 	                         void		*userData
 	                        ): my_etiGenerator (theMode,
 	                                            nrProcessors,

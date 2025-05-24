@@ -1,6 +1,6 @@
 #
 /*
- *    Copyright (C) 2014 .. 2019
+ *    Copyright (C) 2018 .. 2025
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
@@ -21,8 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef	__XML_DESCRIPTOR__
-#define	__XML_DESCRIPTOR__
+#pragma once
 
 #include	<string>
 #include	<vector>
@@ -34,9 +33,9 @@ public:
 			Blocks		() {}
 			~Blocks		() {}
 	int		blockNumber;
-	int		nrElements;
+	uint64_t		nrElements;
 	std::string		typeofUnit;
-	int		frequency;
+	int			frequency;
 	std::string		modType;
 };
 
@@ -71,4 +70,3 @@ public:
 	void		add_modtoBlock (int blockno, std::string modType);
 };
 
-#endif

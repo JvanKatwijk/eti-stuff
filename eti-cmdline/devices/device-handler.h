@@ -1,6 +1,6 @@
 #
 /*
- *    Copyright (C) 2010, 2011, 2012
+ *    Copyright (C) 2016 .. 2025
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
@@ -24,8 +24,7 @@
  *	want the interface with different devices (including  filehandling)
  *	to be transparent
  */
-#ifndef	__DEVICE_HANDLER__
-#define	__DEVICE_HANDLER__
+#pragma once
 
 #include	<stdint.h>
 #include	"dab-constants.h"
@@ -46,5 +45,4 @@ protected:
 	        int32_t	vfoOffset;
 	        int	theGain;
 };
-#endif
 

@@ -1,4 +1,4 @@
-
+#
 /*
  *    Copyright (C) 2016 2017
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
@@ -24,19 +24,16 @@
 /*
  * 	FIC data
  */
-#ifndef	__FIC_HANDLER__
-#define	__FIC_HANDLER__
+#pragma once
 
 #include	<stdio.h>
 #include	<stdint.h>
 #include	"viterbi-spiral.h"
-//#include	"viterbi.h"
 #include	"callback-types.h"
 #include	"fib-processor.h"
 
 class	dabParams;
 
-//class ficHandler:public viterbi {
 class ficHandler:public viterbiSpiral {
 public:
 			ficHandler		(dabParams	*,
@@ -67,7 +64,4 @@ private:
 	int16_t		ficErrors;
 	int16_t		ficSuccess;
 };
-
-#endif
-
 

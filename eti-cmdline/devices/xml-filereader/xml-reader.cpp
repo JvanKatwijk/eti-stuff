@@ -92,7 +92,7 @@ void	xml_Reader::stopReader	() {
 	}
 }
 
-static	int cycleCount = 0;
+//static	int cycleCount = 0;
 void	xml_Reader::run () {
 uint64_t	samplesRead	= 0;
 uint64_t	nextStop;
@@ -103,7 +103,7 @@ int	startPoint	= filePointer;
 	running. store (true);
 	for (int blocks = 0; blocks < fd -> nrBlocks; blocks ++) {
 	   samplesToRead	= compute_nrSamples (file, blocks);
-	   fprintf (stderr, "samples to read %d\n", samplesToRead);
+	   fprintf (stderr, "samples to read %ld\n", samplesToRead);
 	   samplesRead		= 0;
 	   do {
 	      while ((samplesRead <= samplesToRead) && running. load ()) {
@@ -143,6 +143,7 @@ uint64_t	xml_Reader::compute_nrSamples (FILE *f, int blockNumber) {
 uint64_t	nrElements	= fd -> blockList. at (blockNumber). nrElements;
 uint64_t	samplesToRead	= 0;
 
+	fprintf (stderr, "we count %ld elements\n", nrElements);
 	(void)f;
 	if (fd -> blockList. at (blockNumber). typeofUnit == "Channel") {
 	   if ((fd -> iqOrder == "IQ") ||
@@ -154,7 +155,7 @@ uint64_t	samplesToRead	= 0;
 	else	// typeofUnit = "sample"
 	   samplesToRead = nrElements;
 
-	fprintf (stderr, "%d samples have to be read, order is %s\n",
+	fprintf (stderr, "%ld samples have to be read, order is %s\n",
 	                 samplesToRead, fd -> iqOrder. c_str ());
 	return samplesToRead;
 }

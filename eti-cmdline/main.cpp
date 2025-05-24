@@ -1,6 +1,6 @@
 #
 /*
- *    Copyright (C) 2016, 2017, 2018
+ *    Copyright (C) 2017 .. 2025
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
@@ -142,7 +142,7 @@ using std::endl;
 #elif	HAVE_RTL_TCP
 #include	"rtl_tcp-client.h"
 #elif	HAVE_XMLFILES
-#include	"xml-filereader.h"	// does not work yet
+#include	"xml-filereader.h"
 #endif
 //
 //	Be aware that the callbacks may arrive from different threads,
@@ -308,19 +308,22 @@ int		deviceIndex	= 0;
 const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:Qp:";
 #elif	HAVE_WAVFILES
 std::string	fileName;
-bool		repeater	= true;
+//bool		repeater	= true;
 bool		continue_on_eof	= false;
 const char	*optionsString	= "ShP:D:d:M:B:O:F:rt:";
+(void)theBand;
 #elif	HAVE_RAWFILES
 std::string	fileName;
-bool		repeater	= true;
+//bool		repeater	= true;
 bool		continue_on_eof	= false;
 const char	*optionsString	= "ShP:D:d:M:B:O:F:rt:";
+(void)theBand;
 #elif	HAVE_XMLFILES
 std::string	fileName;
-bool		repeater	= true;
+//bool		repeater	= true;
 bool		continue_on_eof	= false;
 const char	*optionsString	= "ShP:D:d:M:B:O:F:rt:";
+(void)theBand;
 #elif	HAVE_RTL_TCP
 int		deviceGain	= 50;
 bool		autoGain	= false;
@@ -713,7 +716,7 @@ struct sigaction sigact;
 	exit (1);
 }
 
-void    printOptions (void) {
+void    printOptions () {
         std::cerr << 
 "\n eti-cmdline-";
 #ifdef	HAVE_WAVFILES

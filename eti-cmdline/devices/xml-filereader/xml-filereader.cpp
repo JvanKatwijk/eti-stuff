@@ -1,6 +1,6 @@
 #
 /*
- *    Copyright (C) 2013 .. 2017
+ *    Copyright (C) 2013 .. 2025
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
@@ -58,7 +58,7 @@
 	   throw (32);
 	}
 
-	fprintf (stderr, "nrElements = %d\n",
+	fprintf (stderr, "nrElements = %ld\n",
 	             theDescriptor -> blockList [0].nrElements);
 	theReader	= nullptr;
 	this	-> continue_on_eof	= continue_on_eof;

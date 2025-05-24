@@ -1,6 +1,6 @@
-
+#
 /*
- *    Copyright (C) 2014
+ *    Copyright (C) 2025
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
@@ -100,9 +100,6 @@
 	this	-> ensembleName	= the_callBacks -> theEnsemble;
 	this	-> programName	= the_callBacks -> theProgram;
 	this	-> userData	= userData;
-	memset (dateTime, 0, sizeof (dateTime));
-	dateFlag	= false;
-	selectedService		= -1;
 	clearEnsemble	();
 	CIFCount_hi	= -1;
 	CIFCount_lo	= -1;
@@ -147,7 +144,8 @@ uint8_t	*d		= p;
 	   }
 }
 //
-//	Handle ensemble is all through FIG0
+//	To generate an eti file, we basically only need the
+//	subchannel information
 //
 void	fib_processor::process_FIG0 (uint8_t *d) {
 uint8_t	extension	= getBits_5 (d, 8 + 3);
@@ -162,64 +160,7 @@ uint8_t	extension	= getBits_5 (d, 8 + 3);
 	      FIG0Extension1 (d);
 	      break;
 
-	   case 2:
-	      FIG0Extension2 (d);
-	      break;
-
-	   case 3:
-	      FIG0Extension3 (d);
-	      break;
-
-	   case 5:
-	      FIG0Extension5 (d);
-	      break;
-
-	   case 8:
-	      FIG0Extension8 (d);
-	      break;
-
-	   case 9:
-	      FIG0Extension9 (d);
-	      break;
-
-	   case 10:
-	      FIG0Extension10 (d);
-	      break;
-
-	   case 14:
-	      FIG0Extension14 (d);
-	      break;
-
-	   case 13:
-	      FIG0Extension13 (d);
-	      break;
-
-	   case 16:
-	      FIG0Extension16 (d);
-	      break;
-
-	   case 17:
-	      FIG0Extension17 (d);
-	      break;
-
-	   case 18:
-	      FIG0Extension18 (d);
-	      break;
-
-	   case 19:
-	      FIG0Extension19 (d);
-	      break;
-
-	   case 21:
-	      FIG0Extension21 (d);
-	      break;
-
-	   case 22:
-	      FIG0Extension22 (d);
-	      break;
-
 	   default:
-//	      fprintf (stderr, "FIG0/%d passed by\n", extension);
 	      break;
 	}
 }
@@ -327,435 +268,10 @@ int16_t	option, protLevel, subChanSize;
 	return bitOffset / 8;	// we return bytes
 }
 //
-//	
-void	fib_processor::FIG0Extension2 (uint8_t *d) {
-int16_t	used	= 2;		// offset in bytes
-int16_t	Length	= getBits_5 (d, 3);
-uint8_t	PD_bit	= getBits_1 (d, 8 + 2);
-uint8_t	CN	= getBits_1 (d, 8 + 0);
-
-	while (used < Length) {
-	   used = HandleFIG0Extension2 (d, used, CN, PD_bit);
-	}
-}
-//
-//	Note Offset is in bytes
-//	With FIG0/2 we bind the channels to Service Ids
-//
-int16_t	fib_processor::HandleFIG0Extension2 (uint8_t *d,
-	                                     int16_t offset,
-	                                     uint8_t cn,
-	                                     uint8_t pd) {
-int16_t		lOffset	= 8 * offset;
-int16_t		i;
-uint8_t		ecc;
-uint8_t		cId;
-uint32_t	SId;
-int16_t		numberofComponents;
-
-	(void)cn;
-	if (pd == 1) {		// long Sid
-	   ecc	= getBits_8 (d, lOffset);	(void)ecc;
-	   cId	= getBits_4 (d, lOffset + 1);
-	   SId	= getLBits (d, lOffset, 32);
-	   lOffset	+= 32;
-	}
-	else {
-	   cId	= getBits_4 (d, lOffset);	(void)cId;
-	   SId	= getBits (d, lOffset + 4, 12);
-	   SId	= getBits (d, lOffset, 16);
-	   lOffset	+= 16;
-	}
-
-	numberofComponents	= getBits_4 (d, lOffset + 4);
-	lOffset	+= 8;
-
-	for (i = 0; i < numberofComponents; i ++) {
-	   uint8_t	TMid	= getBits_2 (d, lOffset);
-	   if (TMid == 00)  {	// Audio
-	      uint8_t	ASCTy	= getBits_6 (d, lOffset + 2);
-	      uint8_t	SubChId	= getBits_6 (d, lOffset + 8);
-	      uint8_t	PS_flag	= getBits_1 (d, lOffset + 14);
-	      bind_audioService (TMid, SId, i, SubChId, PS_flag, ASCTy);
-	   }
-	   else
-	   if (TMid == 3) { // MSC packet data
-	      int16_t SCId	= getBits (d, lOffset + 2, 12);
-	      uint8_t PS_flag	= getBits_1 (d, lOffset + 14);
-	      uint8_t CA_flag	= getBits_1 (d, lOffset + 15);
-	      bind_packetService (TMid, SId, i, SCId, PS_flag, CA_flag);
-           }
-	   else
-	      {;}		// for now
-	   lOffset += 16;
-	}
-	return lOffset / 8;		// in Bytes
-}
-
-//      The Extension 3 of FIG type 0 (FIG 0/3) gives
-//      additional information about the service component
-//      description in packet mode.
-//      manual: page 55
-void	fib_processor::FIG0Extension3 (uint8_t *d) {
-int16_t	used	= 2;
-int16_t	Length	= getBits_5 (d, 3);
-
-	while (used < Length)
-	   used = HandleFIG0Extension3 (d, used);
-}
-
-//
-//      DSCTy   DataService Component Type
-int16_t fib_processor::HandleFIG0Extension3 (uint8_t *d, int16_t used) {
-int16_t SCId            = getBits (d, used * 8, 12);
-int16_t CAOrgflag       = getBits_1 (d, used * 8 + 15);
-int16_t DGflag          = getBits_1 (d, used * 8 + 16);
-int16_t DSCTy           = getBits_6 (d, used * 8 + 18);
-int16_t SubChId         = getBits_6 (d, used * 8 + 24);
-int16_t packetAddress   = getBits (d, used * 8 + 30, 10);
-uint16_t        CAOrg   = getBits (d, used * 8 + 40, 16);
-
-serviceComponent *packetComp = find_packetComponent (SCId);
-
-	(void)CAOrgflag;
-	(void)CAOrg;
-        used += 56 / 8;
-        if (packetComp == NULL)		// no serviceComponent yet
-           return used;
-        packetComp      -> subchannelId = SubChId;
-        packetComp      -> DSCTy        = DSCTy;
-	packetComp	-> DGflag	= DGflag;
-        packetComp      -> packetAddress        = packetAddress;
-        return used;
-}
-
-void	fib_processor::FIG0Extension5 (uint8_t *d) {
-int16_t	used	= 2;		// offset in bytes
-int16_t	Length	= getBits_5 (d, 3);
-
-	while (used < Length) {
-	   used = HandleFIG0Extension5 (d, used);
-	}
-}
-
-int16_t	fib_processor::HandleFIG0Extension5 (uint8_t* d, int16_t offset) {
-int16_t	loffset	= offset * 8;
-uint8_t	lsFlag	= getBits_1 (d, loffset);
-int16_t	subChId, serviceComp, language;
-
-	if (lsFlag == 0) {	// short form
-	   if (getBits_1 (d, loffset + 1) == 0) {
-	      subChId	= getBits_6 (d, loffset + 2);
-	      language	= getBits_8 (d, loffset + 8);
-	   }
-	   loffset += 16;
-	}
-	else {			// long form
-	   serviceComp	= getBits (d, loffset + 4, 12);
-	   language	= getBits_8 (d, loffset + 16);
-	   loffset += 24;
-	}
-	(void)serviceComp;
-	(void)language;
-	(void)subChId;
-	return loffset / 8;
-}
-
-void	fib_processor::FIG0Extension8 (uint8_t *d) {
-int16_t	used	= 2;		// offset in bytes
-int16_t	Length	= getBits_5 (d, 3);
-uint8_t	PD_bit	= getBits_1 (d, 8 + 2);
-
-	while (used < Length) {
-	   used = HandleFIG0Extension8 (d, used, PD_bit);
-	}
-}
-
-int16_t	fib_processor::HandleFIG0Extension8 (uint8_t *d, int16_t used,
-	                                     uint8_t pdBit) {
-int16_t	lOffset	= used * 8;
-uint32_t	SId	= getLBits (d, lOffset, pdBit == 1 ? 32 : 16);
-uint8_t		lsFlag;
-uint16_t	SCIds;
-int16_t		SCid;
-int16_t		MSCflag;
-int16_t		SubChId;
-uint8_t		extensionFlag;
-
-	lOffset += pdBit == 1 ? 32 : 16;
-        extensionFlag   = getBits_1 (d, lOffset);
-        SCIds   = getBits_4 (d, lOffset + 4);
-        lOffset += 8;
-
-        lsFlag  = getBits_1 (d, lOffset + 8);
-        if (lsFlag == 1) {
-           SCid = getBits (d, lOffset + 4, 12);
-           lOffset += 16;
-//           if (find_packetComponent ((SCIds << 4) | SCid) != NULL) {
-//              fprintf (stderr, "packet component bestaat !!\n");
-//           }
-        }
-	else {
-	   MSCflag	= getBits_1 (d, lOffset + 1);
-	   SubChId	= getBits_6 (d, lOffset + 2);
-	   lOffset += 8;
-	}
-	if (extensionFlag)
-	   lOffset += 8;	// skip Rfa
-	(void)SId;
-	(void)SCIds;
-	(void)SCid;
-	(void)SubChId;
-	(void)MSCflag;
-	return lOffset / 8;
-}
-//
-//	FIG0/9 and FIG0/10 are copied from the work of
-//	Michael Hoehn
-void fib_processor::FIG0Extension9 (uint8_t *d) {
-int16_t	offset	= 16;
-
-	dateTime [6] = (getBits_1 (d, offset + 2) == 1)?
-	                -1 * getBits_4 (d, offset + 3):
-	                     getBits_4 (d, offset + 3);
-	dateTime [7] = (getBits_1 (d, offset + 7) == 1)? 30 : 0;
-}
-//
-void fib_processor::FIG0Extension10 (uint8_t *fig) {
-int16_t		offset = 16;
-int32_t		mjd	= getLBits (fig, offset + 1, 17);
-// Modified Julian Date umrechnen (Nach wikipedia)
-int32_t J	= mjd + 2400001;
-int32_t j	= J + 32044;
-int32_t g	= j / 146097; 
-int32_t	dg	= j % 146097;
-int32_t c	= ((dg / 36524) + 1) * 3 / 4; 
-int32_t dc	= dg - c * 36524;
-int32_t b	= dc / 1461;
-int32_t db	= dc%1461;
-int32_t a	= ((db / 365) + 1) * 3 / 4; 
-int32_t da	= db - a * 365;
-int32_t y	= g * 400 + c * 100 + b * 4 + a;
-int32_t m	= ((da * 5 + 308) / 153) - 2;
-int32_t d	= da - ((m + 4) * 153 / 5) + 122;
-int32_t Y	= y - 4800 + ((m + 2) / 12); 
-int32_t M	= ((m + 2) % 12) + 1; 
-int32_t D	= d + 1;
-	
-	dateTime [0] = Y;	// Jahr
-	dateTime [1] = M;	// Monat
-	dateTime [2] = D;	// Tag
-	dateTime [3] = getBits_5 (fig, offset + 21);	// Stunden
-	if (getBits_6 (fig, offset + 26) != dateTime [4]) 
-	   dateTime [5] =  0;	// Sekunden (Uebergang abfangen)
-
-	dateTime [4] = getBits_6 (fig, offset + 26);	// Minuten
-	if (fig [offset + 20] == 1)
-	   dateTime [5] = getBits_6 (fig, offset + 32);	// Sekunden
-	dateFlag	= true;
-}
-
-void	fib_processor::FIG0Extension13 (uint8_t *d) {
-int16_t	used	= 2;		// offset in bytes
-int16_t	Length	= getBits_5 (d, 3);
-uint8_t	PD_bit	= getBits_1 (d, 8 + 2);
-
-	while (used < Length) 
-	   used = HandleFIG0Extension13 (d, used, PD_bit);
-}
-
-int16_t	fib_processor::HandleFIG0Extension13 (uint8_t *d,
-	                                     int16_t used,
-	                                     uint8_t pdBit) {
-int16_t	lOffset		= used * 8;
-uint32_t	SId	= getLBits (d, lOffset, pdBit == 1 ? 32 : 16);
-uint16_t	SCIds;
-int16_t		NoApplications;
-int16_t		i;
-
-	lOffset		+= pdBit == 1 ? 32 : 16;
-	SCIds		= getBits_4 (d, lOffset);
-	NoApplications	= getBits_4 (d, lOffset + 4);
-	lOffset += 8;
-
-	for (i = 0; i < NoApplications; i ++) {
-	   int16_t appType	= getBits (d, lOffset, 11);
-	   int16_t length	= getBits_5 (d, lOffset + 11);
-	   lOffset += (11 + 5 + 8 * length);
-	   switch (appType) {
-	      case 0x000:		// reserved for future use
-	      case 0x001:		// not used
-	         break;
-
-	      case 0x002:		// MOT slideshow
-	      case 0x003:		// MOT Broadcast Web Site
-	      case 0x004:		// TPEG
-	      case 0x005:		// DGPS
-	      case 0x006:		// TMC
-	      case 0x007:		// EPG
-	      case 0x008:		// DAB Java
-	         break;
-
-	      case 0x44a:		// Journaline
-//	         fprintf (stderr, "Journaline\n");
-	         break;
-
-	      default:
-	         break;
-	   }
-	}
-
-	(void)SId;
-	(void)SCIds;
-	return lOffset / 8;
-}
-
-void	fib_processor::FIG0Extension14 (uint8_t *d) {
-	(void)d;
-}
-
-void	fib_processor::FIG0Extension16 (uint8_t *d) {
-int16_t	length 	= getBits_5 (d, 3);	// in bytes
-int16_t	offset	= 16;			// in bits
-serviceId	*s;
-
-	while (offset < length * 8) {
-	   uint16_t	SId	= getBits (d, offset, 16);
-	   s	= findServiceId (SId);
-	   if (!s -> hasPNum) {
-	      uint8_t PNum = getBits (d, offset + 16, 16);
-	      s -> pNum		= PNum;
-	      s -> hasPNum	= true;
-//	      fprintf (stderr, "Program number info SId = %.8X, PNum = %d\n",
-//	      	                               SId, PNum);
-	   }
-	   offset += 72;
-	}
-}
-
-void	fib_processor::FIG0Extension17 (uint8_t *d) {
-int16_t	length	= getBits_5 (d, 3);
-int16_t	offset	= 16;
-serviceId	*s;
-
-	while (offset < length * 8) {
-	   uint16_t	SId	= getBits (d, offset, 16);
-	   bool	L_flag	= getBits_1 (d, offset + 18);
-	   bool	CC_flag	= getBits_1 (d, offset + 19);
-	   int16_t type;
-	   int16_t Language = 0x00;	// init with unknown language
-	   s	= findServiceId (SId);
-	   if (L_flag) {		// language field present
-	      Language = getBits_8 (d, offset + 24);
-	      s -> language = Language;
-	      s -> hasLanguage = true;
-	      offset += 8;
-	   }
-
-	   type	= getBits_5 (d, offset + 27);
-	   s	-> programType	= type;
-	   if (CC_flag)			// cc flag
-	      offset += 40;
-	   else
-	      offset += 32;
-	}
-}
-
-void	fib_processor::FIG0Extension18 (uint8_t *d) {
-int16_t	offset	= 16;		// bits
-uint16_t	SId, AsuFlags;
-int16_t		Length	= getBits_5 (d, 3);
-
-	while (offset / 8 < Length - 1 ) {
-	   int16_t NumClusters = getBits_5 (d, offset + 35);
-	   SId	= getBits (d, offset, 16);
-	   AsuFlags	= getBits (d, offset + 16, 16);
-//	   fprintf (stderr, "Announcement %d for SId %d with %d clusters\n",
-//	                    AsuFlags, SId, NumClusters);
-	   offset += 40 + NumClusters * 8;
-	}
-	(void)SId;
-	(void)AsuFlags;
-}
-
-void	fib_processor::FIG0Extension19 (uint8_t *d) {
-int16_t		offset	= 16;		// bits
-uint16_t	AswFlags;
-int16_t		Length	= getBits_5 (d, 3);
-uint8_t		region_Id_Lower;
-
-	while (offset / 8 < Length - 1) {
-	   uint8_t ClusterId	= getBits_8 (d, offset);
-	   bool new_flag	= getBits_1(d, offset + 24);
-	   bool	region_flag	= getBits_1 (d, offset + 25);
-	   uint8_t SubChId	= getBits_6 (d, offset + 26);
-
-	   AswFlags	= getBits (d, offset + 8, 16);
-//	   fprintf (stderr,
-//	          "%s %s Announcement %d for Cluster %2u on SubCh %2u ",
-//	              ((new_flag==1)?"new":"old"),
-//	              ((region_flag==1)?"regional":""),
-//	              AswFlags, ClusterId,SubChId);
-	   if (region_flag) {
-	      region_Id_Lower = getBits_6 (d, offset + 34);
-	      offset += 40;
-//           fprintf(stderr,"for region %u",region_Id_Lower);
-	   }
-	   else
-	      offset += 32;
-
-//	   fprintf(stderr,"\n");
-	   (void)ClusterId;
-	   (void)new_flag;
-	   (void)SubChId;
-	}
-	(void)AswFlags;
-	(void)region_Id_Lower;
-}
-
-void	fib_processor::FIG0Extension21 (uint8_t *d) {
-//	fprintf (stderr, "Frequency information\n");
-	(void)d;
-}
-
-void	fib_processor::FIG0Extension22 (uint8_t *d) {
-int16_t	Length	= getBits_5 (d, 3);
-int16_t	offset	= 16;		// on bits
-int16_t	used	= 2;
-
-	while (used < Length) 
-	   used = HandleFIG0Extension22 (d, used);
-	(void)offset;
-}
-
-int16_t	fib_processor::HandleFIG0Extension22 (uint8_t *d, int16_t used) {
-uint8_t MS;
-int16_t	mainId;
-int16_t	noSubfields;
-
-	mainId	= getBits_7 (d, used * 8 + 1);
-	(void)mainId;
-	MS	= getBits_1 (d, used * 8);
-	if (MS == 0) {		// fixed size
-	   int16_t latitudeCoarse = getBits (d, used * 8 + 8, 16);
-	   int16_t longitudeCoarse = getBits (d, used * 8 + 24, 16);
-//	   fprintf (stderr, "Id = %d, (%d %d)\n", mainId,
-//	                              latitudeCoarse, longitudeCoarse);
-	   (void)latitudeCoarse;
-	   (void)longitudeCoarse;
-	   return used + 48 / 6;
-	}
-	//	MS == 1
-
-	noSubfields = getBits_3 (d, used * 8 + 13);
-//	fprintf (stderr, "Id = %d, subfields = %d\n", mainId, noSubfields);
-	used += (16 + noSubfields * 48) / 8;
-
-	return used;
-}
 
 //	FIG 1
 //
+//	FIG1 gives some names that we show
 void	fib_processor::process_FIG1 (uint8_t *d) {
 uint8_t		charSet, extension;
 uint32_t	SId	= 0;
@@ -764,10 +280,6 @@ int16_t		offset	= 0;
 serviceId	*myIndex;
 int16_t		i;
 uint8_t		pd_flag;
-uint8_t		SCidS;
-uint8_t		XPAD_aid;
-uint8_t		flagfield;
-uint8_t		region_id;
 char		label [17];
 //
 //	from byte 1 we deduce:
@@ -778,19 +290,13 @@ char		label [17];
 	if (oe == 01)
 	   return;
 	switch (extension) {
-/*
-	   default:
-	      return;
- */
 	   case 0:	// ensemble label
 	      SId	= getBits (d, 16, 16);
 	      offset	= 32;
 	      if ((charSet <= 16)) { // EBU Latin based repertoire
 	         for (i = 0; i < 16; i ++) {
 	            label [i] = getBits_8 (d, offset + 8 * i);
-//	            addEnsembleChar (label [i], i);
 	         }
-//	         fprintf (stderr, "Ensemblename: %16s\n", label);
 	         if (!oe) {
 	            const std::string name = toStringUsingCharset (
 	                                      (const char *) label,
@@ -798,8 +304,6 @@ char		label [17];
 	            nameofEnsemble (SId, name);
 	         }
 	      }
-//	      fprintf (stderr,
-//	               "charset %d is used for ensemblename\n", charSet);
 	      break;
 
 	   case 1:	// 16 bit Identifier field for service label
@@ -814,26 +318,13 @@ char		label [17];
 	                            toStringUsingCharset (
 	                                   (const char *) label,
 	                                   (CharacterSet) charSet));
-//	         fprintf (stderr, "FIG1/1: SId = %4x\t%s\n", SId, label);
 	         addtoEnsemble (myIndex -> serviceLabel. label, SId);
 	         myIndex -> serviceLabel. hasName = true;
 	      }
 	      break;
 
-	   case 3:
-	      // region label
-	      region_id = getBits_6 (d, 16 + 2);
-	      (void)region_id;
-	      offset = 24;
-	      for (i = 0; i < 16; i ++) 
-	         label [i] = getBits_8 (d, offset + 8 * i);
-
-//	      fprintf (stderr, "FIG1/3: RegionID = %2x\t%s\n", region_id, label);
-	      break;
-
 	   case 4:
 	      pd_flag	= getLBits (d, 16, 1);
-	      SCidS	= getLBits (d, 20, 4);
 	      if (pd_flag) {	// 32 bit identifier field for service component label
 	         SId	= getLBits (d, 24, 32);
 	         offset	= 56;
@@ -843,65 +334,35 @@ char		label [17];
 	         offset	= 40;
 	      }
 
-	      flagfield	= getLBits (d, offset + 128, 16);
 	      for (i = 0; i < 16; i ++)
 	         label [i] = getBits_8 (d, offset + 8 * i);
-//	      fprintf (stderr, "FIG1/4: Sid = %8x\tp/d=%d\tSCidS=%1X\tflag=%8X\t%s\n",
-//	                        SId, pd_flag, SCidS, flagfield, label);
 	      break;
-
-
+//
 	   case 5:	// 32 bit Identifier field for service label
 	      SId	= getLBits (d, 16, 32);
 	      offset	= 48;
 	      myIndex   = findServiceId (SId);
-              if ((!myIndex -> serviceLabel. hasName) && (charSet <= 16)) {
-                 for (i = 0; i < 16; i ++) {
-                    label [i] = getBits_8 (d, offset + 8 * i);
-                 }
-                 myIndex -> serviceLabel. label. append (
-                                    toStringUsingCharset (
-                                           (const char *) label,
-                                           (CharacterSet) charSet));
+	      if ((!myIndex -> serviceLabel. hasName) && (charSet <= 16)) {
+	         for (i = 0; i < 16; i ++) {
+	            label [i] = getBits_8 (d, offset + 8 * i);
+	         }
 	         myIndex -> serviceLabel. label. append (
-                                    toStringUsingCharset (
+	                           toStringUsingCharset (
+	                                           (const char *) label,
+                                                    (CharacterSet) charSet));
+	         myIndex -> serviceLabel. label. append (
+	                           toStringUsingCharset (
 	                                 " (data)",
-                                      (CharacterSet) charSet));
-#ifdef	MSC_DATA__
-	         addtoEnsemble (myIndex -> serviceLabel. label);
-#endif
-                 myIndex -> serviceLabel. hasName = true;
-              }
-	      break;
-
-	   case 6:	// XPAD label
-	      pd_flag	= getLBits (d, 16, 1);
-	      SCidS	= getLBits (d, 20, 4);
-	      if (pd_flag) {	// 32 bits identifier for XPAD label
-	         SId		= getLBits (d, 24, 32);
-	         XPAD_aid	= getLBits (d, 59, 5);
-	         offset 	= 64;
+                                         (CharacterSet) charSet));
+	         addtoEnsemble (myIndex -> serviceLabel. label, SId);
+	         myIndex -> serviceLabel. hasName = true;
 	      }
-	      else {	// 16 bit identifier for XPAD label
-	         SId		= getLBits (d, 24, 16);
-	         XPAD_aid	= getLBits (d, 43, 5);
-	         offset		= 48;
-	      }
-
-	      for (i = 0; i < 16; i ++)
-	         label [i] = getBits_8 (d, offset + 8 * i);
-
-//	      fprintf (stderr, "FIG1/6: SId = %8x\tp/d = %d\t SCidS = %1X\tXPAD_aid = %2u\t%s\n",
-//		       SId, pd_flag, SCidS, XPAD_aid, label);
 	      break;
 
 	   default:
 //	      fprintf (stderr, "FIG1/%d: not handled now\n", extension);
 	      break;
 	}
-	(void)SCidS;
-	(void)XPAD_aid;
-	(void)flagfield;
 }
 //
 //	locate - and create if needed - a reference to the entry
@@ -925,101 +386,17 @@ int16_t	i;
 	return &listofServices [0];	// should not happen
 }
 
-serviceComponent *fib_processor::find_packetComponent (int16_t SCId) {
-int16_t i;
-
-        for (i = 0; i < 64; i ++) {
-           if (!serviceComps [i]. inUse)
-              continue;
-           if (serviceComps [i]. TMid != 03)
-              continue;
-           if (serviceComps [i]. SCId == SCId)
-              return &serviceComps [i];
-        }
-        return NULL;
-}
 
 //	bind_audioService is the main processor for - what the name suggests -
-//	connecting the description of an audioservice to the Service Identifier
-void	fib_processor::bind_audioService (int8_t TMid,
-	                                  uint32_t SId,
-	                                  int16_t compnr,
-	                                  int16_t subChId,
-	                                  int16_t ps_flag,
-	                                  int16_t ASCTy) {
-serviceId *s	= findServiceId	(SId);
-int16_t	i;
-int16_t	firstFree	= -1;
-
-	for (i = 0; i < 64; i ++) {
-           if (!serviceComps [i]. inUse) {
-              if (firstFree == -1)
-                 firstFree = i;
-              continue;
-           }
-           if ((serviceComps [i]. service == s) &&
-               (serviceComps [i]. componentNr == compnr))
-              return;
-        }
-        serviceComps [firstFree]. inUse = true;
-        serviceComps [firstFree]. TMid    = TMid;
-        serviceComps [firstFree]. componentNr = compnr;
-        serviceComps [firstFree]. service = s;
-        serviceComps [firstFree]. subchannelId = subChId;
-        serviceComps [firstFree]. PS_flag = ps_flag;
-        serviceComps [firstFree]. ASCTy = ASCTy;
-//	addtoEnsemble (s -> serviceLabel. label , SId);
-//	fprintf (stderr, "service %8x (comp %d) is audio\n", subChId, firstFree);
-}
-
-
-//	bind_packetService is the main processor for - what the name suggests -
-//	connecting the service component defining the service to the SId,
-///	Note that the subchannel is assigned through a FIG0/3
-void	fib_processor::bind_packetService (int8_t TMid,
-	                                   uint32_t SId,
-	                                   int16_t compnr,
-	                                   int16_t subChId,
-	                                   int16_t ps_flag,
-	                                   int16_t CAflag) {
-serviceId *s    = findServiceId (SId);
+void	fib_processor::clearEnsemble () {
 int16_t i;
-int16_t	firstFree	= -1;
-
-       for (i = 0; i < 64; i ++) {
-	   if (!serviceComps [i]. inUse) {
-	      if (firstFree == -1)
-	         firstFree = i;
-	      continue;
-	   }
-	   if ((serviceComps [i]. service == s) && 
-	       (serviceComps [i]. componentNr == compnr))
-	      return;
-	}
-	serviceComps [firstFree]. inUse  = true;
-	serviceComps [firstFree]. TMid   = TMid;
-	serviceComps [firstFree]. service = s;
-	serviceComps [firstFree]. componentNr = compnr;
-	serviceComps [firstFree]. SCId   = SId;
-	serviceComps [firstFree]. PS_flag = ps_flag;
-	serviceComps [firstFree]. CAflag = CAflag;
-//	fprintf (stderr, "service %8x (comp %d) is packet\n", SId, compnr);
-}
-
-
-//	bind_audioService is the main processor for - what the name suggests -
-void	fib_processor::clearEnsemble (void) {
-int16_t i;
-	memset (serviceComps, 0, sizeof (serviceComps));
 	memset (subChannels, 0, sizeof (subChannels));
 	for (i = 0; i < 64; i ++) {
 	   listofServices [i]. inUse = false;
 	   listofServices [i]. serviceId = -1;
 	   listofServices [i]. serviceLabel. label = std::string ();
-	   serviceComps [i]. inUse = false;
 	   subChannels	[i]. inUse	= false;
 	}
-	selectedService	= -1;
 }
 
 void	fib_processor::get_channelInfo (channel_data *d, int n) {

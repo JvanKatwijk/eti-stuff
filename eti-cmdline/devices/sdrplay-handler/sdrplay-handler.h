@@ -1,6 +1,6 @@
 #
 /*
- *    Copyright (C) 2014
+ *    Copyright (C) 2016 .. 2025
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
  *    Lazy Chair Computing
  *
@@ -21,8 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __SDRPLAY_HANDLER__
-#define	__SDRPLAY_HANDLER__
+#pragma once
 
 //#include	<dlfcn.h>
 #include	<atomic>
@@ -55,17 +54,16 @@ public:
 	                                 uint16_t       deviceIndex,
 	                                 int16_t        antenna);
 
-		~sdrplayHandler		(void);
+		~sdrplayHandler		();
 	bool	restartReader		(int32_t);
-	void	stopReader		(void);
+	void	stopReader		();
 	int32_t	getSamples		(std::complex<float> *, int32_t);
-	int32_t	Samples			(void);
-	void	resetBuffer		(void);
-	int16_t	bitDepth		(void);
+	int32_t	Samples			();
+	void	resetBuffer		();
+	int16_t	bitDepth		();
 	RingBuffer<std::complex<float>>	_I_Buffer;
 	float	denominator;
 private:
-
 	int16_t		hwVersion;
 	uint16_t	deviceIndex;
 	uint32_t	numofDevs;	// int32_t not my choice
@@ -78,5 +76,4 @@ private:
 	std::atomic<bool>	running;
 	mir_sdr_AgcControlT agcMode;
 };
-#endif
 
