@@ -583,10 +583,12 @@ endif()
 	      target_compile_options(${objectName}  PRIVATE -march=armv7-a -mfloat-abi=hard -mfpu=neon-vfpv4 )
 	   endif()	
 	endif()
+	find_package(fmt)
 	target_link_libraries (${objectName}
 #	                       ${FFTW3F_LIBRARIES}
 	                       ${extraLibs}
 	                       ${CMAKE_DL_LIBS}
+			       fmt::fmt
 	)
 
 	INSTALL (TARGETS ${objectName} DESTINATION  ${CMAKE_INSTALL_PREFIX})
