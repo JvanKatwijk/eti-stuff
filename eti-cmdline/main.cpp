@@ -39,7 +39,10 @@
 #ifdef	HAVE_DUMPING
 #include	"sndfile.h"
 #endif
-
+#include <fstream>
+#include <fmt/format.h>
+#include <nlohmann/json.hpp>
+#include <boost/algorithm/string.hpp>
 
 #if (defined(__MINGW32__) || defined(_WIN32))
 #include <string.h>
@@ -118,8 +121,12 @@ const char *oli; 		/* option letter list index */
 }
 
 #endif
+
+using namespace boost::algorithm;
+using namespace std;
 using std::cerr;
 using std::endl;
+
 //
 #ifdef	HAVE_RTLSDR
 #include	"rtlsdr-handler/rtlsdr-handler.h"
@@ -161,6 +168,30 @@ static
 std::atomic<int16_t> ficSuccess;
 static
 std::atomic<bool>ensembleRecognized;
+
+using json = nlohmann::json;
+
+// Struct to store channels found
+struct dabEnsembleDetails {
+    string ensemble;
+    string channel;
+    map<string, string> stations;
+};
+// Make the struc JSON serialisable
+//NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(dabEnsembleDetails, ensemble, channel, stations);
+
+dabEnsembleDetails dabEnsemble;
+bool bStopAfterEnsembleDump = false;
+bool bDumpEnsemble = false;
+
+/* Serialise JSON */
+void to_json(json& j, const dabEnsembleDetails& d) {
+    j = json{
+       {"ensemble", d.ensemble},
+       {"channel", d.channel},
+       {"stations", d.stations}
+     };
+};
 
 static
 bool	isSilent	= false;
@@ -217,6 +248,11 @@ int	programCounter	= 1;
 void	programnameHandler (std::string name, int SId, void *ctx) {
 	(void)ctx;
 	mainLocker. lock ();
+	trim_right(name);
+ 	dabEnsemble.stations.insert({
+ 		name.c_str(),
+ 		fmt::format("{:#x}",SId)
+ 	});
 	fprintf (stderr, "program\t (%2d)\t %s\t %X is in the list\n",
 	                               programCounter ++, name. c_str (), SId);
 	mainLocker. unlock ();
@@ -273,56 +309,56 @@ int		lnaGain		= 40;
 int		vgaGain		= 40;
 int		ppmOffset	= 0;
 bool		ampEnable	= false;
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:g:Ap:";
+const char	*optionsString	= "JxShP:D:d:M:B:C:O:R:t:G:g:Ap:";
 #elif	HAVE_PLUTO
 int		plutoGain	= 50;
 bool		pluto_agc	= false;
 bool		filter_on	= true;
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:QF";
+const char	*optionsString	= "JxShP:D:d:M:B:C:O:R:t:G:QF";
 #elif	HAVE_LIME
 int16_t		gain		= 70;
 std::string	antenna		= "Auto";
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:X:";
+const char	*optionsString	= "JxShP:D:d:M:B:C:O:R:t:G:X:";
 #elif	HAVE_SDRPLAY	
 int16_t		GRdB		= 30;
 int16_t		lnaState	= 2;
 bool		autoGain	= false;
 int16_t		ppmOffset	= 0;
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:L:Qp:";
+const char	*optionsString	= "JxShP:D:d:M:B:C:O:R:t:G:L:Qp:";
 #elif	HAVE_SDRPLAY_V3	
 int16_t		GRdB		= 30;
 int16_t		lnaState	= 2;
 bool		autoGain	= false;
 int16_t		ppmOffset	= 0;
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:L:Qp:";
+const char	*optionsString	= "JxShP:D:d:M:B:C:O:R:t:G:L:Qp:";
 #elif	HAVE_AIRSPY
 int16_t		deviceGain	= 20;
 bool		autoGain	= false;
 bool		rf_bias		= false;
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:p:b";
+const char	*optionsString	= "JxShP:D:d:M:B:C:O:R:t:G:p:b";
 #elif	HAVE_RTLSDR
 int16_t		deviceGain	= 50;
 bool		autoGain	= false;
 int16_t		ppmOffset	= 0;
 int		deviceIndex	= 0;
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:Qp:";
+const char	*optionsString	= "JxShP:D:d:M:B:C:O:R:t:G:Qp:";
 #elif	HAVE_WAVFILES
 std::string	fileName;
 //bool		repeater	= true;
 bool		continue_on_eof	= false;
-const char	*optionsString	= "ShP:D:d:M:B:O:F:rt:";
+const char	*optionsString	= "JxShP:D:d:M:B:O:F:rt:";
 (void)theBand;
 #elif	HAVE_RAWFILES
 std::string	fileName;
 //bool		repeater	= true;
 bool		continue_on_eof	= false;
-const char	*optionsString	= "ShP:D:d:M:B:O:F:rt:";
+const char	*optionsString	= "JxShP:D:d:M:B:O:F:rt:";
 (void)theBand;
 #elif	HAVE_XMLFILES
 std::string	fileName;
 //bool		repeater	= true;
 bool		continue_on_eof	= false;
-const char	*optionsString	= "ShP:D:d:M:B:O:F:rt:";
+const char	*optionsString	= "JxShP:D:d:M:B:O:F:rt:";
 (void)theBand;
 #elif	HAVE_RTL_TCP
 int		deviceGain	= 50;
@@ -330,7 +366,7 @@ bool		autoGain	= false;
 int		ppmOffset	= 0;
 std::string	hostname = "127.0.0.1";		// default
 int32_t		basePort = 1234;		// default
-const char	*optionsString	= "ShP:D:d:M:B:C:O:R:t:G:Qp:H:I:";
+const char	*optionsString	= "JxShP:D:d:M:B:C:O:R:t:G:Qp:H:I:";
 #endif
 #ifdef	HAVE_DUMPING
 SNDFILE		*dumpFile	= nullptr;
@@ -351,6 +387,12 @@ struct sigaction sigact;
 //	for file input some command line parameters are meeaningless
 	while ((opt = getopt (argc, argv, optionsString)) != -1) {
 	   switch (opt) {
+ 	       case 'x':
+ 		 bStopAfterEnsembleDump = true;
+ 		 break;
+ 	      case 'J':
+ 		 bDumpEnsemble = true;
+ 		 break;		   
 	      case 'P':
 	         nrProcessors	= atoi (optarg);
 	         if (nrProcessors <= 0)
@@ -685,19 +727,32 @@ struct sigaction sigact;
 	   theWorker. stop ();
 	   exit (2);
 	}
-	else {
-	   theWorker. start_etiProcessing ();
-	   cerr << "Handling ensemble " << theName. c_str () <<
-	                    "until you quit" << endl;
-	   run. store (true);
-	   while (run. load () && ((recordTime == -1) || recordTime > 0)) {
-	      if (!isSilent)
-	         fprintf (stderr, "\t\testimated snr: %2d, fibquality %3d\r",
-	                            signalnoise. load (), ficSuccess. load ());
-	      special_sleep (1);
-	      if (recordTime != -1)
-	         recordTime -= 1;
-	   }
+
+ 	if (bDumpEnsemble) {
+ 		// Update ensemble details
+ 		trim_right(theName);
+ 		dabEnsemble.ensemble = theName;
+ 		dabEnsemble.channel = theChannel;
+ 
+ 		// Dump the ensemble
+ 		std::ofstream file(fmt::format("ensemble-ch-{}.json", dabEnsemble.channel));
+ 		json j = dabEnsemble;
+ 		file << j;
+ 		file.flush();
+ 	}
+	if (! bStopAfterEnsembleDump) {
+		theWorker. start_etiProcessing ();
+		cerr << "Handling ensemble " << theName. c_str () <<
+				    "until you quit" << endl;
+		run. store (true);
+		while (run. load () && ((recordTime == -1) || recordTime > 0)) {
+		   if (!isSilent)
+			fprintf (stderr, "\t\testimated snr: %2d, fibquality %3d\r",
+					    signalnoise. load (), ficSuccess. load ());
+		   special_sleep (1);
+		   if (recordTime != -1)
+		       recordTime -= 1;
+		}
 	}
 
 //	we started the "worker", so we also stop it here
@@ -749,7 +804,9 @@ void    printOptions () {
 "   -P number   number of parallel threads for handling subchannels\n"
 "   -D number   time (in seconds) to look for a DAB ensemble\n"
 "   -M mode     mode to be used \n"
-"   -O filename write output into a file (instead of stdout)\n";
+"   -O filename write output into a file (instead of stdout)\n"
+"   -J write stations to JSON file ensemble-ch-<ensemble_channel>.json\n"
+"   -x Exit after dumping stations\n";	
 
 #if !(defined(HAVE_XMLFILES) || defined(HAVE_WAVFILES) || defined(HAVE_RAWFILES))
 	std::cerr <<
