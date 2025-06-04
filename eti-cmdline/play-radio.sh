@@ -6,8 +6,12 @@
 # These work in UK. YMMV
 #
 #set -xv
+if [ ! -x /usr/bin/jq ]; then
+	echo "Need JQ to parse json files"
+	exit 1
+fi
 
-ETI_CMD_LINE="${ETI_CMD_LINE:-./build/eti-cmdline-rtlsdri}"
+ETI_CMD_LINE="${ETI_CMD_LINE:-./build/eti-cmdline-rtlsdr}"
 BLOCKS=("9C" "9B" "9A" "8B" "8A" "7D" "12D" "12C" "12B" "12A" "11D" "11C" "11B" "11A" "10D" "10C" "10B")
 
 cmd=$1
@@ -35,6 +39,12 @@ if [ "$cmd" == "play" ]; then
 	exit 0
 fi
 
+if [ "$cmd" == "list" ]; then
+	[ ! -r station-list.json ] && echo "Need to scan first " && exit 1
+	jq -cr '. | keys[]' station-list.json
+	exit 0
+fi
+
 if [ "$cmd" == "scan" ]; then
 	for block in ${BLOCKS[@]}
 	do
@@ -57,13 +67,15 @@ if [ "$cmd" == "scan" ]; then
 	fi
 fi
 cat <<USAGE
-Toy radio player written in bash using dablin and eti-cmdline
+Toy radio player written in bash using dablin and eti-cmdline.
+Needs dablin and jq to be installed to work
 
-./play-radio.sh play <station> 	Plays station. See station-list.json
+./play-radio.sh play <station> 	Plays station. Uses station-list.json from scan
                                 Use the full station name and quotes if spaces in name
 				e.g. "Magic Radio"
 
 ./play-radio.sh scan            Scans for stations. Creates station-list.json
+./play-radio.sh list            List all the stations from last scan
 
 Will use "$ETI_CMD_LINE". Set env var ETI_CMD_LINE to change this e.g.
 
