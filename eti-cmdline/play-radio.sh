@@ -57,7 +57,7 @@ if [ "$cmd" == "scan" ]; then
 	fi
 fi
 cat <<USAGE
-Toy radio play in bash using dablin and eti-cmdline
+Toy radio player written in bash using dablin and eti-cmdline
 
 ./play-radio.sh play <station> 	Plays station. See station-list.json
                                 Use the full station name and quotes if spaces in name
