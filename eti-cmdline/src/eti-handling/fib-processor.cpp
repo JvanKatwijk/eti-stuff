@@ -421,7 +421,7 @@ void    fib_processor::addtoEnsemble    (const std::string &s, int32_t SId) {
 }
 
 void    fib_processor::nameofEnsemble  (int id, const std::string &s) {
-	ensembleName (s, userData);
+	ensembleName (s, id, userData);
         isSynced        = true;
 }
 

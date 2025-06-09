@@ -1,3 +1,4 @@
+#
 /*
  *    Copyright (C) 2017 .. 2025
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
@@ -22,9 +23,6 @@
  *	This is an example main program, just to show how the software
  *	is to be used. Feel free to adapt to your needs
  */
-//
-//	adapted by lovemonkey257 to generate a jsonfile with ensemble info
-
 #if !(defined(__MINGW32__) || defined(_WIN32))
 #include        <unistd.h>
 #include	<getopt.h>
@@ -42,18 +40,9 @@
 #include	"sndfile.h"
 #endif
 #include <fstream>
-#include <map>
-//#include <boost/algorithm/string.hpp>
-static inline
-void	rtrim(std::string& s, char c) {
-	if (s.empty())
-	   return;
-	std::string::iterator p;
-	for (p = s.end(); p != s.begin() && *--p == c;);
-	if (*p != c)
-	   p++;
-	s.erase (p, s. end ());
-}
+#include <fmt/format.h>
+#include <nlohmann/json.hpp>
+#include <boost/algorithm/string.hpp>
 
 #if (defined(__MINGW32__) || defined(_WIN32))
 #include <string.h>
@@ -133,7 +122,7 @@ const char *oli; 		/* option letter list index */
 
 #endif
 
-//using namespace boost::algorithm;
+using namespace boost::algorithm;
 using namespace std;
 using std::cerr;
 using std::endl;
@@ -180,22 +169,34 @@ std::atomic<int16_t> ficSuccess;
 static
 std::atomic<bool>ensembleRecognized;
 
+using json = nlohmann::json;
+
 // Struct to store channels found
 struct dabEnsembleDetails {
-	string channel;
-	string ensemble;
-	uint32_t	Eid;
-	map<string, string> stations;
+    string ensemble;
+    string channel;
+    map<string, string> stations;
 };
+// Make the struc JSON serialisable
+//NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(dabEnsembleDetails, ensemble, channel, stations);
+
 dabEnsembleDetails dabEnsemble;
 bool bStopAfterEnsembleDump = false;
 bool bDumpEnsemble = false;
+
+/* Serialise JSON */
+void to_json(json& j, const dabEnsembleDetails& d) {
+    j = json{
+       {"ensemble", d.ensemble},
+       {"channel", d.channel},
+       {"stations", d.stations}
+     };
+};
 
 static
 bool	isSilent	= false;
 
 std::string	theName;
-uint32_t	theEid;
 std::mutex	mainLocker;
 
 #if defined(__MINGW32) || defined( _WIN32)
@@ -247,21 +248,11 @@ int	programCounter	= 1;
 void	programnameHandler (std::string name, int SId, void *ctx) {
 	(void)ctx;
 	mainLocker. lock ();
-	rtrim (name, ' ');
-	/*
-	SId is a signed int but some SIds are very large e.g.
-	0xE4910061. Convert it to an unsigned int to ensure
-	it's printed correctly
-	*/
-	unsigned int tempSid = SId; 
-
-	std::string hexSid(20, '\0');
-	sprintf((char *)hexSid.data(), "0x%x", tempSid);
-	dabEnsemble.stations.insert({
+	trim_right(name);
+ 	dabEnsemble.stations.insert({
  		name.c_str(),
-		hexSid.c_str()
+ 		fmt::format("{:#x}",SId)
  	});
-	fprintf(stderr, "%s", hexSid.c_str());
 	fprintf (stderr, "program\t (%2d)\t %s\t %X is in the list\n",
 	                               programCounter ++, name. c_str (), SId);
 	mainLocker. unlock ();
@@ -270,7 +261,7 @@ void	programnameHandler (std::string name, int SId, void *ctx) {
 //	the function ensembleHandler is called when the name of the
 //	ensemble is detected. The function may be called several times
 //	(all occurrences with the same name)
-void	ensemblenameHandler (std::string ensemblename, uint32_t Eid, void *ctx) {
+void	ensemblenameHandler (std::string ensemblename, void *ctx) {
 	(void)ctx;
 	if (ensembleRecognized. load ())
 	   return;
@@ -278,7 +269,6 @@ void	ensemblenameHandler (std::string ensemblename, uint32_t Eid, void *ctx) {
 	ensembleRecognized. store (true);
 	fprintf (stderr, "ensemble %s detected\n", ensemblename. c_str ());
 	theName = ensemblename;
-	theEid	= Eid;
 	mainLocker. unlock ();
 }
 
@@ -739,46 +729,30 @@ struct sigaction sigact;
 	}
 
  	if (bDumpEnsemble) {
-	   // Update ensemble details
-	   rtrim (theName, ' ');
-	   dabEnsemble. channel = theChannel;
-	   dabEnsemble. ensemble = theName;
-	   dabEnsemble. Eid = theEid;
+ 		// Update ensemble details
+ 		trim_right(theName);
+ 		dabEnsemble.ensemble = theName;
+ 		dabEnsemble.channel = theChannel;
  
-// Dump the ensemble
-	   FILE *jsonf;
-	   std::string jsonFilename(128, '\0');
-	   sprintf((char *)jsonFilename.data(), "ensemble-ch-%s.json", dabEnsemble.channel.c_str());
-	   jsonf = fopen(jsonFilename.c_str(), "w");
-
-	   fprintf(jsonf, "{\"channel\":\"%s\",\"ensemble\":\"%s\",\"Eid:\"%X\",\"stations\":{", theChannel.c_str(), theName.c_str(), theEid);
-	   int numStations = static_cast<int>(dabEnsemble.stations.size());
-	   auto s = dabEnsemble.stations.begin();
-	   for(int i = 0; i < numStations; i++){
-	      fprintf (jsonf, "\"%s\":\"%s\"",
-	                     s->first.c_str(), s->second.c_str());
-// Don't print final comma (yet)
-	      if (i < numStations - 1) {
-	         fprintf(jsonf, ",");
-	      }
-	      s++;
-	   }
-	   fprintf(jsonf, "}}");
-	   fclose(jsonf);
+ 		// Dump the ensemble
+ 		std::ofstream file(fmt::format("ensemble-ch-{}.json", dabEnsemble.channel));
+ 		json j = dabEnsemble;
+ 		file << j;
+ 		file.flush();
  	}
-	if (!bStopAfterEnsembleDump) {
-	   theWorker. start_etiProcessing ();
-	   cerr << "Handling ensemble " << theName. c_str () <<
+	if (! bStopAfterEnsembleDump) {
+		theWorker. start_etiProcessing ();
+		cerr << "Handling ensemble " << theName. c_str () <<
 				    "until you quit" << endl;
-	   run. store (true);
-	   while (run. load () && ((recordTime == -1) || recordTime > 0)) {
-	      if (!isSilent)
-	         fprintf (stderr, "\t\testimated snr: %2d, fibquality %3d\r",
-			    signalnoise. load (), ficSuccess. load ());
-	      special_sleep (1);
-	      if (recordTime != -1)
-	         recordTime -= 1;
-	   }
+		run. store (true);
+		while (run. load () && ((recordTime == -1) || recordTime > 0)) {
+		   if (!isSilent)
+			fprintf (stderr, "\t\testimated snr: %2d, fibquality %3d\r",
+					    signalnoise. load (), ficSuccess. load ());
+		   special_sleep (1);
+		   if (recordTime != -1)
+		       recordTime -= 1;
+		}
 	}
 
 //	we started the "worker", so we also stop it here
