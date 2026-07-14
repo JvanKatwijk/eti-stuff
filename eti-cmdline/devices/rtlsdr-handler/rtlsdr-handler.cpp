@@ -64,7 +64,8 @@ void	controlThread (rtlsdrHandler *theStick) {
 	                              int16_t	ppmOffset,
 	                              int16_t	gain,
 	                              bool	autogain,
-	                              int16_t	deviceIndex):
+	                              int16_t	deviceIndex,
+	                              const char *serial):
 	                                   _I_Buffer (4 * 1024 * 1024) {
 int16_t	deviceCount;
 int32_t	r;
@@ -88,6 +89,17 @@ bool	open;
 	}
 //
 //	OK, now open the hardware
+	if (serial != nullptr) {
+	   int index = rtlsdr_get_index_by_serial (serial);
+
+	   if (index < 0) {
+	      fprintf (stderr, "RTL-SDR serial %s not found\n", serial);
+	      goto err;
+	   }
+
+	   deviceIndex = index;
+	}
+
 	r			= rtlsdr_open (&device, deviceIndex);
 	if (r < 0) {
 	   fprintf (stderr, "Opening dabstick failed\n");

@@ -351,7 +351,8 @@ int16_t		deviceGain	= 50;
 bool		autoGain	= false;
 int16_t		ppmOffset	= 0;
 int		deviceIndex	= 0;
-const char	*optionsString	= "JxShP:D:d:M:B:C:O:R:t:G:Qp:";
+const char *rtlSerial = nullptr;
+const char	*optionsString	= "JxShP:D:d:M:B:C:O:R:t:G:Qp:s:";
 #elif	HAVE_WAVFILES
 std::string	fileName;
 //bool		repeater	= true;
@@ -551,7 +552,12 @@ struct sigaction sigact;
 	      case 'F':
 	         filter_on	= false;
 	         break;
-#elif defined (HAVE_RTLSDR) || defined (HAVE_RTL_TCP)
+#elif defined (HAVE_RTLSDR)
+
+	      case 's':
+	         rtlSerial	= optarg;
+	         break;
+
 	      case 'G':
 	      {
 	         int deviceGainArg	= atoi (optarg);
@@ -564,13 +570,37 @@ struct sigaction sigact;
 	         }
 	         break;
 	      }
+
 	      case 'p':
 	         ppmOffset	= atoi (optarg);
 	         break;
+
 	      case 'Q':
 	         autoGain	= true;
 	         break;
 
+#elif defined (HAVE_RTL_TCP)
+
+	      case 'G':
+	      {
+	         int deviceGainArg	= atoi (optarg);
+	         if ((deviceGainArg >= 0) && (deviceGainArg <= 100)) {
+	            deviceGain = deviceGainArg;
+	         }
+	         else {
+	           fprintf (stderr, "Invalid gain value, using default %d\n",
+	                                                     deviceGainArg);
+	         }
+	         break;
+	      }
+
+	      case 'p':
+	         ppmOffset	= atoi (optarg);
+	         break;
+
+	      case 'Q':
+	         autoGain	= true;
+	         break;
 #elif	defined (HAVE_AIRSPY)
 	      case 'G':
 	         deviceGain	= atoi (optarg);
@@ -631,7 +661,8 @@ struct sigaction sigact;
 	                                     ppmOffset,
 	                                     deviceGain,
 	                                     autoGain,
-	                                     deviceIndex);
+	                                     deviceIndex,
+	                                     rtlSerial);
 #elif	HAVE_SDRPLAY_V3
 	   inputDevice	= new sdrplayHandler_v3 (tunedFrequency,
 	                                         ppmOffset,
@@ -873,6 +904,7 @@ void    printOptions () {
 	std::cerr <<
 "   -G number   gain setting, depending on the version of the stick \n"
 "   -p number   ppm setting \n"
+"   -s serial   Select RTL-SDR device by serial number\n"
 "   -Q          autogain on\n";
 #elif	HAVE_LIME
 	std::cerr << 
