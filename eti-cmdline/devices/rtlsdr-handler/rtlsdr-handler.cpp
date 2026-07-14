@@ -64,7 +64,8 @@ void	controlThread (rtlsdrHandler *theStick) {
 	                              int16_t	ppmOffset,
 	                              int16_t	gain,
 	                              bool	autogain,
-	                              int16_t	deviceIndex):
+	                              int16_t	deviceIndex,
+	                              char	*deviceSerial):
 	                                   _I_Buffer (4 * 1024 * 1024) {
 int16_t	deviceCount;
 int32_t	r;
@@ -86,29 +87,50 @@ bool	open;
 	   fprintf (stderr, "No devices found\n");
 	   goto err;
 	}
-//
+
+	for (int i = 0; i < deviceCount; i ++) {
+	   char *manufact;
+	   char *product;
+	   char *serial;
+	   rtlsdr_get_device_usb_strings (i, manufact, product, serial);
+	   fprintf (stderr, "For index %d we have serial %s\n",
+	                        i, serial != nullptr ? serial: "");
+	}
+
 //	OK, now open the hardware
-	r			= rtlsdr_open (&device, deviceIndex);
+	if (deviceSerial != nullptr) {         
+	   int	resultDevIdx =
+	              rtlsdr_get_index_by_serial (deviceSerial);
+	   if (resultDevIdx >= 0) {
+	      this    -> deviceIndex  = resultDevIdx;
+	         deviceIndex             = resultDevIdx;
+	   }
+	   else
+	      this    -> deviceIndex  = uint16_t(-1);
+        }
+	
+	r	= rtlsdr_open (&device, deviceIndex);
 	if (r < 0) {
 	   fprintf (stderr, "Opening dabstick failed\n");
 	   goto err;
 	}
 
-	open			= true;
-	r			= rtlsdr_set_sample_rate (device, inputRate);
+	open	= true;
+	r	= rtlsdr_set_sample_rate (device, inputRate);
 	if (r < 0) {
 	   fprintf (stderr, "Setting samplerate failed\n");
 	   goto err;
 	}
 
-	r		= rtlsdr_get_sample_rate (device);
+	r	= rtlsdr_get_sample_rate (device);
 	fprintf (stderr, "samplerate set to %d\n", r);
 	rtlsdr_set_tuner_gain_mode (device, 0);
 
-	gainsCount      = rtlsdr_get_tuner_gains (device, NULL);
+	gainsCount      = rtlsdr_get_tuner_gains (device, nullptr);
         fprintf (stderr, "Supported gain values (%d): ", gainsCount);
-		{  unique_ptr<int[]> gains { new int[gainsCount] };
-           gainsCount      = rtlsdr_get_tuner_gains (device, gains.get());
+
+	{  int gains [gainsCount];
+           gainsCount      = rtlsdr_get_tuner_gains (device, gains);
            for (int i = 0; i < gainsCount; i ++)
               fprintf (stderr, "%d.%d ", gains [i] / 10, gains [i] % 10);
            fprintf (stderr, "\n");

@@ -22,10 +22,10 @@
  */
 #include	"dab-processor.h"
 
-	dabProcessor::dabProcessor (void) {
+	dabProcessor::dabProcessor () {
 }
 
-	dabProcessor::~dabProcessor	(void) {
+	dabProcessor::~dabProcessor	() {
 }
 
 void	dabProcessor::addtoFrame	(uint8_t *v) {

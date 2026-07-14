@@ -351,7 +351,8 @@ int16_t		deviceGain	= 50;
 bool		autoGain	= false;
 int16_t		ppmOffset	= 0;
 int		deviceIndex	= 0;
-const char	*optionsString	= "JxShP:D:d:M:B:C:O:R:t:G:Qp:";
+char		*deviceSerial	= nullptr;
+const char	*optionsString	= "JxShP:D:d:M:B:C:O:R:t:G:Qp:I:L:";
 #elif	HAVE_WAVFILES
 std::string	fileName;
 //bool		repeater	= true;
@@ -469,6 +470,7 @@ struct sigaction sigact;
 	         continue_on_eof	= true;
 	         fprintf (stderr, "continue_on_eof is now set\n");
 	         break;
+
 #elif defined (HAVE_RTL_TCP)
 	      case 'H':
 	         hostname	= std::string (optarg);
@@ -476,6 +478,25 @@ struct sigaction sigact;
 
 	      case 'I':
 	         basePort	= atoi (optarg);
+	         break;
+	      case 'G':
+	      {
+	         int deviceGainArg	= atoi (optarg);
+	         if ((deviceGainArg >= 0) && (deviceGainArg <= 100)) {
+	            deviceGain = deviceGainArg;
+	         }
+	         else {
+	           fprintf (stderr, "Invalid gain value, using default %d\n",
+	                                                     deviceGainArg);
+	         }
+	         break;
+	      }
+	      case 'p':
+	         ppmOffset	= atoi (optarg);
+	         break;
+
+	      case 'Q':
+	         autoGain	= true;
 	         break;
 #endif
 	      case 'B':
@@ -551,7 +572,7 @@ struct sigaction sigact;
 	      case 'F':
 	         filter_on	= false;
 	         break;
-#elif defined (HAVE_RTLSDR) || defined (HAVE_RTL_TCP)
+#elif defined (HAVE_RTLSDR)
 	      case 'G':
 	      {
 	         int deviceGainArg	= atoi (optarg);
@@ -567,9 +588,17 @@ struct sigaction sigact;
 	      case 'p':
 	         ppmOffset	= atoi (optarg);
 	         break;
+
 	      case 'Q':
 	         autoGain	= true;
 	         break;
+
+	      case 'I':
+	         deviceIndex	= atoi (optarg);
+	         break;
+	
+	      case 'L':
+	         deviceSerial	= optarg;
 
 #elif	defined (HAVE_AIRSPY)
 	      case 'G':
@@ -631,7 +660,8 @@ struct sigaction sigact;
 	                                     ppmOffset,
 	                                     deviceGain,
 	                                     autoGain,
-	                                     deviceIndex);
+	                                     deviceIndex,
+	                                     deviceSerial);
 #elif	HAVE_SDRPLAY_V3
 	   inputDevice	= new sdrplayHandler_v3 (tunedFrequency,
 	                                         ppmOffset,

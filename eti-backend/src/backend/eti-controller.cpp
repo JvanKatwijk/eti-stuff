@@ -36,7 +36,7 @@
 #include	"data-processor.h"
 
 static inline
-int64_t         getCurrentTime       (void) {
+int64_t         getCurrentTime	() {
 struct timeval  tv;
 
         gettimeofday (&tv, NULL);
@@ -58,10 +58,10 @@ struct timeval  tv;
 	newData. store (false);
 }
 
-	etiController::~etiController	(void) {
+	etiController::~etiController	() {
 }
 
-void	etiController::stop		(void) {
+void	etiController::stop		() {
 	running. store (false);
 #ifdef	__MINGW32__
 	usleep (100000);
@@ -73,7 +73,7 @@ void	etiController::stop		(void) {
 	wait ();
 }
 
-void	etiController::run		(void) {
+void	etiController::run		() {
 uint8_t buffer [6144];
 int16_t	n_frame;
 fibElement fe;
@@ -86,7 +86,7 @@ bool	processingData	= false;
 int	counter		= 0;
 int64_t	startTime;
 
-	the_Processor	= NULL;		// will be set, hopefully
+	the_Processor	= nullptr;		// will be set, hopefully
 	running. store (true);
 
 	while (running. load ()) {
@@ -94,12 +94,12 @@ int64_t	startTime;
 //	If there is a request for a service, setup
 //	the appropriate handler
 	   if (newAudio. load ()) {
-	      if (the_Processor != NULL)
+	      if (the_Processor != nullptr)
 	         delete the_Processor;
-	      the_Processor		= NULL;
+	      the_Processor		= nullptr;
 	      subChannelId		= audioDescription. subchId;
-	      fprintf (stderr, "selecting chId %d (defined %d)\n",
-	                 subChannelId, audioDescription. defined);
+//	      fprintf (stderr, "selecting chId %d (defined %d)\n",
+//	                 subChannelId, audioDescription. defined);
 	      if (!audioDescription. defined)
 	         continue;
 	      if (audioDescription. ASCTy == 077)	// 

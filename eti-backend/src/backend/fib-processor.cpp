@@ -106,10 +106,10 @@ int16_t	i;
 	dateFlag	= false;
 	selectedService		= -1;
 	clearEnsemble	();
-	connect (this, SIGNAL (addtoEnsemble (const QString &)),
-	         myRadioInterface, SLOT (addtoEnsemble (const QString &)));
-	connect (this, SIGNAL (nameofEnsemble (int, const QString &)),
-	         myRadioInterface, SLOT (nameofEnsemble (int, const QString &)));
+	connect (this, &fib_processor::addtoEnsemble,
+	         myRadioInterface, &RadioInterface::addtoEnsemble);
+	connect (this, &fib_processor::nameofEnsemble,
+	         myRadioInterface, &RadioInterface::nameofEnsemble);
 	connect (this, SIGNAL (changeinConfiguration (void)),
 	         myRadioInterface,
 	         SLOT (changeinConfiguration (void)));
@@ -117,7 +117,7 @@ int16_t	i;
 	         mr, SLOT (show_ficSuccess (bool)));
 }
 	
-	fib_processor::~fib_processor (void) {
+	fib_processor::~fib_processor  () {
 	delete[] listofServices;
 }
 //
@@ -859,10 +859,14 @@ char		label [17];
 	      SId	= getBits (d, 16, 16);
 	      offset	= 32;
 	      myIndex	= findServiceId (SId);
+	      if (myIndex == nullptr)
+	         break;
 	      if ((!myIndex -> serviceLabel. hasName) && (charSet <= 16)) {
 	         for (i = 0; i < 16; i ++) {
 	            label [i] = getBits_8 (d, offset + 8 * i);
 	         }
+	         label [16] = 0;
+	         fprintf (stderr, "We hebben %s, charSet = %d\n", label, charSet);
 	         myIndex -> serviceLabel. label. append (
 	                       toQStringUsingCharset (
 	                        (const char *) label,

@@ -72,8 +72,8 @@ int16_t	latency;
 	setupUi (this);
 	techData. setupUi (&dataDisplay);
 	show_data		= false;
-	connect (showProgramData, SIGNAL (clicked (void)),
-                 this, SLOT (toggle_show_data (void)));
+	connect (showProgramData, &QPushButton::clicked,
+                 this, &RadioInterface:: toggle_show_data);
 
 	dabSettings		= Si;
 //
@@ -119,8 +119,8 @@ int16_t	latency;
 
 	if ((k == -1) || err)
 	   ((audioSink *)soundOut)	-> selectDefaultDevice ();
-	connect (streamoutSelector, SIGNAL (activated (int)),
-	         this,  SLOT (set_streamSelector (int)));
+	connect (streamoutSelector, &QComboBox::textActivated,
+	         this,  &RadioInterface::set_streamSelector);
 #endif
 	uint8_t dabMode	= 1;
 	setModeParameters (dabMode);
@@ -134,7 +134,7 @@ int16_t	latency;
   *	With that information, the etiController will extract the 
   *	data segment and pass it on to the appropriate decoder.
   */
-	if (input == NULL) {
+	if (input == nullptr) {
 	   QString fileName;
 	   fileName	= QFileDialog::getOpenFileName (this,
 	                                                tr ("open file ..."),
@@ -339,43 +339,19 @@ void	RadioInterface::init_your_gui (void) {
 	ficBlocks               = 0;
 	ficSuccess              = 0;
 
-/**
-  *	Devices can be included or excluded, setting is in the configuration
-  *	files. Inclusion is reflected in the selector on the GUI.
-  *	Note that HAVE_EXTIO is only useful for Windows
-  */
-#ifdef	HAVE_SDRPLAY
-	deviceSelector	-> addItem ("sdrplay");
-#endif
-#ifdef	HAVE_DABSTICK
-	deviceSelector	-> addItem ("dabstick");
-#endif
-#ifdef	HAVE_AIRSPY
-	deviceSelector	-> addItem ("airspy");
-#endif
-#ifdef HAVE_UHD
-	deviceSelector	-> addItem("UHD");
-#endif
-#ifdef HAVE_EXTIO
-	deviceSelector	-> addItem("extio");
-#endif
-#ifdef	HAVE_RTL_TCP
-	deviceSelector	-> addItem ("rtl_tcp");
-#endif
-	
 	connect (ensembleDisplay, SIGNAL (clicked (QModelIndex)),
 	              this, SLOT (selectService (QModelIndex)));
-	connect (startButton, SIGNAL (clicked (void)),
-	              this, SLOT (setStart (void)));
-	connect (quitButton, SIGNAL (clicked ()),
-	              this, SLOT (TerminateProcess (void)));
-	connect (audioDumpButton, SIGNAL (clicked (void)),
-	              this, SLOT (set_audioDump (void)));
+	connect (startButton, &QPushButton::clicked,
+	              this, &RadioInterface::setStart);
+	connect (quitButton, &QPushButton::clicked,
+	              this, &RadioInterface::TerminateProcess);
+	connect (audioDumpButton, &QPushButton::clicked,
+	              this, &RadioInterface::set_audioDump);
 /**	
   *	Happily, Qt is very capable of handling the representation
   *	of the ensemble and selecting an item
   */
-	pictureLabel	= NULL;
+	pictureLabel	= nullptr;;
 	saveSlide	= dabSettings -> value ("saveSlides", 1). toInt ();
 	ensemble.setStringList (Services);
 	ensembleDisplay	-> setModel (&ensemble);
@@ -396,7 +372,7 @@ void	RadioInterface::init_your_gui (void) {
 	         SLOT (updateTimeDisplay (void)));
 //
 	audioDumping		= false;
-	audiofilePointer	= NULL;
+	audiofilePointer	= nullptr;
 //
 //	display the version
 	QString v = "dab backend  " ;
@@ -419,7 +395,7 @@ void	RadioInterface::init_your_gui (void) {
   *	Potentially a dangerous approach, since the fic handler
   *	might run in a separate thread and generate data to be displayed
   */
-void	RadioInterface::clearEnsemble	(void) {
+void	RadioInterface::clearEnsemble	() {
 //
 //	it obviously means: stop processing
 	my_fibHandler		-> clearEnsemble ();
@@ -588,15 +564,13 @@ void	RadioInterface::clear_showElements (void) {
   *	\brief setStart is a function that is called after pushing
   *	the start button.
   */
-void	RadioInterface::setStart	(void) {
+void	RadioInterface::setStart	() {
 	if (running)		// only listen when not running yet
 	   return;
 //
 	clearEnsemble ();		// the display
 	my_etiController	-> start ();
-	fprintf (stderr, "x1");
 	soundOut	-> restart ();
-	fprintf (stderr, "x2");
 	running = true;
 }
 
@@ -605,7 +579,7 @@ void	RadioInterface::setStart	(void) {
   *	Pretty critical, since there are many threads involved
   *	A clean termination is what is needed, regardless of the GUI
   */
-void	RadioInterface::TerminateProcess (void) {
+void	RadioInterface::TerminateProcess () {
 	running		= false;
 	displayTimer	-> stop ();
 
@@ -615,14 +589,13 @@ void	RadioInterface::TerminateProcess (void) {
 	}
 	soundOut		-> stop ();
 	dataDisplay. hide ();
-
 //
 //	everything should be halted by now
 	my_etiController	-> stop ();
 	delete		soundOut;
-	soundOut	= NULL;		// signals may be pending, so careful
+	soundOut	= nullptr;	// signals may be pending, so careful
 	delete		displayTimer;
-	if (pictureLabel != NULL)
+	if (pictureLabel != nullptr)
 	   delete pictureLabel;
 	pictureLabel = NULL;		// signals may be pending, so careful
 	fprintf (stderr, "Termination started\n");
@@ -633,7 +606,7 @@ void	RadioInterface::TerminateProcess (void) {
 //	Whenever the eti controller has read a frame, it will 
 //	put a structure with  <fibnumber, fibdata> in a buffer
 //	and will send a signal
-void	RadioInterface::handle_fibData (void) {
+void	RadioInterface::handle_fibData () {
 fibElement f;
 
 	while (fibBuffer -> GetRingBufferReadAvailable () > 0) {
@@ -772,7 +745,7 @@ SF_INFO	*sf_info	= (SF_INFO *)alloca (sizeof (SF_INFO));
 static size_t previous_idle_time        = 0;
 static size_t previous_total_time       = 0;
 
-void	RadioInterface::updateTimeDisplay (void) {
+void	RadioInterface::updateTimeDisplay () {
 	numberofSeconds ++;
 	int16_t	numberHours	= numberofSeconds / 3600;
 	int16_t	numberMinutes	= (numberofSeconds / 60) % 60;
@@ -806,7 +779,7 @@ void    RadioInterface:: set_streamSelector (int k) {
 #endif
 }
 
-void    RadioInterface::toggle_show_data (void) {
+void    RadioInterface::toggle_show_data () {
         show_data       = !show_data;
         if (show_data)
            dataDisplay. show ();

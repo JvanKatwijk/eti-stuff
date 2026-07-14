@@ -37,7 +37,8 @@ typedef	struct rtlsdr_dev rtlsdr_dev_t;
 class	rtlsdrHandler: public deviceHandler {
 public:
 			rtlsdrHandler	(int32_t, int16_t,
-	                                 int16_t, bool, int16_t);
+	                                 int16_t, bool, int16_t,
+	                                 char *deviceSerial	= nullptr);
 			~rtlsdrHandler	();
 	bool		restartReader	(int32_t);
 	void		stopReader	();

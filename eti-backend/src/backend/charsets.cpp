@@ -78,6 +78,7 @@ uint16_t i;
           else
             length = size;
 
+	fprintf (stderr, "Lengte is %d\n", length);
 	switch (charset) {
 	   case UnicodeUcs2:
 	      s = QString::fromUtf16 ((const ushort*) buffer, length);
@@ -91,7 +92,7 @@ uint16_t i;
 	   default:
 	      s = QString();
 	      for (i = 0; i < length; i++) {
-	         s [i] = QChar (ebuLatinToUcs2 [((uint8_t*) buffer)[i]]);
+	         s. append (QChar (ebuLatinToUcs2 [((uint8_t*) buffer)[i]]));
 	      }
 	}
 

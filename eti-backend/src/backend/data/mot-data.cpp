@@ -126,7 +126,7 @@ QString	name 	= QString ("");
 	         if (paramId == 12) {
 	            int16_t i;
 	            for (i = 0; i < length - 1; i ++) 
-	               name. append (segment [pointer + i + 1]);
+	               name. append ( QChar (segment [pointer + i + 1]));
 	         }
 	         pointer += length;
 	   } 
@@ -398,7 +398,7 @@ uint16_t theEnd		= currentBase + 2 + headerSize;
 	         if (paramId == 12) {
 	            int16_t i;
 	            for (i = 0; i < length - 1; i ++) 
-	               name. append (data [currentBase + i + 1]);
+	               name. append (QChar (data [currentBase + i + 1]));
 	         }
 	         currentBase += length;
 	   } 

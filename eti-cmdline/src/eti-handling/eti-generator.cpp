@@ -202,7 +202,7 @@ bufferElement b;
 int16_t	CIF_index;
 int16_t	temp [55296];
 uint8_t	theVector [6144];
-int16_t	Minor	= 0;
+int16_t	Minor	= -1;
 const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 
 	running. store (true);
@@ -219,7 +219,7 @@ const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 	      expected_block	= 2;
 	      index_Out		= 0;
 	      amount. store (0);
-	      Minor		= 0;
+	      Minor		= -1;
 	      continue;
 	   }
 //
@@ -278,12 +278,17 @@ const int16_t interleaveMap[] = {0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15};
 	         index_Out	= (index_Out + 1) & 017;
 //	Minor is introduced to inform the init_eti function
 //	anout the CIF number in the dab frame, it runs from 0 .. 3
-	         Minor		= 0;
+	         Minor		= -1;
 	         continue;
 	      }
 //
 //	Otherwise, it becomes serious
-	      if ((CIFCount_hi < 0) || (CIFCount_lo < 0))
+	      if ((CIFCount_hi < 0) || (CIFCount_lo < 0)) {
+	         Minor = -1;
+	         continue;
+	      }
+
+	      if (Minor < 0)
 	         continue;
 
 	      int offset	= init_eti (theVector, CIFCount_hi,
