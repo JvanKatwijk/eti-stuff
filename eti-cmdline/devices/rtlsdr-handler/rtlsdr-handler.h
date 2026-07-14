@@ -36,8 +36,9 @@ typedef	struct rtlsdr_dev rtlsdr_dev_t;
 //	It does not do any processing
 class	rtlsdrHandler: public deviceHandler {
 public:
-			rtlsdrHandler	(int32_t, int16_t,
-	                                 int16_t, bool, int16_t);
+			rtlsdrHandler (int32_t, int16_t,
+               int16_t, bool, int16_t,
+               const char *);
 			~rtlsdrHandler	();
 	bool		restartReader	(int32_t);
 	void		stopReader	();
